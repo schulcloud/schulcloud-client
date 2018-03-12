@@ -42,13 +42,10 @@ module.exports = (req, res, next) => {
         icon: 'newspaper-o',
         link: '/news/'
     }, {
-
         name: 'Kurse',
         icon: 'graduation-cap',
         link: '/courses/'
-    },
-
-        {
+    }, {
         name: 'Klassen',
         icon: 'odnoklassniki',
         link: '/classes/'
@@ -166,7 +163,7 @@ module.exports = (req, res, next) => {
             },
 
             {
-                name: 'Toolsmanagement(Admin)',
+                name: 'Toolsmanagement',
                 icon: 'key',
                 link: '/administration/tools/'
             }

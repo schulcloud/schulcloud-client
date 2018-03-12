@@ -338,6 +338,7 @@ const dictionary = {
     dashboard: 'Übersicht',
     courses: 'Kurse',
     classes: 'Klassen',
+    tools: 'Werkzeuge',
     homework: 'Aufgaben',
     files: 'Dateien',
     content: 'Materialien',
@@ -900,6 +901,44 @@ router.all('/classes', function (req, res, next) {
         });
     });
 });
+
+
+router.get("/tools/", viewTools);
+
+function viewTools(req, res, next) {
+    api(req).get('/ltiTools', { qs: {isTemplate: true}})
+        .then(data => {
+            res.render("administration/tools", {
+                ltiTools: data.data
+            });
+        });
+}
+
+router.get("/tools/delete/:id", getDeleteHandler("ltiTools"))
+
+router.post("/tools", addTool);
+function addTool(req, res, next) {
+        api(req).post('ltiTools', {
+            json: {
+                name: req.body.name,
+                url: req.body.url,
+                key: req.body.key,
+                secret: req.body.secret,
+                isTemplate: true,
+                lti_message_type: req.body.lti_message_type,
+                lti_version: req.body.lti_version,
+                resource_link_id: 0,
+                customs: []
+            }
+        }).then(data => {
+            viewTools(req, res, next);
+        }).catch(err => {
+            next(err);
+        });
+};
+
+
+
 
 router.post('/systems/', createSystemHandler);
 router.patch('/systems/:id', getUpdateHandler('systems'));

@@ -1,0 +1,47 @@
+<input name="schoolId" type="hidden" data-force-value="true" value="{{currentSchool}}" />
+
+<div class="form-group">
+    <label>Toolname</label>
+    <input class="form-control" name="name" type="text" placeholder="Beispieltool" required />
+</div>
+
+<div class="form-group">
+    <label>URL</label>
+    <input class="form-control" name="url" type="text" placeholder="https://schul-cloud.org" required />
+</div>
+
+<div class="form-group">
+    <label>Key</label>
+    <input class="form-control" name="key" type="text" placeholder="none" required />
+</div>
+
+<div class="form-group">
+    <label>Secret</label>
+    <input class="form-control" name="secret" type="text" placeholder="none" required />
+</div>
+
+<div class="form-group">
+    <label>LTI Version</label>
+
+    <select name="lti_version" data-placeholder="Version">
+            <option value="LTI-1p0" selected>
+                LTI-1p0
+            </option>
+            <option value="None">
+                None
+            </option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>LTI Message Type</label>
+
+    <select name="lti_message_type" data-placeholder="Message Type">
+        <option value="basic-lti-launch-request" selected>
+            basic-lti-launch-request
+        </option>
+        <option value="None">
+            None
+        </option>
+    </select>
+</div>

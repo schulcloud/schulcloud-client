@@ -106,6 +106,12 @@ $(document).ready(function () {
         });
     });
 
+    $(".btn-edit").on("click", function(e) {
+        e.preventDefault();
+
+        $editModal.modal('show');
+    })
+
     $modals.find('.close, .btn-close').on('click', function () {
         $modals.modal('hide');
     });

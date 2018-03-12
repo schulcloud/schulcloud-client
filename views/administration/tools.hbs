@@ -1,0 +1,88 @@
+{{#extend "administration/administration"}}
+
+    {{#content "scripts" mode="append"}}
+        <script src="/scripts/tools.js" type="text/javascript" defer></script>
+    {{/content}}
+
+    {{#content "page"}}
+        <div class="list-group">
+            {{#if ltiTools}}
+                {{#each ltiTools}}
+                    <div class="card card-block card-tool">
+                        <p class="card-title-directory">
+                            {{#if logo_url}}
+                                <img src={{this.logo_url}} class="float-left"
+                                     style="width:auto; height:75px;"/>
+                            {{else}}
+                                <img src="/images/cloud.png" class="float-left"
+                                     style="width:auto; height:75px;"/>
+                            {{/if}}
+                            <span>{{this.name}}</span>
+
+                            <a class="delete-tool"
+                               href="/administration/tools/delete/{{this._id}}">
+                                <i class="fa fa-trash-o"></i>
+
+                            </a>
+                        </p>
+                    </div>
+                {{/each}}
+            {{else}}
+                <p class="text-muted list-group-item list-group-item-action flex-column align-items-start">
+                    <span>Keine Tools.</span>
+                </p>
+            {{/if}}
+        </div>
+
+        <div class="route-administration" xmlns="http://www.w3.org/1999/html">
+            <section class="section-school section-default">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12 no-padding">
+                            {{> "lib/components/table" head=head body=body}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{> "lib/components/pagination" settings=pagination }}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 no-padding">
+                        <div class="col-sm-12 no-padding">
+                            <button class="btn btn-primary btn-edit">
+                                Edit
+                            </button>
+
+                            <button type="submit" class="btn btn-primary btn-add">
+                                Tool hinzufügen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                {{#embed "lib/components/modal-form" method="patch" class="edit-modal"}}
+                    {{#content "fields"}}
+                        {{> "administration/forms/edit-form-tools" ltiTools={{ltiTools}}
+                    {{/content}}
+                {{/embed}}
+
+                {{#embed "lib/components/modal-form" action="/administration/tools/" method="post" class="add-modal"}}
+                    {{#content "fields"}}
+                        {{> "administration/forms/form-tools"}}
+                    {{/content}}
+                {{/embed}}
+
+                {{#embed "lib/components/modal-form" method="get" closeLabel="Abbruch" submitLabel="Senden" class="delete-modal"}}
+                    {{#content "fields"}}
+                        {{> "administration/forms/form-delete-tools"}}
+                    {{/content}}
+                {{/embed}}
+
+
+            </section>
+        </div>
+    {{/content}}
+{{/extend}}
+--}}
+
+
