@@ -6,7 +6,43 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    
+
+    .background-image {
+        width: 100%;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 30px;
+        z-index: -10;
+    }
+
+    @media screen and (min-width: 767px) {
+        .background-image {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 767px) {
+        .background-image {
+            display: none;
+        }
+    }
+
+    .background-image img {
+        display: block;
+        width: 100%;
+        -webkit-filter: blur(1px);
+        -moz-filter: blur(1px);
+        -o-filter: blur(1px);
+        -ms-filter: blur(1px);
+        filter: blur(1px);
+        -webkit-filter: opacity(30%);
+        -moz-filter: opacity(30%);
+        -o-filter: opacity(30%);
+        -ms-filter: opacity(30%);
+        filter: opacity(30%);
+    }
+
     h4:not(:first-of-type){
         margin-top: 1rem;
     }
