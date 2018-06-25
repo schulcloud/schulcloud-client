@@ -7,6 +7,7 @@ const router = express.Router();
 const marked = require('marked');
 const api = require('../api');
 const authHelper = require('../helpers/authentication');
+const securityHelper = require('../helpers/security');
 const handlebars = require("handlebars");
 const moment = require("moment");
 moment.locale('de');
@@ -49,16 +50,19 @@ router.post('/', function (req, res, next) {
     }
     req.body.creatorId = res.locals.currentUser._id;
     req.body.createdAt = moment().toISOString();
-
+    
+    let cleanData = securityHelper.stripAllJs(req.body);
+    
     api(req).post('/news/', {
         // TODO: sanitize
-        json: req.body
+        json: cleanData
     }).then(data => {
         res.redirect('/news');
     }).catch(err => {
         next(err);
     });
 });
+
 router.patch('/:newsId', function (req, res, next) {
     api(req).get('/news/' + req.params.newsId, {}).then(orgNews => {
         req.body.displayAt = moment(req.body.displayAt, 'DD.MM.YYYY HH:mm').toISOString();
@@ -96,6 +100,7 @@ router.patch('/:newsId', function (req, res, next) {
         });
     });
 });
+
 router.delete('/:id', getDeleteHandler('news'));
 
 router.all('/', function (req, res, next) {
