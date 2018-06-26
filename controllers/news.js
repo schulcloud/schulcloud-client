@@ -52,6 +52,7 @@ router.post('/', function (req, res, next) {
     req.body.createdAt = moment().toISOString();
     req.body.test = ["<script>test</script>test","<a href='javascript:bla' onerror='meh'>link</a>"];
     req.body.test2 = { "test": "<script>test</script>test", "test2": ["<script>test</script>test", "<script>test</script>test"]};
+    req.body.test3 = "<script>test</script>test";
     
     securityHelper.stripAllJs(req.body.test);
     securityHelper.stripAllJs(req.body.test2);
