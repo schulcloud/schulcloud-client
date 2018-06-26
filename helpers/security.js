@@ -6,14 +6,19 @@ const stripJs = require('strip-js');
  * @returns {object/array/string} - clean without JS
  */
 const stripAllJs = (data) => {
-    // iterate over every object/array element and strip it
     if (typeof data === "object") {
         for (var key in data) {
-            if(data.hasOwnProperty(key)) {
+            if(data.hasOwnProperty(key) && typeof data[key] === "string") {
                 data[key] = stripJs(data[key]);
+            } else if (data.hasOwnProperty(key) && Array.isArray(data[key])) {
+                for (let i = 0; i < data[key].length; i++) {
+                    data[key][i] = stripJs(data[key][i]);
+                }
+            } else if (data.hasOwnProperty(key) && typeof data[key] === "object") {
+                stripAllJs(data[key]);
             }
         }
-    } else if (typeof data === "Array") {
+    } else if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
             data[i] = stripJs(data[i]);
         }

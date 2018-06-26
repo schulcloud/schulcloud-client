@@ -50,12 +50,16 @@ router.post('/', function (req, res, next) {
     }
     req.body.creatorId = res.locals.currentUser._id;
     req.body.createdAt = moment().toISOString();
+    req.body.test = ["<script>test</script>test","<a href='javascript:bla' onerror='meh'>link</a>"];
+    req.body.test2 = { "test": "<script>test</script>test", "test2": ["<script>test</script>test", "<script>test</script>test"]};
     
-    let cleanData = securityHelper.stripAllJs(req.body);
+    securityHelper.stripAllJs(req.body.test);
+    securityHelper.stripAllJs(req.body.test2);
+    securityHelper.stripAllJs(req.body);
     
     api(req).post('/news/', {
         // TODO: sanitize
-        json: cleanData
+        json: req.body
     }).then(data => {
         res.redirect('/news');
     }).catch(err => {
