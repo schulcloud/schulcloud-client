@@ -28,6 +28,12 @@ body {
         }
     }
 
+    .container .card {
+        -webkit-box-shadow: 0 4px 9px 0px rgba(0,0,0,.2);
+        -moz-box-shadow: 0 4px 9px 0px rgba(0,0,0,.2);
+        box-shadow: 0 4px 9px 0px rgba(0,0,0,.2);
+    }
+
     .background-image img {
         display: block;
         width: 100%;
@@ -36,11 +42,11 @@ body {
         -o-filter: blur(1px);
         -ms-filter: blur(1px);
         filter: blur(1px);
-        -webkit-filter: opacity(30%);
-        -moz-filter: opacity(30%);
-        -o-filter: opacity(30%);
-        -ms-filter: opacity(30%);
-        filter: opacity(30%);
+        -webkit-filter: opacity(19%);
+        -moz-filter: opacity(19%);
+        -o-filter: opacity(19%);
+        -ms-filter: opacity(19%);
+        filter: opacity(19%);
     }
 
     h4:not(:first-of-type){
@@ -56,6 +62,9 @@ body {
     }
     header {
         background: $primaryColor;
+        -webkit-box-shadow: 0 4px 9px 0px rgba(0,0,0,.2);
+        -moz-box-shadow: 0 4px 9px 0px rgba(0,0,0,.2);
+        box-shadow: 0 4px 9px 0px rgba(0,0,0,.2);
         a {
             color:#fff !important;
             font-size: 1rem;
