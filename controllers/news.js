@@ -7,7 +7,6 @@ const router = express.Router();
 const marked = require('marked');
 const api = require('../api');
 const authHelper = require('../helpers/authentication');
-const securityHelper = require('../helpers/security');
 const handlebars = require("handlebars");
 const moment = require("moment");
 moment.locale('de');
@@ -53,10 +52,6 @@ router.post('/', function (req, res, next) {
     req.body.test = ["<script>test</script>test","<a href='javascript:bla' onerror='meh'>link</a>"];
     req.body.test2 = { "test": "<script>test</script>test", "test2": ["<script>test</script>test", "<script>test</script>test"]};
     req.body.test3 = "<script>test</script>test";
-    
-    securityHelper.stripAllJs(req.body.test);
-    securityHelper.stripAllJs(req.body.test2);
-    securityHelper.stripAllJs(req.body);
     
     api(req).post('/news/', {
         // TODO: sanitize
