@@ -49,9 +49,6 @@ router.post('/', function (req, res, next) {
     }
     req.body.creatorId = res.locals.currentUser._id;
     req.body.createdAt = moment().toISOString();
-    req.body.test = ["<script>test</script>test","<a href='javascript:bla' onerror='meh'>link</a>"];
-    req.body.test2 = { "test": "<script>test</script>test", "test2": ["<script>test</script>test", "<script>test</script>test"]};
-    req.body.test3 = "<script>test</script>test";
     
     api(req).post('/news/', {
         // TODO: sanitize
