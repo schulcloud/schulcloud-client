@@ -2,15 +2,6 @@ if (window.opener && window.opener !== window) {
     window.isInline = true;
 }
 
-function hidePreloadScreen(e) {
-    const loaderClassList = document.querySelector(".preload-screen").classList;
-    loaderClassList.add("hidden");
-}
-function showPreloadScreen(e) {
-    const loaderClassList = document.querySelector(".preload-screen").classList;
-    loaderClassList.remove("hidden");
-}
-
 const diffDOM = new diffDOM();
 
 function softNavigate(newurl, selector = 'html', listener, callback) {
@@ -82,7 +73,6 @@ $(document).ready(function () {
     // Init mobile nav
     var mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     var mobileSearchToggle = document.querySelector('.mobile-search-toggle');
-    // seperate functions to prevent doubled event handler
     if (mobileNavToggle) {
         mobileNavToggle.addEventListener('click', toggleMobileNav);
     }
@@ -212,6 +202,12 @@ $(document).ready(function () {
         $qrbox.empty();
         $qrbox.append(image);
     });
+  
+    // Init mobile nav
+    if (document.getElementById('searchBar') instanceof Object) {
+        document.querySelector('.mobile-nav-toggle').addEventListener('click', toggleMobileNav);
+        document.querySelector('.mobile-search-toggle').addEventListener('click', toggleMobileSearch);
+    }
 
     if (!fullscreen) {
         fullscreen = JSON.parse(sessionStorage.getItem("fullscreen")) || false;
@@ -219,7 +215,6 @@ $(document).ready(function () {
             togglePresentationMode()
         }
     }
-    // seperate functions to prevent doubled event handler
     if(document.querySelector('.btn-fullscreen')){
         document.querySelector('.btn-fullscreen').addEventListener('click', fullscreenBtnClicked);
     }
@@ -240,9 +235,15 @@ $(document).ready(function () {
         closeLabel: 'Abbrechen'
     });
   
-    // loading animation, seperate functions to prevent doubled event handler
-    window.addEventListener("beforeunload", showPreloadScreen);
-    window.addEventListener("pageshow", hidePreloadScreen);
+    // loading animation
+    window.addEventListener("beforeunload", function (e) {
+        const loaderClassList = document.querySelector(".preload-screen").classList;
+        loaderClassList.remove("hidden");
+    });
+    window.addEventListener("pageshow", function (e) {
+        const loaderClassList = document.querySelector(".preload-screen").classList;
+        loaderClassList.add("hidden");
+    });
 
     // from: https://stackoverflow.com/a/187557
     jQuery.expr[":"].Contains = jQuery.expr.createPseudo(function (arg) {
