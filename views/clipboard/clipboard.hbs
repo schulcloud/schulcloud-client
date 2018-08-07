@@ -1,0 +1,12 @@
+{{#extend "lib/loggedin" hideSearch="true"}}
+
+    {{#content "scripts" mode="append"}}
+        <script src="/scripts/vendor-react.js" defer></script>
+        <script src="/scripts/clipboard/app.js" defer></script>
+    {{/content}}
+
+    {{#content "page"}}
+            <div id="clipboard-app">loading react</div>
+    {{/content}}
+
+{{/extend}}
