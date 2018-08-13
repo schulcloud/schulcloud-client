@@ -236,9 +236,10 @@
                 </main>
             </div>
             {{#unless inline}}
-                {{#embed "lib/footer"}}{{/embed}}
+                {{#unless noFooter}}
+                    {{#embed "lib/footer"}}{{/embed}}
+                {{/unless}}
             {{/unless}}
-
             {{#embed "lib/components/modal-form" class="feedback-modal"}}
                 {{#content "fields"}}
                     {{> "lib/forms/form-helpdesk"}}

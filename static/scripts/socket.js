@@ -3,8 +3,6 @@
 $(document).ready(function () {
     let url = $('#backendUrl').html();
     let socket = io(url);
-    let client = feathers()
-        .configure(feathers.socketio(socket));
 
     socket.on('newReleaseAvailable', (res) => {
         if (res.bool) {
