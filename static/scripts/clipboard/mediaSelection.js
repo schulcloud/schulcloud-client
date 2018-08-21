@@ -14,11 +14,13 @@ class MediaSelection  extends React.Component {
 
     render() {
         return (
-            <Dropzone onDrop={(file) => this.onDrop(file)} className="media-row">
+            <div className="media-row">
                 {this.props.images.map((img) => 
                     <Image key={img.file} img={img} />
                 )}
-            </Dropzone>
+                <Dropzone onDrop={(file) => this.onDrop(file)}>
+                </Dropzone>
+            </div>
             )
     }
 }

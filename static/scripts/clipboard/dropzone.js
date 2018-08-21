@@ -45,9 +45,7 @@ class DropzoneComponent extends React.Component {
             onDragEnter={this.onDragEnter.bind(this)}
             onDragLeave={this.onDragLeave.bind(this)}
             style={{}}
-            className={this.props.className}
         >
-          {this.props.children}
           {dropzoneActive || <div className="drop-thumbnail">
             <i className="fa fa-2x fa-share-square-o icon" aria-hidden="true"></i>
             Datei hinzufügen oder ablegen

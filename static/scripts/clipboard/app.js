@@ -3,6 +3,7 @@ import { subscribeClipboardChanges, subscribeClipboardRefresh, refreshClipboard,
 import Clipboard from './clipboard';
 import MediaSelection from './mediaSelection';
 import withDragDropContext from './withDragDropContext';
+import SplitPane from "react-split-pane";
 
 class ClipboardApp extends React.Component {
     constructor(props) {
@@ -27,10 +28,10 @@ class ClipboardApp extends React.Component {
             flexDirection: "column"
         };
         return (
-            <div style={flex}>
+            <SplitPane split="horizontal" defaultSize={"80%"}>
                 <Clipboard />
                 <MediaSelection images={this.state.images} />
-            </div>            
+            </SplitPane>          
         );
     }
 }
