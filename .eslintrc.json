@@ -31,8 +31,7 @@
   "rules": {
     "linebreak-style": [
       2,
-      "unix",
-      "windows"
+      "unix"
     ],
     "semi": [
       2,
