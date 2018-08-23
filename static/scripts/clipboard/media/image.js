@@ -1,12 +1,12 @@
 import React from 'react';
 import {
 	DragSource,
-} from 'react-dnd'
+} from 'react-dnd';
 import mediaTypes from './mediaTypes';
 
 class Image  extends React.Component {
     constructor(props) {
-      super(props)
+      super(props);
     }
     render() {
         const { isDragging, connectDragSource, img } = this.props;
@@ -18,7 +18,7 @@ class Image  extends React.Component {
                 />
                 <div className="media-sender">{img.sender}</div>
             </div>
-        )
+        );
     }
 }
 
@@ -40,4 +40,4 @@ const cardSource = {
 const DroppableImage = DragSource(mediaTypes.Image, cardSource, collect)(Image);
 
 
-module.exports = DroppableImage;
+export default DroppableImage;

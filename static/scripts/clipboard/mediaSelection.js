@@ -5,7 +5,7 @@ import {broadcastNewImage} from './api';
 
 class MediaSelection  extends React.Component {
     constructor(props) {
-      super(props)
+      super(props);
     }
     
     onDrop(files) {
@@ -21,8 +21,8 @@ class MediaSelection  extends React.Component {
                 <Dropzone onDrop={(file) => this.onDrop(file)}>
                 </Dropzone>
             </div>
-            )
+            );
     }
 }
 
-module.exports = MediaSelection;
+export default MediaSelection;

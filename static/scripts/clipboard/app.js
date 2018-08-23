@@ -2,6 +2,7 @@ import React from 'react';
 import { subscribeClipboardChanges, subscribeClipboardRefresh, refreshClipboard, onReconnect } from './api';
 import Clipboard from './clipboard';
 import MediaSelection from './mediaSelection';
+import AppBar from './appBar';
 import withDragDropContext from './withDragDropContext';
 import SplitPane from "react-split-pane";
 
@@ -28,10 +29,13 @@ class ClipboardApp extends React.Component {
             flexDirection: "column"
         };
         return (
-            <SplitPane split="horizontal" defaultSize={"80%"}>
-                <Clipboard />
-                <MediaSelection images={this.state.images} />
-            </SplitPane>          
+            <div>
+                <AppBar />
+                <SplitPane split="horizontal" defaultSize={"80%"}>
+                    <Clipboard />
+                    <MediaSelection images={this.state.images} />
+                </SplitPane>
+            </div>
         );
     }
 }

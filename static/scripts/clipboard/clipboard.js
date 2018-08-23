@@ -1,4 +1,4 @@
-import React from 'react';;
+import React from 'react';
 import {
 	DropTarget
 } from 'react-dnd';
@@ -10,11 +10,11 @@ const collect = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
     canDrop: monitor.canDrop(),
-})
+});
 
 const drop = {
     drop(){}
-}
+};
 
 class Clipboard extends React.Component {
     constructor(props) {
@@ -33,7 +33,7 @@ class Clipboard extends React.Component {
     }
 
     render() {
-        const { connectDropTarget } = this.props
+        const { connectDropTarget } = this.props;
         return (
             connectDropTarget &&
             connectDropTarget(<div className="clipboard">
