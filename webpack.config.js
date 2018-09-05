@@ -11,12 +11,21 @@ module.exports = {
                 exclude: /(node_modules)/,
                 loader: 'babel-loader',
                 query: {
-                    presets: [["es2015"]],
-                    plugins: ["transform-react-jsx"]
+                    presets: [
+                        ["env", {
+                            "targets": {
+                                "chrome": 52
+                            }
+                        }]
+                    ],
+                    plugins: ["transform-react-jsx", "babel-plugin-transform-class-properties"]
                 },
             },
             // moment needs to be globally exposed in order to work with fullcalendar
-            { test: require.resolve('moment'), loader: 'expose-loader?moment' }
+            {
+                test: require.resolve('moment'),
+                loader: 'expose-loader?moment'
+            }
         ]
     },
     optimization: {
@@ -24,9 +33,9 @@ module.exports = {
             cacheGroups: {
                 // Bundle react & react-dom into separate vendor-react bundle
                 react: {
-                  test: /[\\/]node_modules[\\/](react\-dom|react)[\\/]/,
-                  name: 'vendor-react',
-                  chunks: 'all',
+                    test: /[\\/]node_modules[\\/](react-dom|react)[\\/]/,
+                    name: 'vendor-react',
+                    chunks: 'all',
                 },
             }
         },

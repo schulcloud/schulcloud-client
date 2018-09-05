@@ -14,6 +14,7 @@
     "frontendTests": "./node_modules/.bin/nightwatch --config nightwatch.conf.js --env chrome,firefox"
   },
   "dependencies": {
+    "@material-ui/core": "^1.5.1",
     "body-parser": "~1.16.0",
     "compression": "^1.6.2",
     "cookie-parser": "~1.4.3",
@@ -67,15 +68,19 @@
   "devDependencies": {
     "autoprefixer": "^9.0.1",
     "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-react-jsx": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2018": "^1.0.0",
     "babel-preset-react": "^6.23.0",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "chromedriver": "^2.38.3",
     "env2": "^2.2.0",
-    "eslint": "^3.17.1",
+    "eslint": "^4.19.1",
     "expose-loader": "^0.7.5",
     "geckodriver": "^1.11.0",
     "gulp": "^3.9.1",
