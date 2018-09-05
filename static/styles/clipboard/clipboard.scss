@@ -55,6 +55,10 @@
     .Resizer.disabled:hover {
       border-color: transparent;
     }
+
+    .app-bar {
+        background-color: $primaryColor;
+    }
 }
 
 .clipboard-row {

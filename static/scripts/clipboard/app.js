@@ -28,13 +28,24 @@ class ClipboardApp extends React.Component {
             display: "flex",
             flexDirection: "column"
         };
+        let fullscreen = {
+            position:"absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column"
+        };
         return (
-            <div>
-                <AppBar />
-                <SplitPane split="horizontal" defaultSize={"80%"}>
-                    <Clipboard />
-                    <MediaSelection images={this.state.images} />
-                </SplitPane>
+            <div style={fullscreen}>
+                <AppBar/>
+                <div style={{position: 'relative', height:'100%'}}>
+                    <SplitPane split="horizontal" defaultSize={"80%"}>
+                        <Clipboard />
+                        <MediaSelection images={this.state.images} />
+                    </SplitPane>
+                </div>
             </div>
         );
     }

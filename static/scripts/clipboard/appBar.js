@@ -8,12 +8,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
 const styles = {
-    root: {
-      flexGrow: 1,
-    },
-    flex: {
-      flexGrow: 1,
-    },
     menuButton: {
       marginLeft: -12,
       marginRight: 20,
@@ -46,10 +40,9 @@ const styles = {
       return (
         <div className={classes.root}>
           <AppBar position="static">
-            <Toolbar>
-
+            <Toolbar className="app-bar">
               <Typography variant="title" color="inherit" className={classes.flex}>
-                Photos
+                Digitaler Klassenraum
               </Typography>
               {auth && (
                 <div>
