@@ -55,7 +55,7 @@ const editTopicHandler = (req, res, next) => {
 };
 
 const checkInternalComponents = (data, baseUrl) => {
-	let pattern = new RegExp(`(${baseUrl})(?!.*\/(edit|new|add|files\/my|files\/file|account|administration|topics)).*`);
+	let pattern = new RegExp(`(${baseUrl})(?!.*/(edit|new|add|files/my|files/file|account|administration|topics)).*`);
 	(data.contents || []).map(c => {
 		if (c.component === 'internal' && !pattern.test((c.content || {}).url)) {
             (c.content || {}).url = baseUrl;
