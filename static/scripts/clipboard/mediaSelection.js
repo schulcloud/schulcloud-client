@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Image from './media/image.js';
 import Dropzone from './dropzone';
 import {broadcastNewImage} from './api';
@@ -9,7 +10,7 @@ class MediaSelection  extends React.Component {
     }
     
     onDrop(files) {
-        broadcastNewImage(files);
+        broadcastNewImage(files, this.props.socket);
     }
 
     render() {
@@ -25,4 +26,11 @@ class MediaSelection  extends React.Component {
     }
 }
 
-export default MediaSelection;
+function mapStateToProps(state) {
+    return {
+        socket: state.socket.socket,
+        images: state.socket.clipboard.images || []
+    };
+}
+  
+export default connect(mapStateToProps)(MediaSelection);

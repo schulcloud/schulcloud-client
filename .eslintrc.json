@@ -29,7 +29,9 @@
     },
     "sourceType": "module"
   },
-  "plugins": [],
+  "plugins": [
+    "react"
+  ],
   "rules": {
     "linebreak-style": [
       2,

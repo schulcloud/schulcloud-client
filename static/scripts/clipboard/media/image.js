@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
 	DragSource,
 } from 'react-dnd';
@@ -13,7 +14,7 @@ class Image  extends React.Component {
         return connectDragSource(
             <div className="media-container" style={{ opacity: isDragging ? 0.5 : 1 }}>
                 <img 
-                    src={window.websocketUrl + '/clipboard/uploads/' + img.file} 
+                    src={this.props.url + '/clipboard/uploads/' + img.file} 
                     className="media-picture"
                 />
                 <div className="media-sender">{img.sender}</div>
@@ -39,5 +40,10 @@ const cardSource = {
 
 const DroppableImage = DragSource(mediaTypes.Image, cardSource, collect)(Image);
 
+function mapStateToProps(state) {
+  return {
+      url: state.socket.url,
+  };
+}
 
-export default DroppableImage;
+export default connect(mapStateToProps)(DroppableImage);

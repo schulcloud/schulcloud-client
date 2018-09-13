@@ -1,25 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ClipboardApp from './app';
+import configureStore from './redux/store';
+import { Provider } from 'react-redux';
 
-const appDiv = $('#clipboard-app')[0];
 
 $(document).ready(function () {
-    let url = appDiv.getAttribute('data-backend-url');
-    let courseId = appDiv.getAttribute('data-course-id');
-    window.websocketUrl = url;
-    window.clipboardSocket = io(url + '/clipboard',  {
-        query: "courseId=" + courseId,
-        reconnection: true,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax : 5000,
-        reconnectionAttempts: Infinity
-      });
+    const appDiv = $('#clipboard-app')[0];
+
+    const store = configureStore();
+
     ReactDOM.render(
-        <ClipboardApp 
-            backendUrl={appDiv.getAttribute('data-backend-url')}  
-            courseId={appDiv.getAttribute('data-course-id')} 
-        />,
+        <Provider store={store}>
+            <ClipboardApp 
+                backendUrl={appDiv.getAttribute('data-backend-url')}  
+                courseId={appDiv.getAttribute('data-course-id')} 
+            />
+        </Provider>,
         appDiv
     );
 });

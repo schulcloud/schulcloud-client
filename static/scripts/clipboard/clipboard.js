@@ -2,9 +2,13 @@ import React from 'react';
 import {
 	DropTarget
 } from 'react-dnd';
-import {subscribeClipboardPush, pushToClipboard} from './api';
+import { connect } from 'react-redux';
+import { selectMedia } from './redux/socket-actions';
 import mediaTypes from './media/mediaTypes';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import Typography from '@material-ui/core/Typography';
+
+import Paper from '@material-ui/core/Paper';
 
 const collect = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
@@ -16,26 +20,19 @@ const drop = {
     drop(){}
 };
 
-class Clipboard extends React.Component {
+class Clipboard extends React.PureComponent {
     constructor(props) {
         super(props);
-        
-        this.state = {
-            img: {}
-        };
-        
+    
         drop.drop = (props, monitor) => {
-            this.setState({img: monitor.getItem().img});
-            pushToClipboard(monitor.getItem().img);
+            props.selectMedia(monitor.getItem().img);
         };
-
-        subscribeClipboardPush((err, media) => this.setState({img: media}));
     }
 
     render() {
-        const { connectDropTarget } = this.props;
+        const { connectDropTarget, selected, url } = this.props;
+        if(!connectDropTarget) return null;
         return (
-            connectDropTarget &&
             connectDropTarget(<div className="clipboard">
                 <div className = "clipboard-media">
                 <ReactCSSTransitionGroup
@@ -45,11 +42,22 @@ class Clipboard extends React.Component {
                     className="clipboard-transition-container"
                     >
 
-                    <img 
+                    {selected && selected.type === "image" && <img 
                         className = "clipboard-image"
-                        key = {this.state.img.file}
-                        src = {window.websocketUrl + '/clipboard/uploads/' + this.state.img.file}
-                    />
+                        key = {selected.file}
+                        src = {url + '/clipboard/uploads/' + selected.file}
+                    />}
+
+                    {selected && selected.type === "link" &&
+                        <Paper elevation={1}>
+                            <Typography variant="headline" component="h3">
+                            Link
+                            </Typography>
+                            <Typography component="p">
+                                <a href={selected.link} target="_blank">{selected.link}</a>
+                            </Typography>
+                        </Paper>
+                    }
                     </ReactCSSTransitionGroup>
                 </div>
             </div>)          
@@ -57,4 +65,18 @@ class Clipboard extends React.Component {
     }
 }
 
-export default DropTarget(mediaTypes.Image, drop, collect)(Clipboard);
+function mapStateToProps(state) {
+    return {
+        selected: state.socket.clipboard.selected,
+        url: state.socket.url
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        selectMedia: (media) => dispatch(selectMedia(media))
+    };
+};
+
+const ClipboardDropTarget = DropTarget(mediaTypes.Image, drop, collect)(Clipboard);
+export default connect(mapStateToProps, mapDispatchToProps)(ClipboardDropTarget);

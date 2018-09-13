@@ -12,8 +12,8 @@ function subscribeClipboardPush(cb) {
   window.clipboardSocket.on('pushToClipboard', media => cb(null, media));
 }
 
-function broadcastNewImage(images) {
-  var uploader = new SocketIOFileUpload(window.clipboardSocket);
+function broadcastNewImage(images, socket) {
+  var uploader = new SocketIOFileUpload(socket);
   uploader.submitFiles(images);
 }
 

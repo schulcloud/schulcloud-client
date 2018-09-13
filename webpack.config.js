@@ -18,7 +18,15 @@ module.exports = {
                             }
                         }]
                     ],
-                    plugins: ["transform-react-jsx", "babel-plugin-transform-class-properties"]
+                    plugins: [
+                        "transform-react-jsx", 
+                        "babel-plugin-transform-class-properties", 
+                        ["transform-object-rest-spread",
+                            {
+                            "useBuiltIns": true
+                            }
+                        ],
+                    ]
                 },
             },
             // moment needs to be globally exposed in order to work with fullcalendar

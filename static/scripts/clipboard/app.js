@@ -1,9 +1,11 @@
 import React from 'react';
 import { subscribeClipboardChanges, subscribeClipboardRefresh, refreshClipboard, onReconnect } from './api';
+import { connect } from 'react-redux';
 import Clipboard from './clipboard';
 import MediaSelection from './mediaSelection';
 import AppBar from './appBar';
 import withDragDropContext from './withDragDropContext';
+import { initializeSocket } from './redux/socket-reducer.js';
 import SplitPane from "react-split-pane";
 
 class ClipboardApp extends React.Component {
@@ -12,23 +14,41 @@ class ClipboardApp extends React.Component {
         
         this.state = {
             images: [],
-            media: {}
+            media: {},
+            fullscreen: true,
         };
-        subscribeClipboardChanges((err, newImage) => this.setState({ 
-          images: [...this.state.images, newImage]
-        }));
-        subscribeClipboardRefresh((err, images) => this.setState({images}));
-        refreshClipboard();
-        onReconnect(() => refreshClipboard());
+        //subscribeClipboardChanges((err, newImage) => this.setState({ 
+         // images: [...this.state.images, newImage]
+        //}));
+        //subscribeClipboardRefresh((err, images) => this.setState({images}));
+        //refreshClipboard();
+        //onReconnect(() => refreshClipboard());
+    }
+
+    componentWillMount() {
+        const { dispatch, backendUrl, courseId } = this.props;
+        const settings =  {
+            query: "courseId=" + courseId,
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax : 5000,
+            reconnectionAttempts: Infinity
+        };
+        dispatch(initializeSocket(backendUrl, 'clipboard', settings));
+    }
+
+    toggleFullscreen = () => {
+        this.setState({fullscreen: !this.state.fullscreen});
     }
 
     render() {
+        let { fullscreen } = this.state;
         let flex = {
             flex: 1,
             display: "flex",
             flexDirection: "column"
         };
-        let fullscreen = {
+        let fullscreenStyle = {
             position:"absolute",
             top: 0,
             left: 0,
@@ -37,13 +57,17 @@ class ClipboardApp extends React.Component {
             display: "flex",
             flexDirection: "column"
         };
+        let normalStyle = {
+            position:"absolute"
+        };
+        const { connected } = this.props;
         return (
-            <div style={fullscreen}>
-                <AppBar/>
+            <div style={fullscreen ? fullscreenStyle : normalStyle}>    
+                <AppBar onToggleFullscreen={this.toggleFullscreen}  connected={connected}/>
                 <div style={{position: 'relative', height:'100%'}}>
                     <SplitPane split="horizontal" defaultSize={"80%"}>
                         <Clipboard />
-                        <MediaSelection images={this.state.images} />
+                        <MediaSelection />
                     </SplitPane>
                 </div>
             </div>
@@ -51,4 +75,11 @@ class ClipboardApp extends React.Component {
     }
 }
 
-export default withDragDropContext(ClipboardApp);
+function mapStateToProps(state) {
+    return {
+        connected: state.socket.connected,
+        clipboard: state.socket.clipboard
+    };
+}
+  
+export default connect(mapStateToProps)(withDragDropContext(ClipboardApp));
