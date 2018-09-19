@@ -1,9 +1,16 @@
 export const SOCKET_SEND = 'SOCKET_SEND';
 
-export function selectMedia(media) {
+export function addToBoard(media) {
     return {
         type: SOCKET_SEND,
-        message: "SELECT_MEDIA",
+        message: "ADD_TO_BOARD",
+        payload: media
+      };
+}
+export function updateMediaOnBoard(media) {
+    return {
+        type: SOCKET_SEND,
+        message: "UPDATE_MEDIA_ON_BOARD",
         payload: media
       };
 }

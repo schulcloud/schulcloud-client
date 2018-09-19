@@ -3,10 +3,11 @@ import {
 	DropTarget
 } from 'react-dnd';
 import { connect } from 'react-redux';
-import { selectMedia } from './redux/socket-actions';
+import { addToBoard, updateMediaOnBoard } from './redux/socket-actions';
 import mediaTypes from './media/mediaTypes';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Typography from '@material-ui/core/Typography';
+import Interactable from './interactable';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -25,40 +26,49 @@ class Clipboard extends React.PureComponent {
         super(props);
     
         drop.drop = (props, monitor) => {
-            props.selectMedia(monitor.getItem().img);
+            props.addToBoard(monitor.getItem().img);
         };
     }
 
+    update(id, style) {
+        const media = {
+            ...this.props.board[id],
+            style : {...style}
+        };
+        this.props.updateMediaOnBoard(media);
+    }
+
     render() {
-        const { connectDropTarget, selected, url } = this.props;
+        const { connectDropTarget, board, url } = this.props;
         if(!connectDropTarget) return null;
         return (
             connectDropTarget(<div className="clipboard">
                 <div className = "clipboard-media">
-                <ReactCSSTransitionGroup
-                    transitionName="clipboard-transition"
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={1000}
-                    className="clipboard-transition-container"
-                    >
-
-                    {selected && selected.type === "image" && <img 
-                        className = "clipboard-image"
-                        key = {selected.file}
-                        src = {url + '/clipboard/uploads/' + selected.file}
-                    />}
-
-                    {selected && selected.type === "link" &&
-                        <Paper elevation={1}>
-                            <Typography variant="headline" component="h3">
-                            Link
-                            </Typography>
-                            <Typography component="p">
-                                <a href={selected.link} target="_blank">{selected.link}</a>
-                            </Typography>
-                        </Paper>
-                    }
-                    </ReactCSSTransitionGroup>
+                {board && Object.keys(board).map((id) => {
+                    const media = board[id];
+                    media.style = media.style || {};
+                    const mediaStyle = {
+                        width: media.style.width, 
+                        height: media.style.height,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        transform: 'translate(' + (media.style.x || 0) + 'px,' + 
+                                                  (media.style.y || 0) + 'px)'
+                    };
+                    
+                    return <Interactable 
+                        key={id}
+                        currentPos={media.style}
+                        onUpdate={(style) => this.update(id, {
+                            x: media.style.x + style.dx, 
+                            y: media.style.y + style.dy,
+                            width: media.style.width || style.width,
+                            height: media.style.height || style.height})}>
+                            <img style={mediaStyle} src={url + '/clipboard/uploads/' + media.file} />
+                    </Interactable>;
+                })
+                }
                 </div>
             </div>)          
         );
@@ -67,14 +77,15 @@ class Clipboard extends React.PureComponent {
 
 function mapStateToProps(state) {
     return {
-        selected: state.socket.clipboard.selected,
+        board: state.socket.clipboard.board,
         url: state.socket.url
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        selectMedia: (media) => dispatch(selectMedia(media))
+        addToBoard: (media) => dispatch(addToBoard(media)),
+        updateMediaOnBoard: (media) => dispatch(updateMediaOnBoard(media))
     };
 };
 

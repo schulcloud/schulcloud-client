@@ -30,7 +30,8 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "class-property"
   ],
   "rules": {
     "linebreak-style": [

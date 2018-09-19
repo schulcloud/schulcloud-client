@@ -232,9 +232,9 @@ gulp.task('watch-reload', ['watch', 'browser-sync']);
 gulp.task('browser-sync', ['nodemon'], function() {
 	browserSync.init(null, {
 		proxy: "http://localhost:3100",
-        browser: "chrome",
+        browser: false,
         port: 7000,
-        reloadOnRestart: true
+        reloadOnRestart: false
 	});
 });
 

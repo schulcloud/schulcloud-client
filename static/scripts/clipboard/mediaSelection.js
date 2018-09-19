@@ -14,9 +14,11 @@ class MediaSelection  extends React.Component {
     }
 
     render() {
+        const { media } = this.props;
+        if(!media) return null;
         return (
             <div className="media-row">
-                {this.props.images.map((img) => 
+                {media.map((img) => 
                     <Image key={img.file} img={img} />
                 )}
                 <Dropzone onDrop={(file) => this.onDrop(file)}>
@@ -29,7 +31,7 @@ class MediaSelection  extends React.Component {
 function mapStateToProps(state) {
     return {
         socket: state.socket.socket,
-        images: state.socket.clipboard.images || []
+        media: state.socket.clipboard.media
     };
 }
   

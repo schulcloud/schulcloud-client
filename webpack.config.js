@@ -2,6 +2,8 @@ const webpack = require("webpack");
 const RebuildChangedPlugin = require('rebuild-changed-entrypoints-webpack-plugin');
 
 module.exports = {
+    cache: true,
+    devtool: 'inline-source-map',
     mode: 'development',
     module: {
         rules: [
