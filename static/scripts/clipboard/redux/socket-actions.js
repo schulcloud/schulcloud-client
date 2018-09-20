@@ -15,6 +15,14 @@ export function updateMediaOnBoard(media) {
       };
 }
 
+export function removeMediaFromBoard(media) {
+    return {
+        type: SOCKET_SEND,
+        message: "REMOVE_MEDIA_FROM_BOARD",
+        payload: media
+    };   
+}
+
 export function addMedia(media) {
     return {
         type: SOCKET_SEND,

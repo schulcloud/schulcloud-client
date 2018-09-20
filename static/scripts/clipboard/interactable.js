@@ -1,96 +1,175 @@
 import React, { Component, cloneElement } from 'react';
 import { findDOMNode } from 'react-dom';
 
-import interact from 'interact.js';
-
-const onDragMove = (event) => {
-    const target = event.target;
-    // keep the dragged position in the data-x/data-y attributes
-    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-    target.style.webkitTransform =
-    target.style.transform =
-        'translate(' + x + 'px, ' + y + 'px)';
-
-    // update the posiion attributes
-    target.setAttribute('data-x', x);
-    target.setAttribute('data-y', y);
-};
-
-const onResize = event => {
-    var target = event.target,
-    x = (parseFloat(target.getAttribute('data-x')) || 0),
-    y = (parseFloat(target.getAttribute('data-y')) || 0);
-
-    // update the element's style
-    target.style.width  = event.rect.width + 'px';
-    target.style.height = event.rect.height + 'px';
-
-    // translate when resizing from top or left edges
-    x += event.deltaRect.left;
-    y += event.deltaRect.top;
-
-    target.style.webkitTransform = target.style.transform =
-        'translate(' + x + 'px,' + y + 'px)';
-
-    target.setAttribute('data-x', x);
-    target.setAttribute('data-y', y);
-};
-
+import Hammer from 'hammerjs';
 
 export default class Interactable extends Component {
 
+    minScale = 1;
+    maxScale = 4;
+
+    containerWidth;
+    containerHeight;
+    rangeX=0;
+    rangeY=0;
+    rangeMaxX=0;
+    rangeMaxY=0;
+    rangeMinX=0;
+    rangeMinY=0;
+
+    displayDefaultWidth;
+    displayDefaultHeight;
+
+    displayImageX=0;
+    displayImageY=0;
+    displayImageScale=1;
+
+    displayImageCurrentX = 0;
+    displayImageCurrentY = 0;
+    displayImageCurrentScale = 1;
+
+    componentDidUpdate() {
+        if(this.props.position){
+            this.displayImageScale = this.props.position.scale;
+            this.displayImageCurrentX = this.props.position.x;
+            this.displayImageCurrentY = this.props.position.y;
+        }
+        this.updateRange();
+        this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageScale);  
+    }
+
+    clamp(value, min, max) {
+        return Math.min(Math.max(min, value), max);
+    }
+      
+    clampScale(newScale) {
+        return this.clamp(newScale, this.minScale, this.maxScale);
+    }
+
+    imageLoaded() {
+        this.image.addEventListener('mousedown', e => e.preventDefault(), false);
+        this.displayDefaultWidth = this.image.offsetWidth;
+        this.displayDefaultHeight = this.image.offsetHeight;
+        this.rangeX = Math.max(0, this.displayDefaultWidth - this.containerWidth);
+        this.rangeY = Math.max(0, this.displayDefaultHeight - this.containerHeight);
+    }
+
+    updateRange() {
+        this.rangeX = Math.max(0, Math.round(this.displayDefaultWidth * this.displayImageCurrentScale) - this.containerWidth);
+        this.rangeY = Math.max(0, Math.round(this.displayDefaultHeight * this.displayImageCurrentScale) - this.containerHeight);
+        
+        this.rangeMaxX = Math.round(this.rangeX / 2);
+        this.rangeMinX = 0 - this.rangeMaxX;
+      
+        this.rangeMaxY = Math.round(this.rangeY / 2);
+        this.rangeMinY = 0 - this.rangeMaxY;
+    }
+
+    updateDisplayImage(x, y, scale) {
+        const transform = 'translateX(' + x + 'px) translateY(' + y + 'px) translateZ(0px) scale(' + scale + ',' + scale + ')';
+        this.image.style.transform = transform;
+        this.image.style.WebkitTransform = transform;
+        this.image.style.msTransform = transform;
+    }
+      
+    resizeContainer() {
+        this.containerWidth = this.imageContainer.offsetWidth;
+        this.containerHeight = this.imageContainer.offsetHeight;
+        if (this.displayDefaultWidth !== undefined && this.displayDefaultHeight !== undefined) {
+          this.displayDefaultWidth = this.image.offsetWidth;
+          this.displayDefaultHeight = this.image.offsetHeight;
+          this.updateRange();
+          this.displayImageCurrentX = this.clamp(this.displayImageX, this.rangeMinX, this.rangeMaxX );
+          this.displayImageCurrentY = this.clamp(this.displayImageY, this.rangeMinY, this.rangeMaxY );
+          this.updateDisplayImage(
+            this.displayImageCurrentX,
+            this.displayImageCurrentY,
+            this.displayImageCurrentScale );
+        }
+    }
+
+    onImageScroll(event) {
+        this.displayImageScale = this.displayImageCurrentScale = this.clampScale(this.displayImageScale + (event.wheelDelta / 800));
+        this.updateRange();
+        this.displayImageCurrentX = this.clamp(this.displayImageCurrentX, this.rangeMinX, this.rangeMaxX);
+        this.displayImageCurrentY = this.clamp(this.displayImageCurrentY, this.rangeMinY, this.rangeMaxY);
+        
+        this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageScale);            
+    }
+
 	render() {
-		return cloneElement(this.props.children, { 
-			ref: node => this.node = node, 
-			draggable: false
-		});
+        return <div 
+                ref={node => this.imageContainer = node}
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    position: 'absolute',
+                    overflow: 'hidden',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+                >
+                    <img 
+                        src={this.props.src} 
+                        ref={node => this.image = node}
+                        onLoad={() => this.imageLoaded()}
+                        style={{
+                            display:'block',
+                            maxWidth:'100%',
+                            maxHeight:'100%',
+                            cursor: 'move',
+                            touchAction: 'none'}}
+                    />
+                </div>;
 	}
 
 	componentDidMount() {
-		this.interact = interact(findDOMNode(this.node));
-		this.setInteractions();
+        window.addEventListener('resize', this.resizeContainer.bind(this), true);
+        this.image.addEventListener('wheel', this.onImageScroll.bind(this), false);
+        this.initHammer();
+        this.resizeContainer();
 	}
 
-	componentWillReceiveProps() {
-		this.interact = interact(findDOMNode(this.node));
-		this.setInteractions();
-	}
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resizeContainer.bind(this));
+        this.image.removeEventListener('wheel', this.onImageScroll.bind(this), false);
+    }
 
-	setInteractions() {
-        const draggableOptions = {
-            onstart: (event) => {
-                event.target.setAttribute('data-x', this.props.currentPos.x);
-                event.target.setAttribute('data-y', this.props.currentPos.y);
-                event.target.style.transition = 'none';
-            },
-            onmove: onDragMove,
-            onend: (event) => {
-                this.props.onUpdate({dx: event.dx, dy: event.dy});
-                event.target.style.webkitTransition = event.target.style.transition = '';
-            },
-        };
-        const resizableOptions = {
-            edges: { left: true, right: true, bottom: true, top: true },
-            onstart: (event) => {
-                event.target.setAttribute('data-x', this.props.currentPos.x);
-                event.target.setAttribute('data-y', this.props.currentPos.y);
-                event.target.style.transition = 'none';
-            },
-            onmove: onResize,
-            onend: (event) => {
-                this.props.onUpdate({
-                    dx: Math.max(0, event.dx), 
-                    dy: Math.max(0, event.dy),
-                    width: event.target.style.width,
-                    height: event.target.style.height,
-                });
-                event.target.style.webkitTransition = event.target.style.transition = '';
-            },
-        };
-    
-        this.interact.draggable(draggableOptions);
-		this.interact.resizable(resizableOptions);
-	}
+    initHammer() {
+        const hammer = new Hammer(this.image);
+
+        hammer.get('pinch').set({ enable: true });
+        hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+        hammer.on('pan', ev => {  
+            this.displayImageCurrentX = this.clamp(this.displayImageX + ev.deltaX, this.rangeMinX, this.rangeMaxX);
+            this.displayImageCurrentY = this.clamp(this.displayImageY + ev.deltaY, this.rangeMinY, this.rangeMaxY);
+            this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageScale);
+        });
+
+        hammer.on('pinch pinchmove', ev => {
+            this.displayImageCurrentScale = this.clampScale(ev.scale * this.displayImageScale);
+            this.updateRange();
+            this.displayImageCurrentX = this.clamp(this.displayImageX + ev.deltaX, this.rangeMinX, this.rangeMaxX);
+            this.displayImageCurrentY = this.clamp(this.displayImageY + ev.deltaY, this.rangeMinY, this.rangeMaxY);
+            this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageCurrentScale);
+        });
+
+        hammer.on('panend pancancel pinchend pinchcancel', () => {
+            this.displayImageScale = this.displayImageCurrentScale;
+            this.displayImageX = this.displayImageCurrentX;
+            this.displayImageY = this.displayImageCurrentY;
+            this.props.onUpdate({
+                x:this.displayImageCurrentX,
+                y:this.displayImageCurrentY, 
+                scale: this.displayImageCurrentScale
+            });
+        });  
+    }
 }

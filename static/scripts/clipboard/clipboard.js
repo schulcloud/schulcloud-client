@@ -3,13 +3,11 @@ import {
 	DropTarget
 } from 'react-dnd';
 import { connect } from 'react-redux';
-import { addToBoard, updateMediaOnBoard } from './redux/socket-actions';
+import { addToBoard, updateMediaOnBoard, removeMediaFromBoard } from './redux/socket-actions';
 import mediaTypes from './media/mediaTypes';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Interactable from './interactable';
-
-import Paper from '@material-ui/core/Paper';
 
 const collect = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
@@ -43,33 +41,22 @@ class Clipboard extends React.PureComponent {
         if(!connectDropTarget) return null;
         return (
             connectDropTarget(<div className="clipboard">
-                <div className = "clipboard-media">
                 {board && Object.keys(board).map((id) => {
                     const media = board[id];
-                    media.style = media.style || {};
-                    const mediaStyle = {
-                        width: media.style.width, 
-                        height: media.style.height,
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        transform: 'translate(' + (media.style.x || 0) + 'px,' + 
-                                                  (media.style.y || 0) + 'px)'
-                    };
-                    
-                    return <Interactable 
-                        key={id}
-                        currentPos={media.style}
-                        onUpdate={(style) => this.update(id, {
-                            x: media.style.x + style.dx, 
-                            y: media.style.y + style.dy,
-                            width: media.style.width || style.width,
-                            height: media.style.height || style.height})}>
-                            <img style={mediaStyle} src={url + '/clipboard/uploads/' + media.file} />
-                    </Interactable>;
-                })
-                }
-                </div>
+                    return <div className = "clipboard-media"
+                                key={id}>
+                                <Interactable 
+                                    src={url + '/clipboard/uploads/' + media.file}
+                                    position={media.position}
+                                    onUpdate={(pos) => {
+                                        media.position = pos;
+                                        updateMediaOnBoard(media);
+                                }} />
+                                <Button variant="fab" className={"delete-button"} onClick={() => this.props.removeMediaFromBoard(media)}>
+                                    <DeleteIcon />
+                                </Button>
+                            </div>;
+                })}
             </div>)          
         );
     }
@@ -85,7 +72,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = dispatch => {
     return {
         addToBoard: (media) => dispatch(addToBoard(media)),
-        updateMediaOnBoard: (media) => dispatch(updateMediaOnBoard(media))
+        updateMediaOnBoard: (media) => dispatch(updateMediaOnBoard(media)),
+        removeMediaFromBoard: (media) => dispatch(removeMediaFromBoard(media))
     };
 };
 

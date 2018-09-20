@@ -73,12 +73,18 @@
     width: 100%;
     flex: 1;
     display: flex;
+    flex-direction: row;
 
     .clipboard-media {
         flex: 1;
-        display: flex;
-        justify-content: center;
-        overflow: hidden!important;
+        position: relative;
+
+        .delete-button {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            opacity: 0.5;
+        }
     }
 
     .clipboard-image {
