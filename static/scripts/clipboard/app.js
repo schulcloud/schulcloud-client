@@ -17,12 +17,6 @@ class ClipboardApp extends React.Component {
             media: {},
             fullscreen: true,
         };
-        //subscribeClipboardChanges((err, newImage) => this.setState({ 
-         // images: [...this.state.images, newImage]
-        //}));
-        //subscribeClipboardRefresh((err, images) => this.setState({images}));
-        //refreshClipboard();
-        //onReconnect(() => refreshClipboard());
     }
 
     componentWillMount() {

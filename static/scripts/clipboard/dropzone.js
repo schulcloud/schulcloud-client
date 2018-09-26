@@ -1,6 +1,5 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
-import ImageCompressor from 'image-compressor.js';
 
 class DropzoneComponent extends React.Component {
     constructor() {
@@ -11,17 +10,7 @@ class DropzoneComponent extends React.Component {
     }
   
     onDrop(files) {
-      var onDrop = (file) => this.props.onDrop([file]);
-      files.forEach((file) => {
-        new ImageCompressor(file, {
-            quality: .8,
-            maxWidth: 1920,
-            success: onDrop,
-            error(e) {
-              console.log(e.message);
-            },
-          });
-      }, this);
+      this.props.onDrop(files);
       this.setState({dropzoneActive: false});
     }
 

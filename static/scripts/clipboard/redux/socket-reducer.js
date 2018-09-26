@@ -1,7 +1,10 @@
 import io from 'socket.io-client';
+import SocketIOFileUpload from 'socketio-file-upload';
 import {SOCKET_SEND} from './socket-actions';
 
 const SOCKET_CONNECTION_INIT = 'SOCKET_CONNECTION_INIT';
+const SOCKET_UPLOADER_INIT = 'SOCKET_UPLOADER_INIT';
+export const UPLOAD_PROGRESS = 'UPLOAD_PROGRESS';
 const SOCKET_CONNECTION_SUCCESS = 'SOCKET_CONNECTION_SUCCESS';
 const SOCKET_CONNECTION_ERROR = 'SOCKET_CONNECTION_ERROR';
 const SOCKET_CONNECTION_CLOSED = 'SOCKET_CONNECTION_CLOSED';
@@ -11,7 +14,9 @@ const initialState = {
   connected: false,
   readyState: null,
   socket: null,
+  uploader: null,
   clipboard:{},
+  uploads:{}
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -24,6 +29,24 @@ export default function reducer(state = initialState, action = {}) {
         url: action.url,
         sending: false,
       };
+
+    case SOCKET_UPLOADER_INIT:
+      return {
+        ...state,
+        uploader: action.uploader,
+      };
+
+    case UPLOAD_PROGRESS: {
+      let uploads = {...state.uploads};
+      uploads[action.name] = action;
+      if(action.progress === 100) {
+        delete uploads[action.name];
+      }
+      return {
+        ...state,
+        uploads
+      };
+    }
 
     case SOCKET_CONNECTION_SUCCESS:
       return {
@@ -69,10 +92,12 @@ export function initializeSocket(url, namespace, settings = {}) {
 
     socket.on("connect", function() {
       dispatch(socketConnectionSuccess());  
+      initUploader();
     });
 
     socket.on("reconnect", function() {
-      dispatch(socketConnectionSuccess());  
+      dispatch(socketConnectionSuccess());
+      initUploader();
     });
 
     socket.on("reconnecting", function() {
@@ -95,6 +120,19 @@ export function initializeSocket(url, namespace, settings = {}) {
       dispatch(updateClipboardState(state));
     });
 
+    function initUploader() {
+      let uploader = new SocketIOFileUpload(socket);
+      uploader.addEventListener("start", (event) => 
+        dispatch(uploadProgress(event.file, 0)));
+      uploader.addEventListener("progress", (event) => 
+        dispatch(uploadProgress(event.file, event.bytesLoaded / event.file.size * 100)));
+      uploader.addEventListener("complete", (event) => 
+        dispatch(uploadProgress(event.file, 100)));
+      uploader.addEventListener("error", (event) => 
+        dispatch(uploadProgress(event.file, 100, event.message)));
+      
+      dispatch(socketUploaderInit(uploader));
+    }
 
   };
 }
@@ -130,5 +168,22 @@ function updateClipboardState(state) {
   return {
     type: CLIPBOARD_UPDATE,
     payload: state,
+  };
+}
+
+function socketUploaderInit(uploader) {
+  return {
+    type: SOCKET_UPLOADER_INIT,
+    uploader,
+  };
+}
+
+export function uploadProgress(file, progress, error) {
+  return {
+    type: UPLOAD_PROGRESS,
+    file,
+    name: file.name,
+    progress,
+    error
   };
 }

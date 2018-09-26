@@ -10,14 +10,15 @@ class Image  extends React.Component {
       super(props);
     }
     render() {
-        const { isDragging, connectDragSource, img } = this.props;
+        const { onClick, isDragging, connectDragSource, src, sender, file } = this.props;
         return connectDragSource(
-            <div className="media-container" style={{ opacity: isDragging ? 0.5 : 1 }}>
+            <div className="media-container draggable" style={{ opacity: isDragging ? 0.5 : 1 }} onClick={onClick}>
                 <img 
-                    src={this.props.url + '/clipboard/uploads/' + img.file} 
+                    src={src} 
                     className="media-picture"
                 />
-                <div className="media-sender">{img.sender}</div>
+                <div className="media-info">{file}</div>
+                <div className="media-info">{sender}</div>
             </div>
         );
     }
@@ -26,7 +27,7 @@ class Image  extends React.Component {
 const cardSource = {
     beginDrag(props) {
       return {
-        img: props.img
+        img: props
       };
     }
   };
@@ -40,10 +41,4 @@ const cardSource = {
 
 const DroppableImage = DragSource(mediaTypes.Image, cardSource, collect)(Image);
 
-function mapStateToProps(state) {
-  return {
-      url: state.socket.url,
-  };
-}
-
-export default connect(mapStateToProps)(DroppableImage);
+export default DroppableImage;

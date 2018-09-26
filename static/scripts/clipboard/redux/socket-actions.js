@@ -1,4 +1,5 @@
 export const SOCKET_SEND = 'SOCKET_SEND';
+export const UPLOAD_FILES = 'UPLOAD_FILES';
 
 export function addToBoard(media) {
     return {
@@ -28,5 +29,13 @@ export function addMedia(media) {
         type: SOCKET_SEND,
         message: "ADD_MEDIA",
         payload: media
+      };
+}
+
+export function uploadFiles(files) {
+    return {
+        type: UPLOAD_FILES,
+        message: "UPLOAD_FILES",
+        payload: files
       };
 }

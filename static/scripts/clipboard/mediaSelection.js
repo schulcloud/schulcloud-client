@@ -1,25 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Image from './media/image.js';
+import Medium from './media/medium.js';
+import Upload from './media/upload.js';
 import Dropzone from './dropzone';
-import {broadcastNewImage} from './api';
+import {uploadFiles} from './redux/socket-actions';
 
 class MediaSelection  extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-    
+
     onDrop(files) {
-        broadcastNewImage(files, this.props.socket);
+        this.props.uploadFiles(files);
     }
 
     render() {
-        const { media } = this.props;
+        const { media, url, uploads } = this.props;
         if(!media) return null;
         return (
             <div className="media-row">
-                {media.map((img) => 
-                    <Image key={img.file} img={img} />
+                {media.map((medium) => 
+                    <Medium key={medium.file} {...medium} url={url} />
+                )}
+                {Object.keys(uploads).map((key) => 
+                    <Upload key={key} {...uploads[key]} />
                 )}
                 <Dropzone onDrop={(file) => this.onDrop(file)}>
                 </Dropzone>
@@ -30,9 +31,15 @@ class MediaSelection  extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        socket: state.socket.socket,
-        media: state.socket.clipboard.media
+        uploader: state.socket.uploader,
+        uploads: state.socket.uploads,
+        media: state.socket.clipboard.media,
+        url: state.socket.url,
     };
 }
-  
-export default connect(mapStateToProps)(MediaSelection);
+
+const mapDispatchToProps = {
+    uploadFiles: (files) => uploadFiles(files)
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MediaSelection);

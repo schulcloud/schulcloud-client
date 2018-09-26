@@ -3,7 +3,7 @@ const RebuildChangedPlugin = require('rebuild-changed-entrypoints-webpack-plugin
 
 module.exports = {
     cache: true,
-    devtool: 'inline-source-map',
+    devtool: 'eval-source-map',
     mode: 'development',
     module: {
         rules: [
@@ -22,7 +22,8 @@ module.exports = {
                     ],
                     plugins: [
                         "transform-react-jsx", 
-                        "babel-plugin-transform-class-properties", 
+                        "transform-class-properties", 
+                        "transform-decorators-legacy",
                         ["transform-object-rest-spread",
                             {
                             "useBuiltIns": true

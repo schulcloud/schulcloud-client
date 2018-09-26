@@ -1,40 +1,23 @@
-import SocketIOFileUpload from 'socketio-file-upload';
-
-function subscribeClipboardChanges(cb) {
+export function subscribeClipboardChanges(cb) {
     window.clipboardSocket.on('clipboardUpdate', image => cb(null, image));
 }
 
-function subscribeClipboardRefresh(cb) {
+export function subscribeClipboardRefresh(cb) {
   window.clipboardSocket.on('clipboardState', images => cb(null, images));
 }
 
-function subscribeClipboardPush(cb) {
+export function subscribeClipboardPush(cb) {
   window.clipboardSocket.on('pushToClipboard', media => cb(null, media));
 }
 
-function broadcastNewImage(images, socket) {
-  var uploader = new SocketIOFileUpload(socket);
-  uploader.submitFiles(images);
-}
-
-function refreshClipboard(images) {
+export function refreshClipboard(images) {
   window.clipboardSocket.emit("refreshClipboard");
 }
 
-function pushToClipboard(media) {
+export function pushToClipboard(media) {
   window.clipboardSocket.emit("pushToClipboard", media);
 }
 
-function onReconnect(cb) {
+export function onReconnect(cb) {
   window.clipboardSocket.on('reconnect', () => cb());
 }
-
-export { 
-  subscribeClipboardChanges,
-  subscribeClipboardRefresh,
-  subscribeClipboardPush,
-  broadcastNewImage,
-  refreshClipboard,
-  pushToClipboard,
-  onReconnect
-};

@@ -234,7 +234,12 @@ gulp.task('browser-sync', ['nodemon'], function() {
 		proxy: "http://localhost:3100",
         browser: false,
         port: 7000,
-        reloadOnRestart: false
+        reloadOnRestart: false,
+        socket:{
+          client: {
+            heartbeatTimeout: 60000
+          } 
+        }
 	});
 });
 
