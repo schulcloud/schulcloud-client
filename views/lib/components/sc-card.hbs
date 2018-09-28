@@ -37,7 +37,9 @@
     </div>
     <div class="sc-card-footer">
         <a href="{{url}}" rel="canonical">{{{link-text}}}</a>
-        <a href="{{url}}/clipboard" rel="canonical"><i class="fa fa-share-square-o"></i> Clipboard</a>
+        {{#if clipboard}}
+            <a href="{{url}}/clipboard" rel="canonical"><i class="fa fa-share-square-o"></i> Digitaler Klassenraum</a>
+        {{/if}}
         {{#if additionalInfoName}}
             <div class="additionalInfo" >
                 {{> (concat 'lib/sc-card_additionalInfo/' additionalInfoName) }}
