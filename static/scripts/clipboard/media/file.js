@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import FileIcon from '@material-ui/icons/InsertDriveFile';
+import FileIcon, { defaultStyles } from 'react-file-icon';
 
 const styles={
   icon:{
@@ -12,11 +12,14 @@ const styles={
 
 class File extends React.Component {
     render() {
-      const { classes } = this.props;
-      return <a href={this.props.src} className="media-container">
-                <FileIcon className={classes.icon + " media-icon"} fontSize="inherit"/>
-                <div className="media-info">{this.props.file}</div>
-                <div className="media-info">{this.props.sender}</div>
+      const { classes, file, sender, src } = this.props;
+      let ext = file.split(".").pop();
+      let iconStyle = defaultStyles[ext];
+
+      return <a href={src} className="media-container media-icon-container">
+                <FileIcon {...iconStyle} extension={ext}/>
+                <div className="media-info">{file}</div>
+                <div className="media-info">{sender}</div>
             </a>;
     }
 }

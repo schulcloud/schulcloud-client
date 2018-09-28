@@ -4,6 +4,15 @@
     display: flex;
     flex-direction: column;
 
+    button:focus{
+        outline: none;
+    }
+
+    a:focus, a:hover {
+        color: white;
+        text-decoration: none;
+    }
+
     .Resizer {
         background: #000;
         opacity: .2;
@@ -176,7 +185,7 @@
     }
 }
 
-.media-icon{
+.media-icon-container svg{
     padding: 20px;
     height: 100px;
     width: 100%;
