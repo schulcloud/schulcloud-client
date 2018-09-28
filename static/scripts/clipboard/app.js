@@ -43,7 +43,7 @@ class ClipboardApp extends React.Component {
             flexDirection: "column"
         };
         let fullscreenStyle = {
-            position:"absolute",
+            position:"fixed",
             top: 0,
             left: 0,
             height: "100%",
@@ -52,6 +52,7 @@ class ClipboardApp extends React.Component {
             flexDirection: "column"
         };
         let normalStyle = {
+            ...fullscreenStyle,
             position:"absolute"
         };
         const { connected } = this.props;

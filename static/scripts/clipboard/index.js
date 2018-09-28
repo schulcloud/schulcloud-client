@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import ClipboardApp from './app';
 import configureStore from './redux/store';
 import { Provider } from 'react-redux';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 
 $(document).ready(function () {
@@ -10,12 +11,22 @@ $(document).ready(function () {
 
     const store = configureStore();
 
+    const theme = createMuiTheme({
+        palette: {
+            type: 'dark',
+            primary: { main: '#b10438' },
+            secondary: { main: '#e2661d' },
+        },
+    });      
+
     ReactDOM.render(
         <Provider store={store}>
-            <ClipboardApp 
-                backendUrl={appDiv.getAttribute('data-backend-url')}  
-                courseId={appDiv.getAttribute('data-course-id')} 
-            />
+            <MuiThemeProvider theme={theme}>
+                <ClipboardApp 
+                    backendUrl={appDiv.getAttribute('data-backend-url')}  
+                    courseId={appDiv.getAttribute('data-course-id')} 
+                />
+            </MuiThemeProvider>
         </Provider>,
         appDiv
     );

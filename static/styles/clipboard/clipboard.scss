@@ -1,8 +1,6 @@
 .clipboard-app {
     background-color: #EEE;
     width: 100%;
-    min-height: calc(100vh - 200px);
-    max-height: calc(100vh - 200px);
     display: flex;
     flex-direction: column;
 
@@ -54,10 +52,6 @@
     }
     .Resizer.disabled:hover {
       border-color: transparent;
-    }
-
-    .app-bar {
-        background-color: $primaryColor;
     }
 }
 

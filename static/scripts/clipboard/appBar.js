@@ -25,9 +25,9 @@ const styles = {
     },
     flexBuffer: {
       flex: 1
-    }
-  };
-  
+    },
+};
+
 class MenuAppBar extends React.Component {
 
   state = {
@@ -65,7 +65,7 @@ class MenuAppBar extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar className="app-bar">
-            <Typography variant="title" color="inherit" className={classes.flex}>
+            <Typography variant="title">
               Digitaler Klassenraum
             </Typography>
             <div className={classes.flexBuffer}> </div>
