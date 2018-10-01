@@ -59,6 +59,7 @@
     "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.4.1",
     "react-dropzone": "^4.3.0",
+    "react-fast-compare": "^2.0.2",
     "react-file-icon": "^0.2.0",
     "react-redux": "^5.0.7",
     "react-sortable-hoc": "^0.8.3",

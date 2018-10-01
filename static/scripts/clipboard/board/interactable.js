@@ -1,5 +1,5 @@
 import React, { Component, cloneElement } from 'react';
-import { findDOMNode } from 'react-dom';
+import { debounce } from '../helper';
 
 import Hammer from 'hammerjs';
 
@@ -31,8 +31,8 @@ export default class Interactable extends Component {
     componentDidUpdate() {
         if(this.props.position){
             this.displayImageScale = this.props.position.scale;
-            this.displayImageCurrentX = this.props.position.x;
-            this.displayImageCurrentY = this.props.position.y;
+            this.displayImageCurrentX = this.props.position.x*this.containerWidth;
+            this.displayImageCurrentY = this.props.position.y*this.containerHeight;
         }
         this.updateRange();
         this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageScale);  
@@ -94,7 +94,18 @@ export default class Interactable extends Component {
         this.displayImageCurrentX = this.clamp(this.displayImageCurrentX, this.rangeMinX, this.rangeMaxX);
         this.displayImageCurrentY = this.clamp(this.displayImageCurrentY, this.rangeMinY, this.rangeMaxY);
         
-        this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageScale);            
+        this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageScale);
+        this.sendUpdate();
+    }
+
+    sendUpdate() {
+        debounce(() => {
+            this.props.onUpdate({
+                x:this.displayImageCurrentX/this.containerWidth,
+                y:this.displayImageCurrentY/this.containerHeight, 
+                scale: this.displayImageCurrentScale
+            });
+        }, 1000, true)();
     }
 
 	render() {
@@ -165,11 +176,7 @@ export default class Interactable extends Component {
             this.displayImageScale = this.displayImageCurrentScale;
             this.displayImageX = this.displayImageCurrentX;
             this.displayImageY = this.displayImageCurrentY;
-            this.props.onUpdate({
-                x:this.displayImageCurrentX,
-                y:this.displayImageCurrentY, 
-                scale: this.displayImageCurrentScale
-            });
+            this.sendUpdate();
         });  
     }
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { subscribeClipboardChanges, subscribeClipboardRefresh, refreshClipboard, onReconnect } from './api';
 import { connect } from 'react-redux';
 import Board from './board';
 import MediaSelection from './mediaSelection';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
-import {uploadFiles} from './redux/socket-actions';
+import {uploadFiles} from '../redux/socket-actions';
 
 class DropzoneComponent extends React.Component {
     constructor() {
@@ -38,7 +38,7 @@ class DropzoneComponent extends React.Component {
             className="media-row"
             style={{}}
         >
-          {dropzoneActive || this.props.children}
+          {this.props.children}
           {dropzoneActive && <div className="drop-thumbnail dropping">
             Dateien hier ablegen!
           </div>}

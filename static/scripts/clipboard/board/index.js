@@ -5,7 +5,7 @@ import {
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { addToBoard, updateMediaOnBoard, removeMediaFromBoard } from '../redux/socket-actions';
-import {CLIPBOARD_COMPATIBLE} from '../media/mediaTypes';
+import {CLIPBOARD_COMPATIBLE} from '../mediaSelection/mediaTypes';
 import Media from './media';
 
 const collect = (connect, monitor) => ({
@@ -66,7 +66,7 @@ export default class Clipboard extends React.PureComponent {
     }
 
     render() {
-        const { connectDropTarget, board, url, classes } = this.props;
+        const { connectDropTarget, board, url, classes, removeMediaFromBoard, updateMediaOnBoard } = this.props;
         if(!connectDropTarget) return null;
         return (
             connectDropTarget(<div className={`clipboard ${classes.root}`}>

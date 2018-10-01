@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Medium from './media/medium.js';
-import Dropzone from './dropzone';
+import Medium from './medium.js';
+import Dropzone from './dropzone.js';
 
-class MediaSelection  extends React.Component {
+class MediaSelection extends React.Component {
 
     onDrop(files) {
         this.props.uploadFiles(files);

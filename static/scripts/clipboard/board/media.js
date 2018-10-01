@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import isEqual from 'react-fast-compare';
 
 const styles = {
     media: {
@@ -20,7 +21,12 @@ const styles = {
 };
 
 @withStyles(styles)
-export default class Media extends React.PureComponent {
+export default class Media extends React.Component {
+
+    shouldComponentUpdate(nextProps) {
+        return !isEqual(this.props, nextProps);
+    }
+
     render() {
         let {url, media, onUpdate, onRemove, classes} = this.props;
         return <div className={`${classes.media} ${classes.flexParent}`}>
@@ -44,7 +50,7 @@ export default class Media extends React.PureComponent {
                             position={media.position}
                             onUpdate={(pos) => {
                                 media.position = pos;
-                                onRemove(media);
+                                onUpdate(media);
                             }}
                         />
                     </div>

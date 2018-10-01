@@ -6,6 +6,7 @@ import { DragSource } from 'react-dnd';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import isEqual from 'react-fast-compare';
 
 const cardSource = {
     beginDrag: (props) => ({...props})
@@ -19,6 +20,10 @@ export default class Medium extends React.Component {
     state = {
         anchorEl: null,
     };
+
+    shouldComponentUpdate(nextProps) {
+        return !isEqual(this.props, nextProps);
+    }
 
     handleClick = event => {
         this.setState({ anchorEl: event.currentTarget });
