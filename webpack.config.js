@@ -1,36 +1,43 @@
-const webpack = require("webpack");
-const RebuildChangedPlugin = require('rebuild-changed-entrypoints-webpack-plugin');
-
+const path = require( 'path' );
 module.exports = {
-    cache: true,
-    devtool: 'eval-source-map',
+    devtool: 'cheap-module-eval-source-map',
     mode: 'development',
+    watch: true,
+    entry: {
+        clipboard: './static/scripts/clipboard/index.js',
+    },
     module: {
         rules: [
             // All files that end on .js or .jsx are transpilled by babel
             {
                 test: /\.(js|jsx)$/,
                 exclude: /(node_modules)/,
-                loader: 'babel-loader',
-                query: {
-                    presets: [
-                        ["env", {
-                            "targets": {
-                                "chrome": 52
-                            }
-                        }]
-                    ],
-                    plugins: [
-                        "transform-react-jsx", 
-                        "transform-class-properties", 
-                        "transform-decorators-legacy",
-                        ["transform-object-rest-spread",
-                            {
-                            "useBuiltIns": true
-                            }
-                        ],
-                    ]
-                },
+                use: [
+                    'thread-loader',
+                    {
+                        loader: 'babel-loader',
+                        query: {
+                            presets: [
+                                ["env", {
+                                    "targets": {
+                                        "chrome": 52
+                                    }
+                                }]
+                            ],
+                            plugins: [
+                                "transform-react-jsx", 
+                                "transform-class-properties", 
+                                "transform-decorators-legacy",
+                                ["transform-object-rest-spread",
+                                    {
+                                    "useBuiltIns": true
+                                    }
+                                ],
+                            ]
+                        },
+                    }
+                ]
+                
             },
             // moment needs to be globally exposed in order to work with fullcalendar
             {
@@ -48,6 +55,11 @@ module.exports = {
                     name: 'vendor-react',
                     chunks: 'all',
                 },
+                materialUi: {
+                    test: /[\\/]node_modules[\\/](@material-ui)[\\/]/,
+                    name: 'vendor-material-ui',
+                    chunks: 'all',
+                },
             }
         },
     },
@@ -58,13 +70,5 @@ module.exports = {
     output: {
         path: '/',
         filename: '[name].js'
-    },
-    plugins: [
-        new RebuildChangedPlugin({
-            cacheDirectory: __dirname,
-        }),
-        // By default, moment loads aaaall the locale files, which bloats the bundle size
-        // This plugin forces moment to only load the German locale
-        new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /de/),
-    ]
+    }
 };

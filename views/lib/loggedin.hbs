@@ -200,37 +200,39 @@
                     </ul>
                 </nav>
 
-                <section class="section-title">
-                    <div class="container-fluid">
-                        <div class="row" id="titlebar">
-                            <div class="col-sm-9">
-                                <div>
-                                    <h4 id="page-title">{{title}}</h4>
+                {{#if title}}
+                    <section class="section-title">
+                        <div class="container-fluid">
+                            <div class="row" id="titlebar">
+                                <div class="col-sm-9">
+                                    <div>
+                                        <h4 id="page-title">{{title}}</h4>
+                                    </div>
+                                    <div>
+                                        {{subtitle}}
+                                    </div>
                                 </div>
-                                <div>
-                                    {{subtitle}}
-                                </div>
+                                {{#if showSearch}}
+                                    <div id="searchBar" class="col-sm-3 hide-inline">
+                                        {{#unless liveSearch}}<form class="search-wrapper" action="{{#if searchLabel}}{{searchAction}}{{else}}/content/{{/if}}" method="get">{{/unless}}
+                                            <a class="mobile-search-toggle">
+                                                {{#unless liveSearch}}<i class="fa fa-search"></i>{{/unless}}
+                                            </a>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="{{#if liveSearch}}js-search{{/if}} form-control search-field {{searchClass}}" placeholder="{{#if searchLabel}}{{truncatePure searchLabel 21}}{{else}}Suche nach...{{/if}}" name="q" />
+                                                <span class="input-group-btn">
+                                                    <button type="submit" class="btn btn-secondary">
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        {{#unless liveSearch}}</form>{{/unless}}
+                                    </div>
+                                {{/if}}
                             </div>
-                            {{#if showSearch}}
-                                <div id="searchBar" class="col-sm-3 hide-inline">
-                                    {{#unless liveSearch}}<form class="search-wrapper" action="{{#if searchLabel}}{{searchAction}}{{else}}/content/{{/if}}" method="get">{{/unless}}
-                                        <a class="mobile-search-toggle">
-                                            {{#unless liveSearch}}<i class="fa fa-search"></i>{{/unless}}
-                                        </a>
-                                        <div class="input-group input-group-sm">
-                                            <input type="text" class="{{#if liveSearch}}js-search{{/if}} form-control search-field {{searchClass}}" placeholder="{{#if searchLabel}}{{truncatePure searchLabel 21}}{{else}}Suche nach...{{/if}}" name="q" />
-                                            <span class="input-group-btn">
-                                                <button type="submit" class="btn btn-secondary">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    {{#unless liveSearch}}</form>{{/unless}}
-                                </div>
-                            {{/if}}
                         </div>
-                    </div>
-                </section>
+                    </section>
+                {{/if}}
 
                 <p id="preferences" hidden>{{ json currentUser.preferences }}</p>
                 <p id="backendUrl" hidden>{{ backendUrl }}</p>

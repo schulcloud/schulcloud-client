@@ -26,6 +26,7 @@ const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync');
+const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const baseScripts = [
   './static/scripts/jquery/jquery.min.js',
@@ -39,8 +40,11 @@ const baseScripts = [
   './static/scripts/qrcode/kjua-0.1.1.min.js'
 ];
 
+const webpackScripts = ['./static/scripts/clipboard/**/*.js'];
+
 const nonBaseScripts = ['./static/scripts/**/*.js']
-  .concat(baseScripts.map(script => '!' + script));
+  .concat(baseScripts.map(script => '!' + script))
+  .concat(webpackScripts.map(script => '!' + script));
 //used by all gulp tasks instead of gulp.src(...)
 //plumber prevents pipes from stopping when errors occur
 //changed only passes on files that were modified since last time
@@ -120,7 +124,7 @@ gulp.task('fonts', () => {
 
 //compile/transpile JSX and ES6 to ES5 and minify scripts
 gulp.task('scripts', () => {
-  beginPipeAll(nonBaseScripts)
+  beginPipe(nonBaseScripts)
     .pipe(named(
       file => {
         // As a preparation for webpack stream: Transform nonBaseScripts paths
@@ -133,8 +137,23 @@ gulp.task('scripts', () => {
         return fileName;
       }
     ))
-    .pipe(webpackStream(webpackConfig, webpack))
+    .pipe(babel({
+      presets: [
+        ["es2015", {
+          "modules": false
+        }]
+      ],
+    }))
     .pipe(gulp.dest(`./build/${themeName()}/scripts`))
+    .pipe(browserSync.stream());
+  
+});
+
+gulp.task('webpack', () => {
+  gulp.src(webpackScripts)
+    .pipe(filelog())
+    .pipe(webpackStream(webpackConfig, webpack))
+    .pipe(gulp.dest(`./build/${themeName()}/webpacked/`))
     .pipe(browserSync.stream());
 });
 
@@ -211,7 +230,7 @@ gulp.task('clear', () => {
 
 //run all tasks, processing changed files
 gulp.task('build-all', ['images', 'other', 'styles', 'fonts', 'scripts', 'base-scripts',
-  'vendor-styles', 'vendor-scripts', 'vendor-assets'
+  'vendor-styles', 'vendor-scripts', 'vendor-assets', 'webpack'
 ]);
 
 gulp.task('build-theme-files', ['styles']);
@@ -225,18 +244,20 @@ gulp.task('watch', ['build-all'], () => {
     .on('change', browserSync.reload);
   gulp.watch(withTheme(nonBaseScripts), watchOptions, ['scripts']);
   
+  gulp.watch(`./build/${themeName()}/webpacked/*.*`, watchOptions)
+    .on('change', browserSync.reload);
 });
 
-gulp.task('watch-reload', ['watch', 'browser-sync']);
+gulp.task('watch-reload', ['watch', 'browser-sync', 'webpack']);
 
 gulp.task('browser-sync', ['nodemon'], function() {
 	browserSync.init(null, {
 		proxy: "http://localhost:3100",
-        browser: false,
+        open: false,
         port: 7000,
         reloadOnRestart: false,
         socket:{
-          client: {
+          clients: {
             heartbeatTimeout: 60000
           } 
         }
@@ -255,7 +276,7 @@ gulp.task('nodemon', function (cb) {
 			cb();
 			started = true; 
     } 
-    setTimeout(browserSync.reload, 2000); //server-start takes some time
+    setTimeout(browserSync.reload, 3000); //server-start takes some time
 	});
 });
 
