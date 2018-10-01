@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import MoreIcon from '@material-ui/icons/MoreVert';       
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import LinkIcon from '@material-ui/icons/Link';
@@ -75,8 +76,12 @@ class MenuAppBar extends React.Component {
             <IconButton onClick={this.props.onToggleFullscreen} >
               <CloseIcon />
             </IconButton>
+            <IconButton onClick={this.props.onToggleFullscreen} >
+              <MoreIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
+
         <Dialog onClose={this.closeLinkDialog} open={linkDialogOpen}>
           <DialogTitle id="simple-dialog-title">Link teilen</DialogTitle>
           <DialogContent>

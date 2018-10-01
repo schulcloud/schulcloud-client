@@ -12,7 +12,7 @@ export const socketEmit = store => next => action => {
         let uploader = store.getState().socket.uploader;
         (action.payload || []).forEach((file) => {
             if(file.type && file.type.indexOf("image/") >= 0) {
-                store.dispatch(uploadProgress(file, 0));
+                store.dispatch(uploadProgress(file, 0, undefined, true));
                 new ImageCompressor(file, {
                     quality: .8,
                     maxWidth: 1920,

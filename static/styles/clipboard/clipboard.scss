@@ -71,24 +71,6 @@
 }
 
 .clipboard {
-    background: #FFF url(/images/clipboard/background.jpg) no-repeat center center fixed;
-    background-size: cover;
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-
-    .clipboard-media {
-        flex: 1;
-        position: relative;
-
-        .delete-button {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            opacity: 0.5;
-        }
-    }
 
     .clipboard-image {
         object-fit: contain;
@@ -156,7 +138,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     padding: 10px;
-    align-content: flex-start;
+    align-items: flex-start;
 }
 
 .media-container{
@@ -189,7 +171,6 @@
     padding: 20px;
     height: 100px;
     width: 100%;
-    margin-bottom: 5px;
 }
 
 .media-picture{

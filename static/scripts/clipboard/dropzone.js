@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
+import {uploadFiles} from './redux/socket-actions';
 
 class DropzoneComponent extends React.Component {
     constructor() {
@@ -10,7 +12,7 @@ class DropzoneComponent extends React.Component {
     }
   
     onDrop(files) {
-      this.props.onDrop(files);
+      this.props.uploadFiles(files);
       this.setState({dropzoneActive: false});
     }
 
@@ -33,18 +35,20 @@ class DropzoneComponent extends React.Component {
             onDrop={this.onDrop.bind(this)}
             onDragEnter={this.onDragEnter.bind(this)}
             onDragLeave={this.onDragLeave.bind(this)}
+            className="media-row"
             style={{}}
         >
-          {dropzoneActive || <div className="drop-thumbnail">
-            <i className="fa fa-2x fa-share-square-o icon" aria-hidden="true"></i>
-            Datei hinzufügen oder ablegen
-          </div>}
+          {dropzoneActive || this.props.children}
           {dropzoneActive && <div className="drop-thumbnail dropping">
-            Ja genau hier!
+            Dateien hier ablegen!
           </div>}
         </Dropzone>
       );
     }
   }
 
-  export default DropzoneComponent;
+const mapDispatchToProps = {
+    uploadFiles: (files) => uploadFiles(files)
+};
+
+export default connect(null, mapDispatchToProps)(DropzoneComponent);

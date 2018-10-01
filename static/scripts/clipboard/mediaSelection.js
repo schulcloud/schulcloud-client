@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Medium from './media/medium.js';
-import Upload from './media/upload.js';
 import Dropzone from './dropzone';
-import {uploadFiles} from './redux/socket-actions';
 
 class MediaSelection  extends React.Component {
 
@@ -15,16 +13,14 @@ class MediaSelection  extends React.Component {
         const { media, url, uploads } = this.props;
         if(!media) return null;
         return (
-            <div className="media-row">
+            <Dropzone>
                 {media.map((medium) => 
                     <Medium key={medium.file} {...medium} url={url} />
                 )}
                 {Object.keys(uploads).map((key) => 
-                    <Upload key={key} {...uploads[key]} />
+                    <Medium key={key} {...uploads[key]} />
                 )}
-                <Dropzone onDrop={(file) => this.onDrop(file)}>
-                </Dropzone>
-            </div>
+            </Dropzone>
             );
     }
 }
@@ -38,8 +34,4 @@ function mapStateToProps(state) {
     };
 }
 
-const mapDispatchToProps = {
-    uploadFiles: (files) => uploadFiles(files)
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MediaSelection);
+export default connect(mapStateToProps)(MediaSelection);

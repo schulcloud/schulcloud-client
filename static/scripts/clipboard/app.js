@@ -1,7 +1,7 @@
 import React from 'react';
 import { subscribeClipboardChanges, subscribeClipboardRefresh, refreshClipboard, onReconnect } from './api';
 import { connect } from 'react-redux';
-import Clipboard from './clipboard';
+import Board from './board';
 import MediaSelection from './mediaSelection';
 import AppBar from './appBar';
 import withDragDropContext from './withDragDropContext';
@@ -61,7 +61,7 @@ class ClipboardApp extends React.Component {
                 <AppBar onToggleFullscreen={this.toggleFullscreen}  connected={connected}/>
                 <div style={{position: 'relative', height:'100%'}}>
                     <SplitPane split="horizontal" defaultSize={"80%"}>
-                        <Clipboard />
+                        <Board />
                         <MediaSelection />
                     </SplitPane>
                 </div>

@@ -38,7 +38,15 @@ export default function reducer(state = initialState, action = {}) {
 
     case UPLOAD_PROGRESS: {
       let uploads = {...state.uploads};
-      uploads[action.name] = action;
+      uploads[action.name] = {
+        file: action.file.name,
+        sender: action.convert ? "Konvertieren" : "Hochladen",
+        progress: action.progress,
+        type: {
+          mime: action.file.type
+        },
+        src: action.file.preview,
+      };
       if(action.progress === 100) {
         delete uploads[action.name];
       }
@@ -178,12 +186,13 @@ function socketUploaderInit(uploader) {
   };
 }
 
-export function uploadProgress(file, progress, error) {
+export function uploadProgress(file, progress, error, convert) {
   return {
     type: UPLOAD_PROGRESS,
     file,
     name: file.name,
     progress,
-    error
+    error,
+    convert
   };
 }
