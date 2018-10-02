@@ -5,7 +5,6 @@ import MediaSelection from './mediaSelection';
 import AppBar from './appBar';
 import withDragDropContext from './withDragDropContext';
 import { initializeSocket } from './redux/socket-reducer.js';
-import SplitPane from "react-split-pane";
 
 class ClipboardApp extends React.Component {
     constructor(props) {
@@ -58,11 +57,9 @@ class ClipboardApp extends React.Component {
         return (
             <div style={fullscreen ? fullscreenStyle : normalStyle}>    
                 <AppBar onToggleFullscreen={this.toggleFullscreen}  connected={connected}/>
-                <div style={{position: 'relative', height:'100%'}}>
-                    <SplitPane split="horizontal" defaultSize={"80%"}>
-                        <Board />
-                        <MediaSelection />
-                    </SplitPane>
+                <div style={{position: 'relative', height:'100%', display:'flex', flexDirection:'column'}}>
+                    <Board />
+                    <MediaSelection />
                 </div>
             </div>
         );

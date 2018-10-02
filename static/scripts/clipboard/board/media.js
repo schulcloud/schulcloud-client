@@ -1,7 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Interactable from './interactable';
+import Image from './image';
+import File from '../mediaSelection/file';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -29,6 +30,13 @@ export default class Media extends React.Component {
 
     render() {
         let {url, media, onUpdate, onRemove, classes} = this.props;
+
+        let mimeType = ((media.type || {}).mime || "").split('/')[0];
+        
+        const Medium = {
+            'image': Image
+        }[mimeType] || File;
+
         return <div className={`${classes.media} ${classes.flexParent}`}>
                     <AppBar color="secondary" position="static">
                         <Toolbar variant="dense">
@@ -45,13 +53,12 @@ export default class Media extends React.Component {
                         </Toolbar>
                     </AppBar>
                     <div className={classes.media}>
-                        <Interactable 
+                    
+                        <Medium 
                             src={url + '/clipboard/uploads/' + media.file}
+                            {...media}
+                            onClick={() => window.open(url + '/clipboard/uploads/' + media.file)}
                             position={media.position}
-                            onUpdate={(pos) => {
-                                media.position = pos;
-                                onUpdate(media);
-                            }}
                         />
                     </div>
                 </div>;

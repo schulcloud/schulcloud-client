@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-	DropTarget
-} from 'react-dnd';
+import { DropTarget } from 'react-dnd';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { addToBoard, updateMediaOnBoard, removeMediaFromBoard } from '../redux/socket-actions';
@@ -53,7 +51,7 @@ export default class Clipboard extends React.PureComponent {
         super(props);
     
         drop.drop = (droppedProps, monitor) => {
-            props.addToBoard(monitor.getItem());
+            props.addToBoard(monitor.getItem().medium);
         };
     }
 

@@ -6,7 +6,7 @@ export default function File(props) {
   let ext = file.split(".").pop() || "";
   ext = ext.toLowerCase();
   let iconStyle = defaultStyles[ext];
-  return  <div className="media-icon-container">
+  return  <div className="media-icon-container" onClick={props.onClick}>
             <FileIcon {...iconStyle} extension={ext}/>
           </div>;
 }
