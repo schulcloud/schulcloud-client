@@ -57,8 +57,11 @@ export default class Media extends React.Component {
                         <Medium 
                             src={url + '/clipboard/uploads/' + media.file}
                             {...media}
+                            onUpdate={(style) => {
+                                media.style = style;
+                                onUpdate(media);
+                            }}
                             onClick={() => window.open(url + '/clipboard/uploads/' + media.file)}
-                            position={media.position}
                         />
                     </div>
                 </div>;

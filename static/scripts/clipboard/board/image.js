@@ -29,10 +29,11 @@ export default class Interactable extends Component {
     displayImageCurrentScale = 1;
 
     componentDidUpdate() {
-        if(this.props.position){
-            this.displayImageScale = this.props.position.scale;
-            this.displayImageCurrentX = this.props.position.x*this.containerWidth;
-            this.displayImageCurrentY = this.props.position.y*this.containerHeight;
+        if(this.props.style){
+            let style = this.props.style;
+            this.displayImageScale = style.scale;
+            this.displayImageCurrentX = style.x*this.containerWidth;
+            this.displayImageCurrentY = style.y*this.containerHeight;
         }
         this.updateRange();
         this.updateDisplayImage(this.displayImageCurrentX, this.displayImageCurrentY, this.displayImageScale);  
