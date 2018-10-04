@@ -266,14 +266,23 @@ window.addEventListener("load", () => {
         startIntro();
         localStorage.setItem('Tutorial', false);
     }
-    if ('serviceWorker' in navigator) { 
-        // enable sw for half of users only
-        let userId = document.getElementById('sw-userid').value;
-        let lChar = userId.substr(userId.length - 1);
-        let swEnabled = parseInt(lChar, 16) % 2;
-        if(swEnabled) {
-            navigator.serviceWorker.register('/sw.js');
-        }
+    if ('serviceWorker' in navigator){
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                if(registration.active && registration.active.scriptURL.endsWith('/sw.js')){
+                    registration.unregister();
+                    caches.keys().then(function(cacheNames) {
+                        return Promise.all(
+                          cacheNames.filter(function(cacheName) {
+                            return cacheName.startsWith('workbox');
+                          }).map(function(cacheName) {
+                            return caches.delete(cacheName);
+                          })
+                        );
+                    });
+                }
+            } 
+        });
     }
 }); 
 
