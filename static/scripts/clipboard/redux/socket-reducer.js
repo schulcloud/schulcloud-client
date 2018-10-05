@@ -9,6 +9,7 @@ const SOCKET_CONNECTION_SUCCESS = 'SOCKET_CONNECTION_SUCCESS';
 const SOCKET_CONNECTION_ERROR = 'SOCKET_CONNECTION_ERROR';
 const SOCKET_CONNECTION_CLOSED = 'SOCKET_CONNECTION_CLOSED';
 const CLIPBOARD_UPDATE = 'CLIPBOARD_UPDATE';
+const CLIPBOARD_INIT = 'CLIPBOARD_INIT';
 
 const initialState = {
   connected: false,
@@ -81,12 +82,20 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         sending: true
       };
-
-    case CLIPBOARD_UPDATE:
+    case CLIPBOARD_INIT:
       return {
         ...state,
         sending: false,
         clipboard: action.payload
+      };
+    case CLIPBOARD_UPDATE:
+      return {
+        ...state,
+        sending: false,
+        clipboard: {
+          ...state.clipboard,
+          ...action.payload
+        }
       };
     default:
       return state;
@@ -125,7 +134,11 @@ export function initializeSocket(url, namespace, settings = {}) {
     });
 
     socket.on("clipboardState", function (state) {
-      dispatch(updateClipboardState(state));
+      dispatch(setClipboardState(state));
+    });
+
+    socket.on("clipboardStateUpdate", function (update) {
+      dispatch(updateClipboardState(update));
     });
 
     function initUploader() {
@@ -172,10 +185,17 @@ function socketConnectionClosed() {
   };
 }
 
-function updateClipboardState(state) {
+function setClipboardState(state) {
+  return {
+    type: CLIPBOARD_INIT,
+    payload: state,
+  };
+}
+
+function updateClipboardState(update) {
   return {
     type: CLIPBOARD_UPDATE,
-    payload: state,
+    payload: update,
   };
 }
 
