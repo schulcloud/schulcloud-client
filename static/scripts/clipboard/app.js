@@ -35,11 +35,6 @@ class ClipboardApp extends React.Component {
 
     render() {
         let { fullscreen } = this.state;
-        let flex = {
-            flex: 1,
-            display: "flex",
-            flexDirection: "column"
-        };
         let fullscreenStyle = {
             position:"fixed",
             top: 0,

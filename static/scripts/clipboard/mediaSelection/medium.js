@@ -66,7 +66,7 @@ export default class Medium extends React.Component {
     }
 
     render() {
-        const { medium, url, onClick, isDragging, connectDragSource } = this.props;
+        const { medium, url, onClick, isDragging, connectDragSource, style } = this.props;
         const { type, file, sender, src, progress } = medium;
         const { anchorEl } = this.state;
         const imageSrc = src || url + '/clipboard/uploads/' + file;
@@ -77,7 +77,7 @@ export default class Medium extends React.Component {
         }[mimeType] || File;
 
         return connectDragSource(
-            <div>
+            <div style={style}>
                 <div className="media-container draggable"
                     style={{ opacity: isDragging ? 0.5 : 1 }} 
                     onClick={this.handleClick}>

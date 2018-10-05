@@ -53,7 +53,7 @@ export default class Media extends React.Component {
         if(!this.state.fullscreen) {
             this.divRef.current.webkitRequestFullScreen();
             document.onwebkitfullscreenchange = () => {
-                if(document.webkitFullscreenEnabled) {
+                if(!document.webkitFullscreenElement) {
                     this.setState({fullscreen: false});
                 }
             };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Medium from './medium.js';
-import Dropzone from './dropzone.js';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
