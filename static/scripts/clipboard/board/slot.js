@@ -69,8 +69,11 @@ export default class Slot extends React.PureComponent {
 
     static getDerivedStateFromProps(props, state) {
         if(!props.isOver && state.hoverMedia) {
-            state.hoverMedia = undefined;
+            if(props.canDrop || state.media !== props.media) {
+                state.hoverMedia = undefined;
+            }
         }
+        state.media = props.media;
         return state;
     }
 
