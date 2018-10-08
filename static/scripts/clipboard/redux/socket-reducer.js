@@ -16,7 +16,11 @@ const initialState = {
   readyState: null,
   socket: null,
   uploader: null,
-  clipboard:{},
+  clipboard:{
+    board:{},
+    media:[],
+    users:[]
+  },
   uploads:{}
 };
 
@@ -74,7 +78,6 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         connected: false,
-        socket: null,
       };
 
     case SOCKET_SEND:

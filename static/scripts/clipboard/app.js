@@ -48,12 +48,12 @@ class ClipboardApp extends React.Component {
             ...fullscreenStyle,
             position:"absolute"
         };
-        const { connected } = this.props;
+        const { connected, layout } = this.props;
         return (
             <div style={fullscreen ? fullscreenStyle : normalStyle}>    
-                <AppBar onToggleFullscreen={this.toggleFullscreen}  connected={connected}/>
+                <AppBar onToggleFullscreen={this.toggleFullscreen} fullscreen={fullscreen} connected={connected}/>
                 <div style={{position: 'relative', height:'100%', display:'flex', flexDirection:'column'}}>
-                    <Board />
+                    <Board layout={layout} />
                     <MediaSelection />
                 </div>
             </div>
@@ -64,6 +64,7 @@ class ClipboardApp extends React.Component {
 function mapStateToProps(state) {
     return {
         connected: state.socket.connected,
+        layout: state.socket.clipboard.board.layout,
         clipboard: state.socket.clipboard
     };
 }

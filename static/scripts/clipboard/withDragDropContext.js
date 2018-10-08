@@ -16,12 +16,11 @@ const HTML5toTouch = {
       {
         backend: TouchBackend({
             scrollAngleRanges: [
-                { start: 300 }, 
-                { end: 60 }, 
-                { start: 120, end: 240 }
+                { start: 135 }, 
+                { end: 45 }, 
             ]
         }), // Note that you can call your backends with options
-        preview: false,
+        preview: true,
         transition: TouchTransition
       }
     ]

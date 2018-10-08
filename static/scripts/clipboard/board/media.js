@@ -45,7 +45,10 @@ export default class Media extends React.Component {
     }
 
     onRemove = () => {
-        this.props.onRemove(this.props.media);
+        this.props.onUpdate({
+            slot: this.props.slotId, 
+            media: null
+        });
     }
     
     fullscreenToggle = () => {
@@ -63,20 +66,20 @@ export default class Media extends React.Component {
     }
 
     render() {
-        let {url, media, onUpdate, classes} = this.props;
+        let {url, media, onUpdate, classes, className, slotId, canDrop, isOver} = this.props;
         let {fullscreen} = this.state;
 
         let mimeType = ((media.type || {}).mime || "").split('/')[0];
         
         const Medium = {
-            'image': Image
+            'image': Image,
         }[mimeType] || File;
 
         return <div 
-                    className={`${classes.media} ${classes.flexParent} ` + (fullscreen ? classes.fullscreen: '')}
+                    className={`${classes.media} ${classes.flexParent} ${className} ` + (fullscreen ? classes.fullscreen: '')}
                     ref={this.divRef}
                 >
-                    <AppBar color="secondary" position="static">
+                    <AppBar color={["secondary", "green", "primary"][canDrop + isOver]} position="static">
                         <Toolbar variant="dense">
                             <Typography variant="subheading" color="inherit">
                                 {media.file} | {media.sender}
@@ -107,7 +110,10 @@ export default class Media extends React.Component {
                             {...media}
                             onUpdate={(style) => {
                                 media.style = style;
-                                onUpdate(media);
+                                onUpdate({
+                                    slot: slotId,
+                                    media
+                                });
                             }}
                             onClick={() => window.open(url + '/clipboard/uploads/' + media.file)}
                         />
