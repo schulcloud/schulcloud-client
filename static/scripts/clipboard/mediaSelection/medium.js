@@ -8,7 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import isEqual from 'react-fast-compare';
-import { addToBoard } from '../redux/socket-actions';
+import { setMediaOnBoard } from '../redux/socket-actions';
 
 const cardSource = {
     beginDrag: (props) => ({...props})
@@ -16,7 +16,7 @@ const cardSource = {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addToBoard: (media) => dispatch(addToBoard(media)),
+        setMediaOnBoard: (media) => dispatch(setMediaOnBoard(media)),
     };
 };
 
@@ -49,9 +49,9 @@ export default class Medium extends React.Component {
         event.stopPropagation();
     };
 
-    addToBoard = (event) => {
+    setMediaOnBoard = (event) => {
         this.handleClose(event);
-        this.props.addToBoard(this.props.medium);
+        this.props.setMediaOnBoard({media: this.props.medium});
     }
 
     openWindow = (event) => {
@@ -93,7 +93,7 @@ export default class Medium extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={this.addToBoard}>Auf der Tafel anzeigen</MenuItem>
+                    <MenuItem onClick={this.setMediaOnBoard}>Auf der Tafel anzeigen</MenuItem>
                     <MenuItem onClick={this.openWindow}>Im neuen Fenster öffnen</MenuItem>
                     <MenuItem onClick={this.startDownload}>Herunterladen</MenuItem>
                 </Menu>

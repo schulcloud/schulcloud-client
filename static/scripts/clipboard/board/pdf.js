@@ -1,39 +1,29 @@
 import React from 'react';
-import { Document, Page, setOptions } from 'react-pdf';
+import { withStyles } from '@material-ui/core/styles';
+import PDFObject from 'pdfobject';
 
-setOptions({
-    workerSrc: "/webpacked/pdf.worker.js"
-});
- 
+const styles = {
+    root: {
+        width: '100%',
+        height: '100%',
+    }
+};
+
+@withStyles(styles)
 export default class PdfViewer extends React.Component {
-    state = {
-        numPages: null,
-        pageNumber: 1,
-      }
+
+    constructor(props) {
+        super(props);
+        this.myRef = React.createRef();
+    }
+
+    componentDidMount() {
+        const { src } = this.props;
+        PDFObject.embed(src, this.myRef.current);
+    }
     
-      onDocumentLoadSuccess = ({ numPages }) => {
-        this.setState({ numPages });
-      }
-    
-      render() {
-        const { pageNumber, numPages } = this.state;
-    
-        return (
-          <div>
-            <Document
-                file={{
-                    url: this.props.src,
-                    withCredentials: true
-                }}
-                onLoadSuccess={this.onDocumentLoadSuccess}
-            >
-                <Page
-                    renderMode={"svg"} 
-                    pageNumber={pageNumber}
-                />
-            </Document>
-            <p>Page {pageNumber} of {numPages}</p>
-          </div>
-        );
-      }
+    render() {
+        const { classes, containerId } = this.props;
+        return <div className={classes.root} ref={this.myRef} />;
+    }
 }

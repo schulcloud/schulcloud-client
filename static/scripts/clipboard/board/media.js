@@ -82,7 +82,7 @@ export default class Media extends React.Component {
                     className={`${classes.media} ${classes.flexParent} ${className} ` + (fullscreen ? classes.fullscreen: '')}
                     ref={this.divRef}
                 >
-                    <AppBar color={["secondary", "accent", "primary"][canDrop + isOver]} position="static">
+                    <AppBar color={["secondary", "default", "primary"][canDrop + isOver]} position="static">
                         <Toolbar variant="dense">
                             <Typography variant="subheading" color="inherit">
                                 {media.file} | {media.sender}
@@ -118,6 +118,7 @@ export default class Media extends React.Component {
                                     media
                                 });
                             }}
+                            containerId={slotId}
                             onClick={() => window.open(url + '/clipboard/uploads/' + media.file)}
                         />
                     </div>

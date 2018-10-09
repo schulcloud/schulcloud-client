@@ -5,7 +5,6 @@ module.exports = {
     watch: true,
     entry: {
         clipboard: './static/scripts/clipboard/index.js',
-        'pdf.worker': 'pdfjs-dist/build/pdf.worker.entry'
     },
     module: {
         rules: [
