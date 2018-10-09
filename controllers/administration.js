@@ -1478,8 +1478,8 @@ const classFilterSettings = function (years) {
         },
         {
             type: "select",
-            title: 'Jahrgang',
-            displayTemplate: 'Jahrgang: %1',
+            title: 'Schuljahr',
+            displayTemplate: 'Schuljahr: %1',
             property: 'year',
             multiple: true,
             expanded: true,
