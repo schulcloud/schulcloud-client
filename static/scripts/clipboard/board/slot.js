@@ -98,6 +98,7 @@ export default class Slot extends React.PureComponent {
             >
                 {medium && <Media
                     media={medium}
+                    preview={!!hoverMedia}
                     canDrop={canDrop}
                     isOver={isOver}
                     key={slotId}

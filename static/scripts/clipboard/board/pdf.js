@@ -18,12 +18,23 @@ export default class PdfViewer extends React.Component {
     }
 
     componentDidMount() {
-        const { src } = this.props;
-        PDFObject.embed(src, this.myRef.current);
+        const { src, preview } = this.props;
+        if(!preview) {
+            PDFObject.embed(src, this.myRef.current);
+            this.pdfMounted = true;
+        }
     }
-    
+
+    componentDidUpdate() {
+        const { src, preview } = this.props;
+        if(!preview && !this.pdfMounted) {
+            PDFObject.embed(src, this.myRef.current);
+            this.pdfMounted = true;
+        }
+    }
+
     render() {
-        const { classes, containerId } = this.props;
+        const { classes, preview } = this.props;
         return <div className={classes.root} ref={this.myRef} />;
     }
 }

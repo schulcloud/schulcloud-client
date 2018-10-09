@@ -5,6 +5,8 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import Image from './image';
 import PDF from './pdf';
+import YouTube from './youtube';
+import Link from './link';
 import File from '../mediaSelection/file';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,6 +19,7 @@ const styles = {
         flex: 1,
         position: 'relative',
         backgroundColor: "rgba(0,0,0,0.6)",
+        overflow: "hidden"
     },
     fullscreen: {
         position: 'fixed',
@@ -67,7 +70,7 @@ export default class Media extends React.Component {
     }
 
     render() {
-        let {url, media, onUpdate, classes, className, slotId, canDrop, isOver} = this.props;
+        let {url, media, onUpdate, classes, className, slotId, canDrop, isOver, preview} = this.props;
         let {fullscreen} = this.state;
 
         let mime = (media.type || {}).mime || "";
@@ -75,8 +78,12 @@ export default class Media extends React.Component {
         let Medium = File;
         if(mime.indexOf("image") >= 0) {
             Medium = Image;
+        } else if(mime.indexOf("link") >= 0) {
+            Medium = Link;
         } else if (mime.indexOf("pdf") >= 0) {
             Medium = PDF;
+        } else if (mime.indexOf("youtube") >= 0) {
+            Medium = YouTube;
         }
         return <div 
                     className={`${classes.media} ${classes.flexParent} ${className} ` + (fullscreen ? classes.fullscreen: '')}
@@ -85,7 +92,7 @@ export default class Media extends React.Component {
                     <AppBar color={["secondary", "default", "primary"][canDrop + isOver]} position="static">
                         <Toolbar variant="dense">
                             <Typography variant="subheading" color="inherit">
-                                {media.file} | {media.sender}
+                                {media.name} | {media.sender}
                             </Typography>
                             <div style={{flex:1}} />
                             <IconButton 
@@ -110,15 +117,17 @@ export default class Media extends React.Component {
                     <div className={classes.media}>
                         <Medium 
                             src={url + '/clipboard/uploads/' + media.file}
+                            preview={preview}
                             {...media}
-                            onUpdate={(style) => {
-                                media.style = style;
+                            onUpdate={(change) => {
                                 onUpdate({
                                     slot: slotId,
-                                    media
+                                    media: {
+                                        ...media,
+                                        ...change
+                                    }
                                 });
                             }}
-                            containerId={slotId}
                             onClick={() => window.open(url + '/clipboard/uploads/' + media.file)}
                         />
                     </div>

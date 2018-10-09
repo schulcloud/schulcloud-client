@@ -99,15 +99,17 @@ export default class Interactable extends Component {
         this.sendUpdate();
     }
 
-    sendUpdate() {
+    sendUpdate = 
         debounce(() => {
             this.props.onUpdate({
-                x:this.displayImageCurrentX/this.containerWidth,
-                y:this.displayImageCurrentY/this.containerHeight, 
-                scale: this.displayImageCurrentScale
+                style: {
+                    x:this.displayImageCurrentX/this.containerWidth,
+                    y:this.displayImageCurrentY/this.containerHeight, 
+                    scale: this.displayImageCurrentScale
+                }
             });
-        }, 1000, true)();
-    }
+        }, 1000);
+    
 
 	render() {
         return <div 

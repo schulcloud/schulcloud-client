@@ -35,9 +35,16 @@ module.exports = {
                                 ],
                             ]
                         },
-                    }
+                    },
                 ]
-                
+            },
+            {
+                test: /\.(jpe?g|png|gif)$/i,
+                exclude: /(node_modules)/,
+                use: [
+                  'url-loader?limit=10000',
+                  'img-loader'
+                ]
             },
             // moment needs to be globally exposed in order to work with fullcalendar
             {
@@ -69,6 +76,7 @@ module.exports = {
     },
     output: {
         path: '/',
+        publicPath:"/webpacked/",
         filename: '[name].js',
     }
 };

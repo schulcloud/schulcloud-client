@@ -2,10 +2,11 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import layoutOptions from '../layoutOptions';
 import Slot from './slot';
+import background from './background.jpg';
 
 const styles = {
     root:{
-        background: `#FFF url(/images/clipboard/background.jpg) no-repeat center center fixed`,
+        background: `#FFF url(${background}) no-repeat center center fixed`,
         backgroundSize: "cover",
         width: "100%",
         flex: 1,

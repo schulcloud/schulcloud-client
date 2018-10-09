@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Image, {IMAGE} from './image';
+import YouTube, {YOUTUBE} from './youtube';
 import File, {FILE} from './file';
+import Link, {LINK} from './link';
 import {CLIPBOARD_COMPATIBLE} from './mediaTypes';
 import { DragSource } from 'react-dnd';
 import Menu from '@material-ui/core/Menu';
@@ -66,14 +68,16 @@ export default class Medium extends React.Component {
     }
 
     render() {
-        const { medium, url, onClick, isDragging, connectDragSource, style } = this.props;
-        const { type, file, sender, src, progress } = medium;
+        const { medium, url, isDragging, connectDragSource, style } = this.props;
+        const { type, file, sender, src, progress, name } = medium;
         const { anchorEl } = this.state;
         const imageSrc = src || url + '/clipboard/uploads/' + file;
         let mimeType = ((type || {}).mime || "").split('/')[0];
         
         const Thumbnail = {
-            [IMAGE]: Image
+            [IMAGE]: Image,
+            [LINK]: Link,
+            [YOUTUBE]: YouTube,
         }[mimeType] || File;
 
         return connectDragSource(
@@ -82,7 +86,7 @@ export default class Medium extends React.Component {
                     style={{ opacity: isDragging ? 0.5 : 1 }} 
                     onClick={this.handleClick}>
                     <Thumbnail {...medium} src={imageSrc} />
-                    <div className="media-info">{file}</div>
+                    <div className="media-info">{name}</div>
                     <div className="media-info">{sender}</div>
                     {progress !== undefined && 
                         <LinearProgress variant="determinate" value={progress} />

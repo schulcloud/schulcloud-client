@@ -10,16 +10,19 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Slide from '@material-ui/core/Slide';
+import Grow from '@material-ui/core/Grow';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
-import {uploadFiles} from '../redux/socket-actions';
+import {uploadFiles, addMedia} from '../redux/socket-actions';
 import UploadIcon from '@material-ui/icons/CloudUpload';
 import LinkIcon from '@material-ui/icons/Link';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
 import UpIcon from '@material-ui/icons/ArrowDropUp';
 import LinkDialog from './linkDialog.js';
 import {GroupDesk, TeacherDesk, StudentDesk} from '../icons';
+import { extractHostname, youtubeParse } from '../helper';
+import getYoutubeTitle from 'get-youtube-title';
 
 const styles = {
     root: {
@@ -29,6 +32,7 @@ const styles = {
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
+      background: 'white',
     },
     fab: {
       position: 'absolute',
@@ -53,7 +57,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    uploadFiles: (files) => uploadFiles(files)
+    uploadFiles: (files) => uploadFiles(files),
+    addMedia: (media) => addMedia(media)
 };
 
 @withStyles(styles)
@@ -102,10 +107,32 @@ export default class MediaSelection extends React.Component {
         this.closeMenu();
     }
 
-    linkDialogClose = (link) => {
+    linkDialogClose = (link, options) => {
         this.setState({linkDialog: false});
-        if(link) {
-            alert(link);
+        const youtubeId = youtubeParse(link);
+        if(youtubeId) {
+            getYoutubeTitle(youtubeId, (err, title) =>
+                this.props.addMedia({
+                    src: link,
+                    youtubeId,
+                    name: title,
+                    options,
+                    type: {
+                        ext: "youtube",
+                        mime: "youtube/" + youtubeId
+                    }
+                })
+            );
+        } else {
+            this.props.addMedia({
+                src: link,
+                name: extractHostname(link) + "-Link",
+                options,
+                type: {
+                    ext: "link",
+                    mime: "link/" + extractHostname(link)
+                }
+            });
         }
     }
 
@@ -135,14 +162,16 @@ export default class MediaSelection extends React.Component {
                             <Tab label="Tisch hinzustellen" icon={<AddIcon/>}/>
                         </Tabs>
                     </AppBar>
-                    <div className="media-row">
-                        {media.map((medium) => 
-                            <Medium key={medium.file} medium={medium} url={url} />
-                        )}
-                        {Object.keys(uploads).map((key) => 
-                            <Medium key={key} medium={uploads[key]} />
-                        )}
-                    </div>
+                    <Grow in={value===0} mountOnEnter unmountOnExit>
+                        <div className="media-row">
+                            {media.map((medium) => 
+                                <Medium key={medium.id} medium={medium} url={url} />
+                            )}
+                            {Object.keys(uploads).map((key) => 
+                                <Medium key={key} medium={uploads[key]} />
+                            )}
+                        </div>
+                    </Grow>
                     <Button variant="fab" className={classes.fab} color="secondary" onClick={this.openMenu}>
                         <AddIcon/>
                     </Button>
