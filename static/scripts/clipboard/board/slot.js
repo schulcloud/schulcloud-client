@@ -27,10 +27,10 @@ const styles = {
         justifyContent: 'center'
     },
     isOver:{
-        background: "green"
+        background: "rgba(20,200,20,0.5)"
     },
     canDrop: {
-        background: "yellow"
+        background: "rgba(200,200,20,0.5)"
     }
 };
 

@@ -4,6 +4,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import Image from './image';
+import PDF from './pdf';
 import File from '../mediaSelection/file';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -69,12 +70,14 @@ export default class Media extends React.Component {
         let {url, media, onUpdate, classes, className, slotId, canDrop, isOver} = this.props;
         let {fullscreen} = this.state;
 
-        let mimeType = ((media.type || {}).mime || "").split('/')[0];
+        let mime = (media.type || {}).mime || "";
         
-        const Medium = {
-            'image': Image,
-        }[mimeType] || File;
-
+        let Medium = File;
+        if(mime.indexOf("image") >= 0) {
+            Medium = Image;
+        } else if (mime.indexOf("pdf") >= 0) {
+            Medium = PDF;
+        }
         return <div 
                     className={`${classes.media} ${classes.flexParent} ${className} ` + (fullscreen ? classes.fullscreen: '')}
                     ref={this.divRef}
