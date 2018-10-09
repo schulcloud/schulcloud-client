@@ -1,0 +1,25 @@
+i.icon{
+    // some general styling
+    background-color: #fff;
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+}
+
+i.icon-{
+    &sc{
+        mask-image: url(../../images/logo/cloud-transparent-mono.svg);
+    }
+    &move{
+        mask-image: url(icon.svg);
+    }
+    &handle{
+        mask-image: url(icon.svg);
+    }
+    &well-done{
+        mask-image: url(icon.svg);
+    }
+}
