@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import YouTube from "react-youtube";
-import { relative } from 'path';
+import getYoutubeID from 'get-youtube-id';
 
 const styles = {
     root: {
@@ -26,8 +26,17 @@ const styles = {
 @withStyles(styles)
 export default class Link extends React.Component {
 
+    static accepts(medium) {
+        return medium 
+            && medium.src
+            && medium.type
+            && (medium.type + "").toLowerCase() === "link"
+            && getYoutubeID(medium.src);
+    }
+
     render() {
-        const { classes, youtubeId, preview } = this.props;
+        const { classes, preview, medium } = this.props;
+        const youtubeId = getYoutubeID(medium.src);
         if(!preview) {
             return <YouTube 
                         containerClassName = {classes.root}

@@ -75,11 +75,13 @@ export default class AddButton extends React.Component {
 
     linkDialogClose = (medium) => {
         this.setState({linkDialog: false});
-        this.props.addMedia({
-            deskType: this.props.deskType,
-            desk: this.props.desk,
-            medium
-        });
+        if(medium) {
+            this.props.addMedia({
+                deskType: this.props.deskType,
+                desk: this.props.desk,
+                medium
+            });
+        }
     }
 
     render() {

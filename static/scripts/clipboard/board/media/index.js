@@ -3,24 +3,16 @@ import { withStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
-import Image from './image';
-import PDF from './pdf';
-import YouTube from './youtube';
-import Link from './link';
-import File from '../mediaSelection/media/file';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import isEqual from 'react-fast-compare';
+import classNames from 'classnames';
+
+import Medium from './medium';
 
 const styles = {
-    media: {
-        flex: 1,
-        position: 'relative',
-        backgroundColor: "rgba(0,0,0,0.6)",
-        overflow: "hidden"
-    },
     fullscreen: {
         position: 'fixed',
         top:0,
@@ -32,6 +24,7 @@ const styles = {
     flexParent:{
         display: 'flex',
         flexDirection: 'column',
+        width: '100%',
     }
 };
 
@@ -69,24 +62,26 @@ export default class Media extends React.Component {
         }
     }
 
+    updateMedia = (change) => {
+        this.props.onUpdate({
+            slot: this.props.slotId,
+            media: {
+                ...this.props.media,
+                ...change
+            }
+        });
+    };
+
+    setActions = (actions) => {
+        this.setState({actions});
+    } 
+
     render() {
-        let {url, media, onUpdate, classes, className, slotId, canDrop, isOver, preview} = this.props;
+        let {url, media, classes, className, canDrop, isOver, preview} = this.props;
         let {fullscreen} = this.state;
 
-        let mime = (media.type || {}).mime || "";
-        
-        let Medium = File;
-        if(mime.indexOf("image") >= 0) {
-            Medium = Image;
-        } else if(mime.indexOf("link") >= 0) {
-            Medium = Link;
-        } else if (mime.indexOf("pdf") >= 0) {
-            Medium = PDF;
-        } else if (mime.indexOf("youtube") >= 0) {
-            Medium = YouTube;
-        }
         return <div 
-                    className={`${classes.media} ${classes.flexParent} ${className} ` + (fullscreen ? classes.fullscreen: '')}
+                    className={classNames(classes.media, classes.flexParent, className, {[classes.fullscreen]: fullscreen})}
                     ref={this.divRef}
                 >
                     <AppBar color={["secondary", "default", "primary"][canDrop + isOver]} position="static">
@@ -95,6 +90,16 @@ export default class Media extends React.Component {
                                 {media.name} | {media.sender}
                             </Typography>
                             <div style={{flex:1}} />
+                            {Object.keys(this.state.actions || {}).map((action) => 
+                                <IconButton
+                                    key={action}
+                                    color="inherit"
+                                    aria-label={action}
+                                    onClick={() => this.updateMedia({[action]: !media[action]})}
+                                >
+                                    {this.state.actions[action]()}
+                                </IconButton>
+                            )}
                             <IconButton 
                                 color="inherit"
                                 aria-label="Medium von Tafel nehmen"
@@ -114,23 +119,13 @@ export default class Media extends React.Component {
                             </IconButton>
                         </Toolbar>
                     </AppBar>
-                    <div className={classes.media}>
-                        <Medium 
-                            src={url + '/clipboard/uploads/' + media.file}
-                            preview={preview}
-                            {...media}
-                            onUpdate={(change) => {
-                                onUpdate({
-                                    slot: slotId,
-                                    media: {
-                                        ...media,
-                                        ...change
-                                    }
-                                });
-                            }}
-                            onClick={() => window.open(url + '/clipboard/uploads/' + media.file)}
-                        />
-                    </div>
+                    <Medium 
+                        url={url}
+                        preview={preview}
+                        medium={media}
+                        onUpdate={this.updateMedia}
+                        setActions={this.setActions}
+                    />
                 </div>;
     }
 }

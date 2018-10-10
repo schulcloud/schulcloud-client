@@ -41,7 +41,7 @@ export default class TeacherDesk extends React.PureComponent {
                         <Media key={medium.id} medium={medium} url={url} />
                     )}
                     {Object.keys(uploads).map((key) => 
-                        <Media key={key} medium={uploads[key]} />
+                        <Media key={key} medium={uploads[key]} upload={true} />
                     )}
                 </div>
             );

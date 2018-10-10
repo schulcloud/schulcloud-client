@@ -25,7 +25,7 @@ export default class DeskSelection extends React.Component {
 
     render() {
         const { classes, desks, desk, selectDesk } = this.props;
-        if(!desks || Object.keys(desks).length <= 1) return null;
+        if(!desks || Object.keys(desks).length < 1) return null;
         return (
             <div className={classes.root}>
                 <List component="nav">

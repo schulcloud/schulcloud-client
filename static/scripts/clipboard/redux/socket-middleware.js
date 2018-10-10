@@ -17,13 +17,16 @@ export const socketEmit = store => next => action => {
                 deskType: action.payload.deskType,
             };
             uploader.submitFiles([file]);
+            var urlCreator = window.URL || window.webkitURL;
+            var preview = urlCreator.createObjectURL(file);
+            store.dispatch(uploadProgress({file, progress:0, preview, convert:true}));
         };
 
         (action.payload.files || []).forEach((file) => {
             if(file.type && file.type.indexOf("image/") >= 0) {
-                store.dispatch(uploadProgress(file, 0, undefined, true));
+                store.dispatch(uploadProgress({file, progress:0, convert:true}));
                 new ImageCompressor(file, {
-                    quality: .8,
+                    quality: .6,
                     maxWidth: 1920,
                     success: upload,
                 });

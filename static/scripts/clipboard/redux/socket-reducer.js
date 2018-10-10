@@ -43,18 +43,8 @@ export default function reducer(state = initialState, action = {}) {
 
     case UPLOAD_PROGRESS: {
       let uploads = {...state.uploads};
-      uploads[action.name] = {
-        file: action.file.name,
-        sender: action.convert ? "Konvertieren" : "Hochladen",
-        progress: action.progress,
-        type: {
-          mime: action.file.type
-        },
-        src: action.file.preview,
-      };
-      if(action.progress === 100) {
-        delete uploads[action.name];
-      }
+      let upload = {...uploads[action.payload.name], ...action.payload};
+      uploads[upload.name] = upload;
       return {
         ...state,
         uploads
@@ -91,15 +81,24 @@ export default function reducer(state = initialState, action = {}) {
         sending: false,
         clipboard: action.payload
       };
-    case CLIPBOARD_UPDATE:
+    case CLIPBOARD_UPDATE:{
+      let uploads = Object.keys(state.upload||{}).reduce((acc, key) => {
+        if(state.upload[key].progress < 100) {
+          acc[key] = state.upload[key];
+        }
+        return acc;
+      }, {});
+      
       return {
         ...state,
         sending: false,
+        uploads,
         clipboard: {
           ...state.clipboard,
           ...action.payload
         }
       };
+    }
     default:
       return state;
   }
@@ -147,13 +146,13 @@ export function initializeSocket(url, namespace, settings = {}) {
     function initUploader() {
       let uploader = new SocketIOFileUpload(socket);
       uploader.addEventListener("start", (event) => 
-        dispatch(uploadProgress(event.file, 0)));
+        dispatch(uploadProgress({file:event.file, progress:0})));
       uploader.addEventListener("progress", (event) => 
-        dispatch(uploadProgress(event.file, event.bytesLoaded / event.file.size * 100)));
+        dispatch(uploadProgress({file:event.file, progress:event.bytesLoaded / event.file.size * 100})));
       uploader.addEventListener("complete", (event) => 
-        dispatch(uploadProgress(event.file, 100)));
+        dispatch(uploadProgress({file:event.file, progress:100})));
       uploader.addEventListener("error", (event) => 
-        dispatch(uploadProgress(event.file, 100, event.message)));
+        dispatch(uploadProgress({file:event.file, progress:100, error: event.message})));
       
       dispatch(socketUploaderInit(uploader));
     }
@@ -209,13 +208,19 @@ function socketUploaderInit(uploader) {
   };
 }
 
-export function uploadProgress(file, progress, error, convert) {
+export function uploadProgress(update) {
+  let payload = {
+    file: update.file.name,
+    name: update.file.name,
+    sender: update.convert ? "Konvertieren" : "Hochladen",
+    progress: update.progress,
+    type: {
+      mime: update.file.type
+    },
+  };
+  if(update.preview) payload.src = update.preview;
   return {
     type: UPLOAD_PROGRESS,
-    file,
-    name: file.name,
-    progress,
-    error,
-    convert
+    payload
   };
 }

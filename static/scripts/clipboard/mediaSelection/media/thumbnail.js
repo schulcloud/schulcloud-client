@@ -23,10 +23,10 @@ const styles = {
 export default class MediumContainer extends React.PureComponent {
     
     render() {
-        const { medium, url, classes } = this.props;
+        const { medium, url, classes, upload } = this.props;
         const { file, src } = medium;
 
-        const imageSrc = src || url + '/clipboard/uploads/' + file;
+        const imageSrc = src || !upload && url + '/clipboard/uploads/' + file;
         
         if(Image.accept(medium)) return <Image {...medium} src={imageSrc} infoClassName={classes.info} />;
         if(YouTube.accept(medium)) return <YouTube {...medium} infoClassName={classes.info}  />;

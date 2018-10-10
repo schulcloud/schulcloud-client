@@ -12,23 +12,30 @@ const styles = {
 @withStyles(styles)
 export default class PdfViewer extends React.Component {
 
+    static accepts(medium) {
+        return medium 
+            && medium.type
+            && medium.mime
+            && medium.mine.toLowerCase().indexOf('/pdf') >= 0;
+    }
+
     constructor(props) {
         super(props);
         this.myRef = React.createRef();
     }
 
     componentDidMount() {
-        const { src, preview } = this.props;
+        const { medium, preview } = this.props;
         if(!preview) {
-            PDFObject.embed(src, this.myRef.current);
+            PDFObject.embed(medium.src, this.myRef.current);
             this.pdfMounted = true;
         }
     }
 
     componentDidUpdate() {
-        const { src, preview } = this.props;
+        const { medium, preview } = this.props;
         if(!preview && !this.pdfMounted) {
-            PDFObject.embed(src, this.myRef.current);
+            PDFObject.embed(medium.src, this.myRef.current);
             this.pdfMounted = true;
         }
     }

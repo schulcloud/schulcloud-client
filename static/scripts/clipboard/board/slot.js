@@ -109,7 +109,7 @@ export default class Slot extends React.PureComponent {
                     <div 
                         className={classes.empty + " " + ["", classes.canDrop, classes.isOver][isOver + canDrop]}
                     >
-                        <h1>Hier Medium hinziehen</h1>
+                        <h1>Ziehe ein Inhalt hierhin, um ihn auf der Tafel anzuzeigen</h1>
                     </div>
                 }
             </div>

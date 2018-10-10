@@ -1,9 +1,16 @@
 import React, { Component, cloneElement } from 'react';
-import { debounce } from '../helper';
+import { debounce } from '../../helper';
 
 import Hammer from 'hammerjs';
 
 export default class Interactable extends Component {
+
+    static accepts(medium) {
+        return medium 
+            && medium.type
+            && medium.type.mime
+            && medium.type.mime.toLowerCase().indexOf("image/") >= 0;
+    }
 
     minScale = 1;
     maxScale = 4;
@@ -130,7 +137,7 @@ export default class Interactable extends Component {
                 }}
                 >
                     <img 
-                        src={this.props.src} 
+                        src={this.props.medium.src} 
                         ref={node => this.image = node}
                         onLoad={() => this.imageLoaded()}
                         style={{
