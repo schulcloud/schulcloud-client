@@ -7,7 +7,7 @@ import Image from './image';
 import PDF from './pdf';
 import YouTube from './youtube';
 import Link from './link';
-import File from '../mediaSelection/file';
+import File from '../mediaSelection/media/file';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -91,7 +91,7 @@ export default class Media extends React.Component {
                 >
                     <AppBar color={["secondary", "default", "primary"][canDrop + isOver]} position="static">
                         <Toolbar variant="dense">
-                            <Typography variant="subheading" color="inherit">
+                            <Typography variant="subtitle1" color="inherit">
                                 {media.name} | {media.sender}
                             </Typography>
                             <div style={{flex:1}} />

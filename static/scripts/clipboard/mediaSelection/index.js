@@ -1,28 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Medium from './medium.js';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+
 import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import SvgIcon from '@material-ui/core/SvgIcon';
 import Slide from '@material-ui/core/Slide';
 import Grow from '@material-ui/core/Grow';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import Zoom from '@material-ui/core/Zoom';
 import { withStyles } from '@material-ui/core/styles';
-import {uploadFiles, addMedia} from '../redux/socket-actions';
-import UploadIcon from '@material-ui/icons/CloudUpload';
-import LinkIcon from '@material-ui/icons/Link';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
 import UpIcon from '@material-ui/icons/ArrowDropUp';
-import LinkDialog from './linkDialog.js';
-import {GroupDesk, TeacherDesk, StudentDesk} from '../icons';
-import { extractHostname, youtubeParse } from '../helper';
-import getYoutubeTitle from 'get-youtube-title';
+
+import AddButton from './addButton.js';
+import DeskTypeSelection from './desks/deskTypeSelection';
+import DeskSelection from './desks/deskSelection';
+import Desk from './desks/desk.js';
 
 const styles = {
     root: {
@@ -31,13 +21,8 @@ const styles = {
       bottom: 0,
       position: 'relative',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       background: 'white',
-    },
-    fab: {
-      position: 'absolute',
-      bottom: 20,
-      right: 20,
     },
     fabLeft: {
         position: 'absolute',
@@ -49,164 +34,79 @@ const styles = {
 
 function mapStateToProps(state) {
     return {
-        uploader: state.socket.uploader,
         uploads: state.socket.uploads,
-        media: state.socket.clipboard.media,
+        desks: state.socket.clipboard.desks,
         url: state.socket.url,
     };
 }
 
-const mapDispatchToProps = {
-    uploadFiles: (files) => uploadFiles(files),
-    addMedia: (media) => addMedia(media)
-};
-
 @withStyles(styles)
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 export default class MediaSelection extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.inputOpenFileRef = React.createRef();
-    }
-
-    openFileDialog = () => {
-        this.inputOpenFileRef.current.click();
-        this.closeMenu();
-    };
-
-    onChangeFile = (event) => {
-        this.props.uploadFiles(Array.from(event.target.files));
-    }
 
     state = {
         show: true,
-        menuEl: null,
-        value: 0,
-        linkDialog: false
+        deskType: 'teachers',
+        desk: undefined
     };
-
-    openMenu = event => {
-        this.setState({ menuEl: event.currentTarget });
-    };    
-
-    closeMenu = () => {
-        this.setState({ menuEl: null });
-    };
-    
-    handleChange = (event, value) => {
-        this.setState({ value });
-    };
-    
-    handleChangeIndex = index => {
-        this.setState({ value: index });
-    };
-
-    openLinkDialog = () => {
-        this.setState({linkDialog: true});
-        this.closeMenu();
-    }
-
-    linkDialogClose = (link, options) => {
-        this.setState({linkDialog: false});
-        const youtubeId = youtubeParse(link);
-        if(youtubeId) {
-            getYoutubeTitle(youtubeId, (err, title) =>
-                this.props.addMedia({
-                    src: link,
-                    youtubeId,
-                    name: title,
-                    options,
-                    type: {
-                        ext: "youtube",
-                        mime: "youtube/" + youtubeId
-                    }
-                })
-            );
-        } else {
-            this.props.addMedia({
-                src: link,
-                name: extractHostname(link) + "-Link",
-                options,
-                type: {
-                    ext: "link",
-                    mime: "link/" + extractHostname(link)
-                }
-            });
-        }
-    }
 
     toggle = () => {
         this.setState({show: !this.state.show});
     }
 
+    selectDeskType = (deskType) => {
+        this.setState({deskType, desk: null});
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if(!props.desks) return state;
+        if(!state.deskType) return state;
+        const desk = props.desks[state.deskType]||{};
+        if(!state.desk && Object.keys(desk).length === 1) {
+           state.desk = Object.keys(desk)[0];
+        }
+        return state;
+    }
+    
+    selectDesk = (desk) => {
+        this.setState({desk});
+    }
+
     render() {
-        const { media, url, uploads, classes } = this.props;
-        const { value, menuEl, linkDialog, show } = this.state;
-        if(!media) return null;
+        const { classes, desks } = this.props;
+        const { show, deskType, desk } = this.state;
+        if(!desks) return null;
         return (
             <React.Fragment>
-            <Slide direction="up" in={show} mountOnEnter unmountOnExit>
-                <div className={classes.root}>
-                    <AppBar position="static" color="primary">
-                        <Tabs
-                            value={value}
-                            onChange={this.handleChange}
-                            fullWidth
-                            scrollable
-                            scrollButtons="auto"
-                        >
-                            <Tab label="Lehrertisch" icon={<SvgIcon><TeacherDesk/></SvgIcon>} />
-                            <Tab label="Schülertische" icon={<SvgIcon><StudentDesk/></SvgIcon>} />
-                            <Tab label="Gruppentische" icon={<SvgIcon><GroupDesk/></SvgIcon>} />
-                            <Tab label="Tisch hinzustellen" icon={<AddIcon/>}/>
-                        </Tabs>
-                    </AppBar>
-                    <Grow in={value===0} mountOnEnter unmountOnExit>
-                        <div className="media-row">
-                            {media.map((medium) => 
-                                <Medium key={medium.id} medium={medium} url={url} />
-                            )}
-                            {Object.keys(uploads).map((key) => 
-                                <Medium key={key} medium={uploads[key]} />
-                            )}
-                        </div>
-                    </Grow>
-                    <Button variant="fab" className={classes.fab} color="secondary" onClick={this.openMenu}>
-                        <AddIcon/>
-                    </Button>
-                    <Menu
-                        anchorEl={menuEl}
-                        open={!!menuEl}
-                        onClose={this.closeMenu}
-                    >
-                        <MenuItem onClick={this.openFileDialog}>
-                            <ListItemIcon className={classes.icon}>
-                                <UploadIcon />
-                            </ListItemIcon>
-                            <ListItemText classes={{ primary: classes.primary }} inset primary="Datei hochladen" />
-                        </MenuItem>
-                        <MenuItem onClick={this.openLinkDialog}>
-                            <ListItemIcon className={classes.icon}>
-                                <LinkIcon />
-                            </ListItemIcon>
-                            <ListItemText classes={{ primary: classes.primary }} inset primary="Link verteilen" />
-                        </MenuItem>
-                    </Menu>
-                    <LinkDialog open={linkDialog} onClose={this.linkDialogClose} />
-                    <input 
-                        ref={this.inputOpenFileRef} 
-                        type="file" 
-                        style={{display:"none"}}
-                        onChange={this.onChangeFile}
-                        multiple
-                    />
-                </div>
-            </Slide>
+                <Slide direction="up" in={show} mountOnEnter unmountOnExit>
+                    <div className={classes.root}>
+                        <DeskTypeSelection 
+                            deskType={deskType}
+                            selectDeskType={this.selectDeskType}
+                        />    
+                        <DeskSelection 
+                            desks={desks[deskType]}
+                            desk={desk}
+                            selectDesk={this.selectDesk}
+                        />
+                        {!!deskType && !!desk && <Desk
+                                key={desk}
+                                media={desks[deskType][desk].media}
+                                deskType={deskType}
+                                desk={desk} 
+                        />}                 
+                        {!!deskType && !!desk &&
+                            <AddButton 
+                                desk={desk}
+                                deskType={deskType}
+                            />
+                        }
+                    </div>
+                </Slide>
                 <Button variant="fab" className={classes.fabLeft} color="secondary" onClick={this.toggle}>
                     {show ? <DownIcon/> : <UpIcon/>}
                 </Button>
-</React.Fragment>
+            </React.Fragment>
             );
     }
 }

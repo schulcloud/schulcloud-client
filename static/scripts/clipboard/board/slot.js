@@ -3,7 +3,6 @@ import { DropTarget } from 'react-dnd';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { setMediaOnBoard } from '../redux/socket-actions';
-import {CLIPBOARD_COMPATIBLE} from '../mediaSelection/mediaTypes';
 import Media from './media';
 
 const collect = (connect, monitor) => ({
@@ -49,7 +48,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-@DropTarget(CLIPBOARD_COMPATIBLE, drop, collect)
+@DropTarget("MEDIA", drop, collect)
 @connect(mapStateToProps, mapDispatchToProps)
 @withStyles(styles)
 export default class Slot extends React.PureComponent {

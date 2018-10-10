@@ -22,7 +22,11 @@ export default class LinkDialog extends React.PureComponent{
     }
 
     closeWithLink = () => {
-        this.props.onClose(this.state.link);
+        let link = this.state.link;
+        this.props.onClose({
+            src: link,
+            type: 'link'
+        });
     }
 
     close = () => {

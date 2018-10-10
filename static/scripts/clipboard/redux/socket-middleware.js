@@ -10,16 +10,25 @@ export const socketEmit = store => next => action => {
 
     if(action.type === UPLOAD_FILES && store.getState().socket.uploader) {
         let uploader = store.getState().socket.uploader;
-        (action.payload || []).forEach((file) => {
+
+        let upload = (file) => {
+            file.meta = {
+                desk: action.payload.desk,
+                deskType: action.payload.deskType,
+            };
+            uploader.submitFiles([file]);
+        };
+
+        (action.payload.files || []).forEach((file) => {
             if(file.type && file.type.indexOf("image/") >= 0) {
                 store.dispatch(uploadProgress(file, 0, undefined, true));
                 new ImageCompressor(file, {
                     quality: .8,
                     maxWidth: 1920,
-                    success: (file) => uploader.submitFiles([file]),
+                    success: upload,
                 });
             } else {
-              uploader.submitFiles([file]);
+                upload(file);
             }
           }
       );    

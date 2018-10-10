@@ -67,7 +67,7 @@ export default class MenuAppBar extends React.Component {
     return (
       <AppBar position="static">
         <Toolbar className="app-bar">
-          <Typography variant="title">
+          <Typography variant="h6">
             Digitaler Klassenraum {connected ? "" : "- Verbindung wird hergestellt"}
           </Typography>
           <div className={classes.flexBuffer}> </div>
