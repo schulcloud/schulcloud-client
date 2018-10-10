@@ -1,7 +1,10 @@
 export const SOCKET_SEND = 'SOCKET_SEND';
 export const UPLOAD_FILES = 'UPLOAD_FILES';
 
-export function setMediaOnBoard({slot, media}) {
+export function setMediaOnBoard({
+    slot,
+    media
+}) {
     return {
         type: SOCKET_SEND,
         message: "SET_MEDIA_ON_BOARD",
@@ -9,7 +12,7 @@ export function setMediaOnBoard({slot, media}) {
             slot,
             media
         }
-      };
+    };
 }
 
 export function addMedia(media) {
@@ -17,7 +20,7 @@ export function addMedia(media) {
         type: SOCKET_SEND,
         message: "ADD_MEDIA",
         payload: media
-      };
+    };
 }
 
 export function uploadFiles(files) {
@@ -25,7 +28,7 @@ export function uploadFiles(files) {
         type: UPLOAD_FILES,
         message: "UPLOAD_FILES",
         payload: files
-      };
+    };
 }
 
 export function setBoardLayout(layout) {
@@ -33,6 +36,5 @@ export function setBoardLayout(layout) {
         type: SOCKET_SEND,
         message: "SET_BOARD_LAYOUT",
         payload: layout
-      };
+    };
 }
-

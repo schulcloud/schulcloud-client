@@ -13,7 +13,7 @@ import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import IconButton from '@material-ui/core/IconButton';
 import layoutOptions from './layoutOptions';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import { setBoardLayout } from './redux/socket-actions';
+import { setBoardLayout } from './redux/actions/socket-send';
 
 const styles = {
     menuButton: {
@@ -25,32 +25,62 @@ const styles = {
     },
 };
 
-function mapStateToProps(state) {
-  return {
-      layout: state.socket.clipboard.board.layout,
-  };
-}
 
-const mapDispatchToProps = dispatch => {
-    return {
-        setBoardLayout: (layout) => dispatch(setBoardLayout(layout)),
-    };
-};
+const LayoutIcon = connect(({board}) => ({layout: board.layout}))(
+  ({layout}) => {
+    const SVG = ((layoutOptions[layout] || layoutOptions["1x1"]).svg);
+    return <SVG />;
+  }
+);
 
-@connect(mapStateToProps, mapDispatchToProps)
+const ConnectionText = connect(({socket}) => ({connected: socket.connected}))(
+  ({connected}) => connected ? "" : "- Verbindung wird hergestellt"
+);
+
+
 @withStyles(styles)
 export default class MenuAppBar extends React.Component {
   
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <AppBar position="static">
+        <Toolbar className="app-bar">
+          <Typography variant="h6">
+            Digitaler Klassenraum <ConnectionText />
+          </Typography>
+          <div className={classes.flexBuffer}> </div>
+          <LayoutMenu />
+          <IconButton onClick={this.props.onToggleFullscreen} >
+            {this.props.fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    );
+  }
+}
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+      setBoardLayout: (layout) => dispatch(setBoardLayout(layout)),
+  };
+};
+
+@connect(null, mapDispatchToProps)
+class LayoutMenu extends React.PureComponent {
+  
   state = {
-    menuEl: null,
+    open: false,
   };
 
   handleClick = event => {
-    this.setState({ menuEl: event.currentTarget });
+    this.setState({ menuEl: event.currentTarget, open:true });
   };
 
   handleClose = (key, layoutOption) => () => {
-    this.setState({ menuEl: null });
+    this.setState({ open: false });
     if(layoutOption) {
       this.props.setBoardLayout({
         key,
@@ -60,44 +90,38 @@ export default class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { classes, layout, connected } = this.props;
-    const { menuEl } = this.state;
-
-    let LayoutIcon = (layoutOptions[layout] || layoutOptions["1x1"]).svg;
+    const { open, menuEl } = this.state;
     return (
-      <AppBar position="static">
-        <Toolbar className="app-bar">
-          <Typography variant="h6">
-            Digitaler Klassenraum {connected ? "" : "- Verbindung wird hergestellt"}
-          </Typography>
-          <div className={classes.flexBuffer}> </div>
-          <IconButton onClick={this.handleClick} >
-            <SvgIcon>
-              <LayoutIcon />
-            </SvgIcon>
-          </IconButton>
-          <IconButton onClick={this.props.onToggleFullscreen} >
-            {this.props.fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </IconButton>
-        </Toolbar>
+      <React.Fragment>
         <Menu
             anchorEl={menuEl}
-            open={Boolean(menuEl)}
+            open={open}
             onClose={this.handleClose()}
           >
-          {Object.keys(layoutOptions).map(opt => {
-            const Svg = layoutOptions[opt].svg;
-            return <MenuItem key={opt} onClick={this.handleClose(opt, layoutOptions[opt])}>
+          <MenuItems handleClose={this.handleClose}/>
+        </Menu>
+        <IconButton onClick={this.handleClick} >
+          <SvgIcon>
+            <LayoutIcon />
+          </SvgIcon>
+        </IconButton>
+      </React.Fragment>
+    );
+  }
+}
+
+class MenuItems extends React.PureComponent {
+  render() {
+    return Object.keys(layoutOptions).map(opt => {
+      const Svg = layoutOptions[opt].svg;
+      return <MenuItem key={opt} onClick={this.props.handleClose(opt, layoutOptions[opt])}>
               <ListItemIcon>
                 <SvgIcon>
                   <Svg />
                 </SvgIcon>
               </ListItemIcon>
-              <ListItemText primary={layoutOptions[opt].text} />
+              <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary={layoutOptions[opt].text} />
             </MenuItem>;
-          })}
-        </Menu>
-      </AppBar>
-    );
+    });
   }
 }

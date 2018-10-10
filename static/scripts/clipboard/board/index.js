@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import layoutOptions from '../layoutOptions';
 import Slot from './slot';
@@ -16,6 +17,13 @@ const styles = {
     },
 };
 
+function mapStateToProps(state) {
+    return {
+        layout: state.board.layout
+    };
+}
+
+@connect(mapStateToProps)
 @withStyles(styles)
 export default class Clipboard extends React.PureComponent {
     render() {

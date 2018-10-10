@@ -4,7 +4,7 @@ import { DragSource } from 'react-dnd';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import isEqual from 'react-fast-compare';
-import { setMediaOnBoard } from '../../redux/socket-actions';
+import { setMediaOnBoard } from '../../redux/actions/socket-send';
 import Medium from './mediumContainer';
 
 const cardSource = {

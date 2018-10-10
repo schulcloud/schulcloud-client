@@ -1,12 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Board from './board';
 import MediaSelection from './mediaSelection';
 import AppBar from './appBar';
 import withDragDropContext from './withDragDropContext';
-import { initializeSocket } from './redux/socket-reducer.js';
+import { initializeSocket } from './redux/initalizeSocket';
+import { connect } from 'react-redux';
 
-class ClipboardApp extends React.Component {
+@withDragDropContext
+@connect()
+export default class ClipboardApp extends React.Component {
     constructor(props) {
         super(props);
         
@@ -48,25 +50,14 @@ class ClipboardApp extends React.Component {
             ...fullscreenStyle,
             position:"absolute"
         };
-        const { connected, layout } = this.props;
         return (
             <div style={fullscreen ? fullscreenStyle : normalStyle}>    
-                <AppBar onToggleFullscreen={this.toggleFullscreen} fullscreen={fullscreen} connected={connected}/>
+                <AppBar onToggleFullscreen={this.toggleFullscreen} fullscreen={fullscreen} />
                 <div style={{position: 'relative', height:'100%', display:'flex', flexDirection:'column'}}>
-                    <Board layout={layout} />
+                    <Board />
                     <MediaSelection />
                 </div>
             </div>
         );
     }
 }
-
-function mapStateToProps(state) {
-    return {
-        connected: state.socket.connected,
-        layout: state.socket.clipboard.board.layout,
-        clipboard: state.socket.clipboard
-    };
-}
-  
-export default connect(mapStateToProps)(withDragDropContext(ClipboardApp));

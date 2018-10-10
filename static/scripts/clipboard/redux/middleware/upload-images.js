@@ -1,13 +1,10 @@
-import { SOCKET_SEND, UPLOAD_FILES } from "./socket-actions";
-import { UPLOAD_PROGRESS, uploadProgress} from "./socket-reducer";
 import ImageCompressor from 'image-compressor.js';
 
-export const socketEmit = store => next => action => {
-    next(action);
-    if(action.type === SOCKET_SEND && store.getState().socket.connected) {
-        store.getState().socket.socket.emit(action.message, action.payload);
-    }
+import { UPLOAD_FILES } from "../actions/socket-send";
+import { uploadProgress } from "../actions/socket-upload";
 
+export const uploadImagesMiddleware = store => next => action => {
+    next(action);
     if(action.type === UPLOAD_FILES && store.getState().socket.uploader) {
         let uploader = store.getState().socket.uploader;
 

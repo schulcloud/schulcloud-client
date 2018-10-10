@@ -24,7 +24,7 @@ const styles = {
 
 function mapStateToProps(state) {
     return {
-        uploads: state.socket.uploads,
+        uploads: state.uploads,
         url: state.socket.url,
     };
 }

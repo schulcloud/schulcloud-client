@@ -2,7 +2,7 @@ import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { setMediaOnBoard } from '../redux/socket-actions';
+import { setMediaOnBoard } from '../redux/actions/socket-send';
 import Media from './media';
 
 const collect = (connect, monitor) => ({
@@ -35,9 +35,8 @@ const styles = {
 
 function mapStateToProps(state) {
     return {
-        media: (state.socket.clipboard.board || {}).media,
+        media: state.board.media,
         url: state.socket.url,
-        layout: state.socket.clipboard.board.layout,
     };
 }
 

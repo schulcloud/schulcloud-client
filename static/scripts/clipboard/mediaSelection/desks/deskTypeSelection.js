@@ -39,7 +39,7 @@ export default class DeskSelection extends React.Component {
                                 <TeacherDesk/>
                             </SvgIcon>
                         </ListItemIcon>
-                        <ListItemText primary="Lehrertisch" />
+                        <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary="Lehrertisch" />
                     </ListItem>
                     <ListItem
                         button
@@ -52,7 +52,7 @@ export default class DeskSelection extends React.Component {
                                 <StudentDesk/>
                             </SvgIcon>
                         </ListItemIcon>
-                        <ListItemText primary="Schülertische" />
+                        <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary="Schülertische" />
                     </ListItem>
                     <ListItem
                         button
@@ -65,7 +65,7 @@ export default class DeskSelection extends React.Component {
                                 <GroupDesk/>
                             </SvgIcon>
                         </ListItemIcon>
-                        <ListItemText primary="Gruppentische" />
+                        <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary="Gruppentische" />
                     </ListItem>
                 </List>
             </div>

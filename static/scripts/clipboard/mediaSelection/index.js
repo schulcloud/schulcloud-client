@@ -34,8 +34,8 @@ const styles = {
 
 function mapStateToProps(state) {
     return {
-        uploads: state.socket.uploads,
-        desks: state.socket.clipboard.desks,
+        uploads: state.uploads,
+        desks: state.desks,
         url: state.socket.url,
     };
 }

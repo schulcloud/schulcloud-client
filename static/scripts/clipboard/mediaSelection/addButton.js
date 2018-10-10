@@ -7,7 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
-import {uploadFiles, addMedia} from '../redux/socket-actions';
+import {uploadFiles, addMedia} from '../redux/actions/socket-send';
 import UploadIcon from '@material-ui/icons/CloudUpload';
 import LinkIcon from '@material-ui/icons/Link';
 import LinkDialog from './linkDialog.js';

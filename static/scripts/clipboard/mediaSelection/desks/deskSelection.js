@@ -38,7 +38,7 @@ export default class DeskSelection extends React.Component {
                             selected={desk === id}
                             onClick={() => selectDesk(id)}
                         >
-                            <ListItemText primary={desks[id].name} />
+                            <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary={desks[id].name} />
                         </ListItem>
                     )}
                 </List>
