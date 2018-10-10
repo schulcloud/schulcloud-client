@@ -22,8 +22,8 @@ export default function reducer(state = initialState, action = {}) {
                 if (Object.keys(state).length === 0) return state;
                 //Delete all finished uploads
                 let filteredState = Object.keys(state).reduce((acc, key) => {
-                    if (state.upload[key].progress < 100) {
-                        acc[key] = state.upload[key];
+                    if (state[key].progress < 100) {
+                        acc[key] = state[key];
                     }
                     return acc;
                 }, {});

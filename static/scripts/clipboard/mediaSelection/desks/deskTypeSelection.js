@@ -21,7 +21,7 @@ const styles = theme => ({
 
 
 @withStyles(styles)
-export default class DeskSelection extends React.Component {
+export default class DeskSelection extends React.PureComponent {
 
     render() {
         const { classes, deskType, selectDeskType } = this.props;

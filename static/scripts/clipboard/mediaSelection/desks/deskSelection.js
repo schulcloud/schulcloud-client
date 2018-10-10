@@ -1,12 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import SvgIcon from '@material-ui/core/SvgIcon';
-
-import { GroupDesk, TeacherDesk, StudentDesk } from './icons';
 
 const styles = theme => ({
     root: {
@@ -19,13 +16,23 @@ const styles = theme => ({
     }
   });
 
-
 @withStyles(styles)
-export default class DeskSelection extends React.Component {
+@connect(({desks}, {deskType}) => ({
+    desks: desks[deskType]
+}))
+export default class DeskSelection extends React.PureComponent {
+
+    componentDidUpdate() {
+        const { desks, selectDesk } = this.props;
+        if(Object.keys(desks).length == 1) {
+            selectDesk(Object.keys(desks)[0]);
+            //return null;
+        } 
+    }
 
     render() {
         const { classes, desks, desk, selectDesk } = this.props;
-        if(!desks || Object.keys(desks).length < 1) return null;
+        if(!desks || Object.keys(desks).length == 0) return null;
         return (
             <div className={classes.root}>
                 <List component="nav">

@@ -53,8 +53,7 @@ export default class MenuDecorator extends React.Component {
 
     openWindow = (event) => {
         this.handleClose(event);
-        const imageSrc = this.props.medium.src || this.props.url + '/clipboard/uploads/' + this.props.medium.file;
-        window.open(imageSrc, '_blank');
+        window.open(this.props.medium.src, '_blank');
     }
 
     startDownload = (event) => {
@@ -66,7 +65,6 @@ export default class MenuDecorator extends React.Component {
         const { medium, url, isDragging, connectDragSource, style } = this.props;
         const { file, src } = medium;
         const { anchorEl } = this.state;
-        const imageSrc = src || url + '/clipboard/uploads/' + file;
 
         return connectDragSource(
             <div style={style}>
@@ -87,7 +85,7 @@ export default class MenuDecorator extends React.Component {
                 </Menu>
                 <a 
                     ref={this.downloadLinkRef} 
-                    href={imageSrc}
+                    href={src}
                     target="_blank"
                     download
                     style={{display:"none"}}

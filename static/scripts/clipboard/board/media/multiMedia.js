@@ -23,7 +23,7 @@ export default class MultiMedia extends React.Component {
                     onPause={() => onUpdate({playing: false})}
                     onError={() => onUpdate({playing: false})}
                     onProgress={({played}) => onUpdate({progress: played})}
-                    progressInterval={10000}
+                    progressInterval={1000}
                 />
             );
         } else {

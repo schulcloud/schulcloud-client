@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
-import Grow from '@material-ui/core/Grow';
-import Zoom from '@material-ui/core/Zoom';
 import { withStyles } from '@material-ui/core/styles';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
 import UpIcon from '@material-ui/icons/ArrowDropUp';
@@ -35,7 +33,6 @@ const styles = {
 function mapStateToProps(state) {
     return {
         uploads: state.uploads,
-        desks: state.desks,
         url: state.socket.url,
     };
 }
@@ -57,25 +54,14 @@ export default class MediaSelection extends React.Component {
     selectDeskType = (deskType) => {
         this.setState({deskType, desk: null});
     }
-
-    static getDerivedStateFromProps(props, state) {
-        if(!props.desks) return state;
-        if(!state.deskType) return state;
-        const desk = props.desks[state.deskType]||{};
-        if(!state.desk && Object.keys(desk).length === 1) {
-           state.desk = Object.keys(desk)[0];
-        }
-        return state;
-    }
     
     selectDesk = (desk) => {
         this.setState({desk});
     }
 
     render() {
-        const { classes, desks } = this.props;
+        const { classes } = this.props;
         const { show, deskType, desk } = this.state;
-        if(!desks) return null;
         return (
             <React.Fragment>
                 <Slide direction="up" in={show} mountOnEnter unmountOnExit>
@@ -85,13 +71,11 @@ export default class MediaSelection extends React.Component {
                             selectDeskType={this.selectDeskType}
                         />    
                         <DeskSelection 
-                            desks={desks[deskType]}
+                            deskType={deskType}
                             desk={desk}
                             selectDesk={this.selectDesk}
                         />
                         {!!deskType && !!desk && <Desk
-                                key={desk}
-                                media={desks[deskType][desk].media}
                                 deskType={deskType}
                                 desk={desk} 
                         />}                 

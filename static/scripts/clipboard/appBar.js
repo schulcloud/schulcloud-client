@@ -98,7 +98,17 @@ class LayoutMenu extends React.PureComponent {
             open={open}
             onClose={this.handleClose()}
           >
-          <MenuItems handleClose={this.handleClose}/>
+          {Object.keys(layoutOptions).map(opt => {
+              const Svg = layoutOptions[opt].svg;
+              return <MenuItem key={opt} onClick={this.handleClose(opt, layoutOptions[opt])}>
+                      <ListItemIcon>
+                        <SvgIcon>
+                          <Svg />
+                        </SvgIcon>
+                      </ListItemIcon>
+                      <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary={layoutOptions[opt].text} />
+                    </MenuItem>;
+            })}
         </Menu>
         <IconButton onClick={this.handleClick} >
           <SvgIcon>
@@ -107,21 +117,5 @@ class LayoutMenu extends React.PureComponent {
         </IconButton>
       </React.Fragment>
     );
-  }
-}
-
-class MenuItems extends React.PureComponent {
-  render() {
-    return Object.keys(layoutOptions).map(opt => {
-      const Svg = layoutOptions[opt].svg;
-      return <MenuItem key={opt} onClick={this.props.handleClose(opt, layoutOptions[opt])}>
-              <ListItemIcon>
-                <SvgIcon>
-                  <Svg />
-                </SvgIcon>
-              </ListItemIcon>
-              <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary={layoutOptions[opt].text} />
-            </MenuItem>;
-    });
   }
 }

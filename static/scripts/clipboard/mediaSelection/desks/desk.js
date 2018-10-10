@@ -22,15 +22,12 @@ const styles = {
 };
 
 
-function mapStateToProps(state) {
-    return {
-        uploads: state.uploads,
-        url: state.socket.url,
-    };
-}
-
 @withStyles(styles)
-@connect(mapStateToProps)
+@connect(({uploads, socket, desks}, {deskType, desk}) => ({
+    uploads,
+    url: socket.url,
+    media: desks[deskType][desk].media
+}))
 export default class TeacherDesk extends React.PureComponent {
     render() {
         const { media, url, uploads } = this.props;

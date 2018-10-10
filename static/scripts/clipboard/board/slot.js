@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { setMediaOnBoard } from '../redux/actions/socket-send';
 import Media from './media';
+import isEqual from 'react-fast-compare';
 
 const collect = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
@@ -33,9 +34,9 @@ const styles = {
     }
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, {slotId}) {
     return {
-        media: state.board.media,
+        medium: state.board.media[slotId],
         url: state.socket.url,
     };
 }
@@ -46,11 +47,10 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-
 @DropTarget("MEDIA", drop, collect)
 @connect(mapStateToProps, mapDispatchToProps)
 @withStyles(styles)
-export default class Slot extends React.PureComponent {
+export default class Slot extends React.Component {
     constructor(props) {
         super(props);    
         drop.drop = (droppedProps, monitor) => {
@@ -83,11 +83,14 @@ export default class Slot extends React.PureComponent {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    }
+
     render() {
         const { connectDropTarget, isOver, canDrop, classes, style } = this.props;
-        const { className, media, url, slotId, setMediaOnBoard } = this.props;
+        const { className, medium, url, slotId, setMediaOnBoard } = this.props;
         const { hoverMedia } = this.state;
-        const medium = hoverMedia || (media && media[slotId]);
         if(!connectDropTarget) return null;
         return connectDropTarget(
             <div 
@@ -96,7 +99,7 @@ export default class Slot extends React.PureComponent {
             >
                 {medium && <Media
                     media={medium}
-                    preview={!!hoverMedia}
+                    hoverMedia={hoverMedia}
                     canDrop={canDrop}
                     isOver={isOver}
                     key={slotId}

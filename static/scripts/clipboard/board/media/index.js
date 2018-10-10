@@ -7,7 +7,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import isEqual from 'react-fast-compare';
 import classNames from 'classnames';
 
 import Medium from './medium';
@@ -36,10 +35,6 @@ export default class Media extends React.Component {
     }
 
     divRef = React.createRef();
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
-    }
 
     onRemove = () => {
         this.props.onUpdate({

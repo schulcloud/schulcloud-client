@@ -3,7 +3,9 @@ import {
     CLIPBOARD_UPDATE
 } from '../actions/socket-receive';
 
-const initialState = {};
+const initialState = {
+    media: []
+};
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
