@@ -2,24 +2,24 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Media from '../media';
+import Slide from '@material-ui/core/Slide';
 
-
-const styles = {
+const styles = (theme) => ({
     root: {
-      width: '100%',
-      height: 300,
-      bottom: 0,
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'row',
-      background: 'white',
+        width: '100%',
+        height: 300,
+        bottom: 0,
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'row',
+        zIndex: -2,
     },
     fabLeft: {
         position: 'absolute',
         bottom: 20,
         left: 20,
     }
-};
+});
 
 
 @withStyles(styles)
@@ -30,17 +30,19 @@ const styles = {
 }))
 export default class TeacherDesk extends React.PureComponent {
     render() {
-        const { media, url, uploads } = this.props;
+        const { media, url, uploads, classes } = this.props;
         if(!media) return null;
         return (
-                <div className="media-row">
-                    {media.map((medium) => 
-                        <Media key={medium.id} medium={medium} url={url} />
-                    )}
-                    {Object.keys(uploads).map((key) => 
-                        <Media key={key} medium={uploads[key]} upload={true} />
-                    )}
-                </div>
+                <Slide direction="right" in={true} mountOnEnter unmountOnExit>
+                    <div className={classes.root}>
+                        {media.map((medium) => 
+                            <Media key={medium.id} medium={medium} url={url} />
+                        )}
+                        {Object.keys(uploads).map((key) => 
+                            <Media key={key} medium={uploads[key]} upload={true} />
+                        )}
+                    </div>
+                </Slide>
             );
     }
 }

@@ -12,22 +12,23 @@ import DeskTypeSelection from './desks/deskTypeSelection';
 import DeskSelection from './desks/deskSelection';
 import Desk from './desks/desk.js';
 
-const styles = {
+const styles = (theme) => ({
     root: {
-      width: '100%',
-      height: 300,
-      bottom: 0,
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'row',
-      background: 'white',
+        backgroundColor: theme.palette.background.paper,
+        width: '100%',
+        height: 300,
+        bottom: 0,
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'row',
+        background: 'white',
     },
     fabLeft: {
         position: 'absolute',
         bottom: 20,
         left: 20,
     }
-};
+});
 
 
 function mapStateToProps(state) {
