@@ -18,13 +18,20 @@ const drop = {
 
 const styles = {
     root: {
-        display: 'flex'
+        display: 'flex',
+        position: 'relative'
     },
     empty: {
-        flex: 1,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        textAlign: 'center',
+        padding: '5vmin',
     },
     isOver:{
         background: "rgba(20,200,20,0.5)"
@@ -61,28 +68,6 @@ export default class Slot extends React.Component {
         };
     }
 
-    state = {
-        hoverMedia: undefined
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        if(!props.isOver && state.hoverMedia) {
-            if(props.canDrop || state.media !== props.media) {
-                state.hoverMedia = undefined;
-            }
-        }
-        state.media = props.media;
-        return state;
-    }
-
-    componentDidUpdate() {
-        if(this.props.isOver && !this.state.hoverMedia) {
-            drop.hover = ((droppedProps, monitor) => {
-                this.setState({hoverMedia:monitor.getItem().medium});
-            });
-        }
-    }
-
     shouldComponentUpdate(nextProps, nextState) {
         return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
     }
@@ -90,7 +75,6 @@ export default class Slot extends React.Component {
     render() {
         const { connectDropTarget, isOver, canDrop, classes, style } = this.props;
         const { className, medium, url, slotId, setMediaOnBoard } = this.props;
-        const { hoverMedia } = this.state;
         if(!connectDropTarget) return null;
         return connectDropTarget(
             <div 
@@ -99,7 +83,6 @@ export default class Slot extends React.Component {
             >
                 {medium && <Media
                     media={medium}
-                    hoverMedia={hoverMedia}
                     canDrop={canDrop}
                     isOver={isOver}
                     key={slotId}
@@ -107,11 +90,11 @@ export default class Slot extends React.Component {
                     url={url}
                     onUpdate={setMediaOnBoard}
                 />}
-                {!medium && 
+                {(!medium || isOver) && 
                     <div 
                         className={classes.empty + " " + ["", classes.canDrop, classes.isOver][isOver + canDrop]}
                     >
-                        <h1>Ziehe ein Inhalt hierhin, um ihn auf der Tafel anzuzeigen</h1>
+                        <h1>Ziehe einen Inhalt hierhin, um ihn auf der Tafel anzuzeigen</h1>
                     </div>
                 }
             </div>
