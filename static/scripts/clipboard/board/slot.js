@@ -34,10 +34,12 @@ const styles = {
         padding: '5vmin',
     },
     isOver:{
-        background: "rgba(20,200,20,0.5)"
+        background: "rgba(20,200,20,0.5)",
+        zIndex: 1200,
     },
     canDrop: {
-        background: "rgba(200,200,20,0.5)"
+        background: "rgba(200,200,20,0.5)",
+        zIndex: 1200,
     }
 };
 
@@ -90,7 +92,7 @@ export default class Slot extends React.Component {
                     url={url}
                     onUpdate={setMediaOnBoard}
                 />}
-                {(!medium || isOver) && 
+                {(!medium || canDrop) && 
                     <div 
                         className={classes.empty + " " + ["", classes.canDrop, classes.isOver][isOver + canDrop]}
                     >

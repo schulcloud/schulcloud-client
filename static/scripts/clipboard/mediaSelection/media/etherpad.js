@@ -1,18 +1,18 @@
 import React from 'react';
-import LinkIcon from '@material-ui/icons/Link';
+import DocumentIcon from '@material-ui/icons/InsertDriveFile';
 
-export default function Link(props) {
+export default function Etherpad(props) {
   return  <React.Fragment>
             <div className="media-icon-container">
-              <LinkIcon/>
+                <DocumentIcon/>
             </div>
             <div className={props.infoClassName}>{props.name || props.src}</div>
             <div className={props.infoClassName}>{props.sender}</div>
           </React.Fragment>;
 }
 
-Link.accept = (medium) => {
+Etherpad.accept = (medium) => {
   return medium 
     && medium.type 
-    && (medium.type + "").toLowerCase() === "link";
+    && (medium.type + "").toLowerCase() === "etherpad";
 };

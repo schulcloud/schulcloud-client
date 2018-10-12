@@ -4,6 +4,7 @@ import Image from './image';
 import PDF from './pdf';
 import YouTube from './youtube';
 import Link from './link';
+import Etherpad from './etherpad';
 import File from '../../mediaSelection/media/file';
 import MultiMedia from './multiMedia';
 
@@ -34,6 +35,7 @@ export default class Media extends React.PureComponent {
         else if(YouTube.accepts(medium)) Medium = YouTube;
         else if(PDF.accepts(medium)) Medium = PDF;
         else if(Link.accepts(medium)) Medium = Link;
+        else if(Etherpad.accepts(medium)) Medium = Etherpad;
 
 
         if(state.Medium !== Medium) {

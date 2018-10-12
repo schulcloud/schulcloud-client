@@ -17,6 +17,9 @@ const styles = theme => ({
         overflow: 'hidden',
         cursor: 'grab',
     },
+    button:{
+        width: '100%'
+    },
     isDragging: {
         opacity: 0.5 
     }
@@ -31,7 +34,7 @@ export default class MediumContainer extends React.PureComponent {
                     className={classes.root + (isDragging ? ' ' + classes.isDragging : '')}
                     onClick={onClick}
                 >
-                    <CardActionArea>
+                    <CardActionArea classes={{root: classes.button}}>
                         <Thumbnail 
                             medium={medium} 
                             url={url} 

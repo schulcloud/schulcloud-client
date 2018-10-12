@@ -9,6 +9,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
 import {uploadFiles, addMedia} from '../redux/actions/socket-send';
 import UploadIcon from '@material-ui/icons/CloudUpload';
+import DocumentIcon from '@material-ui/icons/InsertDriveFile';
+import DocumentDialog from './documentDialog.js';
 import LinkIcon from '@material-ui/icons/Link';
 import LinkDialog from './linkDialog.js';
 
@@ -57,7 +59,8 @@ export default class AddButton extends React.Component {
 
     state = {
         menuEl: null,
-        linkDialog: false
+        linkDialog: false,
+        documentDialog: false,
     };
 
     openMenu = event => {
@@ -73,6 +76,11 @@ export default class AddButton extends React.Component {
         this.closeMenu();
     }
 
+    openDocumentDialog = () => {
+        this.setState({documentDialog: true});
+        this.closeMenu();
+    }
+
     linkDialogClose = (medium) => {
         this.setState({linkDialog: false});
         if(medium) {
@@ -84,9 +92,20 @@ export default class AddButton extends React.Component {
         }
     }
 
+    documentDialogClose = (medium) => {
+        this.setState({documentDialog: false});
+        if(medium) {
+            this.props.addMedia({
+                deskType: this.props.deskType,
+                desk: this.props.desk,
+                medium
+            });
+        }
+    }
+
     render() {
         const { classes } = this.props;
-        const { menuEl, linkDialog } = this.state;
+        const { menuEl, linkDialog, documentDialog } = this.state;
         return (
                 <React.Fragment>
                     <Button variant="fab" className={classes.root} color="secondary" onClick={this.openMenu}>
@@ -97,20 +116,27 @@ export default class AddButton extends React.Component {
                         open={!!menuEl}
                         onClose={this.closeMenu}
                     >
+                        <MenuItem onClick={this.openDocumentDialog}>
+                            <ListItemIcon>
+                                <DocumentIcon />
+                            </ListItemIcon>
+                            <ListItemText classes={{ primary: classes.primary }} inset primary="Dokument erstellen" />
+                        </MenuItem>
+                        <MenuItem onClick={this.openLinkDialog}>
+                            <ListItemIcon>
+                                <LinkIcon />
+                            </ListItemIcon>
+                            <ListItemText classes={{ primary: classes.primary }} inset primary="Link einfügen" />
+                        </MenuItem>
                         <MenuItem onClick={this.openFileDialog}>
-                            <ListItemIcon className={classes.icon}>
+                            <ListItemIcon>
                                 <UploadIcon />
                             </ListItemIcon>
                             <ListItemText classes={{ primary: classes.primary }} inset primary="Datei hochladen" />
                         </MenuItem>
-                        <MenuItem onClick={this.openLinkDialog}>
-                            <ListItemIcon className={classes.icon}>
-                                <LinkIcon />
-                            </ListItemIcon>
-                            <ListItemText classes={{ primary: classes.primary }} inset primary="Link verteilen" />
-                        </MenuItem>
                     </Menu>
                     <LinkDialog open={linkDialog} onClose={this.linkDialogClose} />
+                    <DocumentDialog open={documentDialog} onClose={this.documentDialogClose} />
                     <input 
                         ref={this.inputOpenFileRef} 
                         type="file" 

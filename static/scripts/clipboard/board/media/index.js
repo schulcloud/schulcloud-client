@@ -25,9 +25,6 @@ const styles = {
         flexDirection: 'column',
         width: '100%',
     },
-    isOver: {
-        opacity: 0,
-    }
 };
 
 @withStyles(styles)
@@ -75,11 +72,11 @@ export default class Media extends React.Component {
     } 
 
     render() {
-        let {url, media, classes, className, canDrop, isOver, preview} = this.props;
+        let {url, media, classes, className, canDrop, isOver} = this.props;
         let {fullscreen} = this.state;
 
         return <div 
-                    className={classNames(classes.media, classes.flexParent, className, {[classes.fullscreen]: fullscreen}, {[classes.isOver]: isOver})}
+                    className={classNames(classes.media, classes.flexParent, className, {[classes.fullscreen]: fullscreen})}
                     ref={this.divRef}
                 >
                     <AppBar color={["default", "secondary", "primary"][canDrop + isOver]} position="static">

@@ -1,13 +1,16 @@
-import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import QRCode from 'qrcode.react';
+import classNames from 'classnames';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import QrIcon from 'svg-react-loader!./qr.svg';
 import IFrameIcon from '@material-ui/icons/OpenInBrowser';
+import QRCode from 'qrcode.react';
+import React from 'react';
+import QrIcon from 'svg-react-loader!./qr.svg';
 const styles = {
     root: {
         width: '100%',
         height: '100%',
+    },
+    qr:{
         padding: 50,
         textAlign: 'center',
         display: 'flex',
@@ -26,7 +29,7 @@ export default class Link extends React.Component {
     static accepts(medium) {
         return medium
             && medium.type
-            && (medium.type + "").toLocaleLowerCase() === "link"
+            && (medium.type + "").toLowerCase().indexOf("link") >= 0
             && medium.src;
     }
 
@@ -37,13 +40,19 @@ export default class Link extends React.Component {
 
     render() {
         const { classes, medium } = this.props;
-        return <div className={classes.root} ref={this.myRef}>
-            <a className={classes.link} href={medium.src} target="_blank">{medium.src}</a>
-            <QRCode 
-                renderAs="svg"
-                value={medium.src}
-                size="100%"
-            />
-        </div>;
+        if(medium.qr) {
+            return <div className={classNames(classes.root,classes.qr)} ref={this.myRef}>
+                <a className={classes.link} href={medium.src} target="_blank">{medium.src}</a>
+                <QRCode 
+                    renderAs="svg"
+                    value={medium.src}
+                    size="100%"
+                />
+            </div>;
+        } else {
+            return (
+                <iframe className={classes.root} ref={this.myRef} src={medium.src} />
+            );
+        }
     }
 }

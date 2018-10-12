@@ -16,7 +16,7 @@ const styles = (theme) => ({
     root: {
         backgroundColor: theme.palette.background.paper,
         width: '100%',
-        height: 300,
+        height: 200,
         bottom: 0,
         position: 'relative',
         display: 'flex',
@@ -35,6 +35,8 @@ function mapStateToProps(state) {
     return {
         uploads: state.uploads,
         url: state.socket.url,
+        deskType: state.me.bucket,
+        desk: state.me.id
     };
 }
 
@@ -44,9 +46,19 @@ export default class MediaSelection extends React.Component {
 
     state = {
         show: true,
-        deskType: 'teachers',
-        desk: undefined
+        init: false,
+        deskType: '',
+        desk: ''
     };
+
+    static getDerivedStateFromProps(props, state) {
+        if(state.init || !props.deskType) return null;
+        return {
+            init: true,
+            deskType: props.deskType,
+            desk: props.desk
+        };
+    }
 
     toggle = () => {
         this.setState({show: !this.state.show});

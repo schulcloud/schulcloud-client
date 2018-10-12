@@ -5,6 +5,8 @@ import Image from './image';
 import YouTube from './youtube';
 import File from './file';
 import Link from './link';
+import Etherpad from './etherpad';
+
 
 const styles = {
     info:{
@@ -29,6 +31,7 @@ export default class MediumContainer extends React.PureComponent {
         if(Image.accept(medium)) return <Image {...medium} infoClassName={classes.info} />;
         if(YouTube.accept(medium)) return <YouTube {...medium} infoClassName={classes.info}  />;
         if(Link.accept(medium)) return <Link {...medium} infoClassName={classes.info}  />;
+        if(Etherpad.accept(medium)) return <Etherpad {...medium} infoClassName={classes.info}  />;
         return <File {...medium} infoClassName={classes.info}  />;
     }
 }

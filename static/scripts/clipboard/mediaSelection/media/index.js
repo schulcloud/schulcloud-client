@@ -4,7 +4,7 @@ import { DragSource } from 'react-dnd';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import isEqual from 'react-fast-compare';
-import { setMediaOnBoard } from '../../redux/actions/socket-send';
+import { setMediaOnBoard, deleteMedia } from '../../redux/actions/socket-send';
 import Medium from './mediumContainer';
 
 const cardSource = {
@@ -14,6 +14,7 @@ const cardSource = {
 const mapDispatchToProps = dispatch => {
     return {
         setMediaOnBoard: (media) => dispatch(setMediaOnBoard(media)),
+        deleteMedia: (id) => dispatch(deleteMedia(id)),
     };
 };
 
@@ -61,9 +62,14 @@ export default class MenuDecorator extends React.Component {
         this.downloadLinkRef.current.click();
     }
 
+    delete = (event) => {
+        this.handleClose(event);
+        this.props.deleteMedia(this.props.medium.id);
+    }
+
     render() {
         const { medium, url, isDragging, connectDragSource, style } = this.props;
-        const { file, src } = medium;
+        const { src } = medium;
         const { anchorEl } = this.state;
 
         return connectDragSource(
@@ -82,6 +88,7 @@ export default class MenuDecorator extends React.Component {
                     <MenuItem onClick={this.setMediaOnBoard}>Auf der Tafel anzeigen</MenuItem>
                     <MenuItem onClick={this.openWindow}>Im neuen Fenster öffnen</MenuItem>
                     <MenuItem onClick={this.startDownload}>Herunterladen</MenuItem>
+                    <MenuItem onClick={this.delete}>Löschen</MenuItem>
                 </Menu>
                 <a 
                     ref={this.downloadLinkRef} 

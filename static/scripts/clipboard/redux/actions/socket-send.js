@@ -23,6 +23,14 @@ export function addMedia(media) {
     };
 }
 
+export function deleteMedia(id) {
+    return {
+        type: SOCKET_SEND,
+        message: "DELETE_MEDIA",
+        payload: id
+    };
+}
+
 export function uploadFiles(files) {
     return {
         type: UPLOAD_FILES,

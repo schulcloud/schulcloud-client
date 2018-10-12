@@ -9,20 +9,9 @@ import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
 
 export default class LinkDialog extends React.PureComponent{
-    state = {
-        link: "",
-        open: false
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        return {
-            open: props.open,
-            link: !state.open && props.open ? "" : state.link
-        };
-    }
 
     closeWithLink = () => {
-        let link = this.state.link;
+        let link = this.input.current.value;
         this.props.onClose({
             src: link,
             type: 'link'
@@ -33,12 +22,9 @@ export default class LinkDialog extends React.PureComponent{
         this.props.onClose();
     }
 
-    change = (key) => (evt) => {
-        this.setState({[key] : evt.target.value});
-    }
+    input = React.createRef();
 
     render() {
-        const { link } = this.state;
         const { open } = this.props;
         return <Dialog onClose={this.close} open={open}>
             <DialogTitle id="simple-dialog-title">Link teilen</DialogTitle>
@@ -48,8 +34,7 @@ export default class LinkDialog extends React.PureComponent{
             </DialogContentText>
             <TextField
                 autoFocus
-                value={link}
-                onChange={this.change('link')}
+                inputRef={this.input}
                 label="Link"
                 fullWidth
             />

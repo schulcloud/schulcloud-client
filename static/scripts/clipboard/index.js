@@ -17,6 +17,10 @@ $(document).ready(function () {
             primary: { main: '#b10438' },
             secondary: { main: '#e2661d' },
         },
+        typography: {
+            useNextVariants: true,
+            suppressDeprecationWarnings: true
+        },
     });      
 
     ReactDOM.render(
