@@ -5,6 +5,7 @@ module.exports = {
     watch: true,
     entry: {
         clipboard: './static/scripts/clipboard/index.js',
+        loggedin: './static/scripts/loggedin.js'
     },
     module: {
         rules: [
