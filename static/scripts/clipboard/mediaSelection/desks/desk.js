@@ -6,13 +6,11 @@ import Slide from '@material-ui/core/Slide';
 
 const styles = (theme) => ({
     root: {
-        width: '100%',
-        height: 300,
-        bottom: 0,
-        position: 'relative',
+        height: '100%',
         display: 'flex',
         flexDirection: 'row',
         zIndex: -2,
+        overflowY: 'auto'
     },
     fabLeft: {
         position: 'absolute',
@@ -33,7 +31,7 @@ export default class TeacherDesk extends React.PureComponent {
         const { media, url, uploads, classes } = this.props;
         if(!media) return null;
         return (
-                <Slide direction="right" in={true} mountOnEnter unmountOnExit>
+                <Slide direction="right" in={true} mountOnEnter unmountOnExit timeout={300}>
                     <div className={classes.root}>
                         {media.map((medium) => 
                             <Media key={medium.id} medium={medium} url={url} />

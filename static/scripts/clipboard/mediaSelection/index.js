@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
+import Grow from '@material-ui/core/Grow';
 import { withStyles } from '@material-ui/core/styles';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
 import UpIcon from '@material-ui/icons/ArrowDropUp';
@@ -27,6 +28,10 @@ const styles = (theme) => ({
         position: 'absolute',
         bottom: 20,
         left: 20,
+    },
+    button: {
+        width: '100%',
+        color: 'rgba(255,255,255,0.6)',
     }
 });
 
@@ -65,7 +70,7 @@ export default class MediaSelection extends React.Component {
     }
 
     selectDeskType = (deskType) => {
-        this.setState({deskType, desk: null});
+        this.setState({deskType});
     }
     
     selectDesk = (desk) => {
@@ -82,11 +87,17 @@ export default class MediaSelection extends React.Component {
                         <DeskTypeSelection 
                             deskType={deskType}
                             selectDeskType={this.selectDeskType}
+                            bottomButton={
+                                <Button onClick={this.toggle} className={classes.button}>
+                                    <DownIcon/> Menü ausblenden
+                                </Button>                                
+                            }
                         />    
                         <DeskSelection 
                             deskType={deskType}
                             desk={desk}
                             selectDesk={this.selectDesk}
+                            key={deskType}
                         />
                         {!!deskType && !!desk && <Desk
                                 deskType={deskType}
@@ -100,9 +111,11 @@ export default class MediaSelection extends React.Component {
                         }
                     </div>
                 </Slide>
-                <Button variant="fab" className={classes.fabLeft} color="secondary" onClick={this.toggle}>
-                    {show ? <DownIcon/> : <UpIcon/>}
-                </Button>
+                <Grow in={!show}>
+                    <Button variant="fab" className={classes.fabLeft} color="secondary" onClick={this.toggle}>
+                        <UpIcon/>
+                    </Button>
+                </Grow>
             </React.Fragment>
             );
     }

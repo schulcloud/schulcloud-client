@@ -36,8 +36,9 @@ export default class Interactable extends Component {
     displayImageCurrentScale = 1;
 
     componentDidUpdate() {
-        if(this.props.style){
-            let style = this.props.style;
+        const { medium } = this.props;
+        if(medium && medium.style){
+            let style = medium.style;
             this.displayImageScale = style.scale;
             this.displayImageCurrentX = style.x*this.containerWidth;
             this.displayImageCurrentY = style.y*this.containerHeight;

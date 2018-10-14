@@ -24,7 +24,7 @@ const styles = theme => ({
 export default class DeskSelection extends React.PureComponent {
 
     render() {
-        const { classes, deskType, selectDeskType } = this.props;
+        const { classes, deskType, selectDeskType, bottomButton } = this.props;
         return (
             <div className={classes.root}>
                 <List component="nav">
@@ -68,6 +68,8 @@ export default class DeskSelection extends React.PureComponent {
                         <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary="Gruppentische" />
                     </ListItem>
                 </List>
+                {bottomButton}
+                }
             </div>
         );
     }

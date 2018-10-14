@@ -46,3 +46,13 @@ export function setBoardLayout(layout) {
         payload: layout
     };
 }
+
+export function createGroupDesk(name) {
+    return {
+        type: SOCKET_SEND,
+        message: "CREATE_GROUP_DESK",
+        payload: {
+            name
+        }
+    };
+}
