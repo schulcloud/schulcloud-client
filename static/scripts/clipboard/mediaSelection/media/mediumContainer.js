@@ -28,7 +28,7 @@ const styles = theme => ({
 @withStyles(styles)
 export default class MediumContainer extends React.PureComponent {
     render() {
-        const { medium, url, isDragging, progress, classes, onClick } = this.props;
+        const { medium, url, isDragging, classes, onClick } = this.props;
 
         return  <Card 
                     className={classes.root + (isDragging ? ' ' + classes.isDragging : '')}
@@ -40,8 +40,8 @@ export default class MediumContainer extends React.PureComponent {
                             url={url} 
                             infoClassName={classes.info}
                         />
-                        {progress !== undefined && 
-                            <LinearProgress variant="determinate" value={progress} />
+                        {medium && medium.progress !== undefined && 
+                            <LinearProgress variant="determinate" value={medium.progress} />
                         }
                     </CardActionArea>
                 </Card>;

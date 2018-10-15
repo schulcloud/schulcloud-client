@@ -16,9 +16,7 @@ export const uploadImagesMiddleware = store => next => action => {
                 url
             };
             uploader.submitFiles([file]);
-            var urlCreator = window.URL || window.webkitURL;
-            var preview = urlCreator.createObjectURL(file);
-            store.dispatch(uploadProgress({file, progress:0, preview, convert:true}));
+            store.dispatch(uploadProgress({file, progress:0, convert:false}));
         };
 
         (action.payload.files || []).forEach((file) => {
