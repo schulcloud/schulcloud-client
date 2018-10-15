@@ -40,8 +40,6 @@ function mapStateToProps(state) {
     return {
         uploads: state.uploads,
         url: state.socket.url,
-        deskType: state.me.bucket,
-        desk: state.me.id
     };
 }
 
@@ -51,64 +49,29 @@ export default class MediaSelection extends React.Component {
 
     state = {
         show: true,
-        init: false,
-        deskType: '',
-        desk: ''
     };
-
-    static getDerivedStateFromProps(props, state) {
-        if(state.init || !props.deskType) return null;
-        return {
-            init: true,
-            deskType: props.deskType,
-            desk: props.desk
-        };
-    }
 
     toggle = () => {
         this.setState({show: !this.state.show});
     }
 
-    selectDeskType = (deskType) => {
-        this.setState({deskType});
-    }
-    
-    selectDesk = (desk) => {
-        this.setState({desk});
-    }
-
     render() {
         const { classes } = this.props;
-        const { show, deskType, desk } = this.state;
+        const { show } = this.state;
         return (
             <React.Fragment>
                 <Slide direction="up" in={show} mountOnEnter unmountOnExit>
                     <div className={classes.root}>
                         <DeskTypeSelection 
-                            deskType={deskType}
-                            selectDeskType={this.selectDeskType}
                             bottomButton={
                                 <Button onClick={this.toggle} className={classes.button}>
                                     <DownIcon/> Menü ausblenden
                                 </Button>                                
                             }
                         />    
-                        <DeskSelection 
-                            deskType={deskType}
-                            desk={desk}
-                            selectDesk={this.selectDesk}
-                            key={deskType}
-                        />
-                        {!!deskType && !!desk && <Desk
-                                deskType={deskType}
-                                desk={desk} 
-                        />}                 
-                        {!!deskType && !!desk &&
-                            <AddButton 
-                                desk={desk}
-                                deskType={deskType}
-                            />
-                        }
+                        <DeskSelection />
+                        <Desk/>                 
+                        <AddButton />
                     </div>
                 </Slide>
                 <Grow in={!show}>

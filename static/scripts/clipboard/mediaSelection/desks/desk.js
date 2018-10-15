@@ -21,10 +21,10 @@ const styles = (theme) => ({
 
 
 @withStyles(styles)
-@connect(({uploads, socket, desks}, {deskType, desk}) => ({
+@connect(({uploads, socket, desks}) => ({
     uploads,
     url: socket.url,
-    media: (desks[deskType][desk] || {}).media
+    media: desks.deskType && desks.desk && (desks[desks.deskType][desks.desk] || {}).media
 }))
 export default class TeacherDesk extends React.PureComponent {
     render() {

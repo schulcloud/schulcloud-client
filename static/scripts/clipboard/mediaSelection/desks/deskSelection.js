@@ -8,6 +8,7 @@ import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { createGroupDesk } from '../../redux/actions/socket-send';
+import { setDesk } from '../../redux/actions/local';
 
 import GroupDeskDialog from './groupDeskDialog';
 
@@ -36,18 +37,22 @@ const styles = theme => ({
   });
 
 @withStyles(styles)
-@connect(({desks}, {deskType}) => ({
-    desks: desks[deskType]
+
+@connect(({desks}) => ({
+    desks: desks[desks.deskType],
+    desk: desks.desk,
+    deskType: desks.deskType
 }), (dispatch) => ({
-    createGroupDesk: (name) => dispatch(createGroupDesk(name))
+    createGroupDesk: (name) => dispatch(createGroupDesk(name)),
+    setDesk: (desk) => dispatch(setDesk(desk))
 }))
 export default class DeskSelection extends React.PureComponent {
 
     componentDidMount() {
-        const { desks, selectDesk } = this.props;
+        const { desks, setDesk } = this.props;
         if(!desks) return;
         if(Object.keys(desks).length == 1) {
-            selectDesk(Object.keys(desks)[0]);
+            setDesk(Object.keys(desks)[0]);
         } 
     }
 
@@ -67,13 +72,13 @@ export default class DeskSelection extends React.PureComponent {
     }
     
     render() {
-        const { classes, desks, desk, selectDesk, deskType } = this.props;
+        const { classes, desks, desk, setDesk, deskType } = this.props;
         const { open } = this.state;
         if(!desks) return null;
         const nDesks = Object.keys(desks).length;
         return (
         <React.Fragment>
-            <Slide direction="right" in={true} appear={true} mountOnEnter unmountOnExit>
+            <Slide key={deskType} direction="right" in={true} appear={true} mountOnEnter unmountOnExit>
                 <div className={classes.root}>
                     <List component="nav" className={classes.list}>
                         {Object.keys(desks).map((id) => 
@@ -83,7 +88,7 @@ export default class DeskSelection extends React.PureComponent {
                                 button
                                 classes={{selected: classes.selected}}
                                 selected={desk === id}
-                                onClick={() => selectDesk(id)}
+                                onClick={() => setDesk(id)}
                             >
                                 <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary={desks[id].name} />
                             </ListItem>

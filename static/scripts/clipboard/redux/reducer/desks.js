@@ -3,12 +3,24 @@ import {
     CLIPBOARD_UPDATE
 } from '../actions/socket-receive';
 
-const initialState = {};
+import {
+    SET_DESK,
+    SET_DESK_TYPE
+} from '../actions/local';
+
+const initialState = {
+    deskType: '',
+    desk: ''
+};
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
         case CLIPBOARD_INIT:
-            return action.payload.desks;
+            return {
+                ...action.payload.desks,
+                desk: action.payload.me.id,
+                deskType: action.payload.me.bucket
+            };
 
         case CLIPBOARD_UPDATE:
             {
@@ -19,6 +31,18 @@ export default function reducer(state = initialState, action = {}) {
                     } :
                     state;
             }
+        case SET_DESK: {
+            return {
+                ...state,
+                desk: action.payload
+            };
+        }
+        case SET_DESK_TYPE: {
+            return {
+                ...state,
+                deskType: action.payload
+            };
+        }
         default:
             return state;
     }

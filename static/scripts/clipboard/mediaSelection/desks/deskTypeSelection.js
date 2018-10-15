@@ -1,10 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SvgIcon from '@material-ui/core/SvgIcon';
+
+import { setDeskType } from '../../redux/actions/local';
 
 import { GroupDesk, TeacherDesk, StudentDesk } from './icons';
 
@@ -21,10 +24,16 @@ const styles = theme => ({
 
 
 @withStyles(styles)
+@connect(({desks}) => ({
+    desk: desks.desk,
+    deskType: desks.deskType
+}),(dispatch) => ({
+    setDeskType: (desk) => dispatch(setDeskType(desk))
+}))
 export default class DeskSelection extends React.PureComponent {
 
     render() {
-        const { classes, deskType, selectDeskType, bottomButton } = this.props;
+        const { classes, deskType, setDeskType, bottomButton } = this.props;
         return (
             <div className={classes.root}>
                 <List component="nav">
@@ -32,7 +41,7 @@ export default class DeskSelection extends React.PureComponent {
                         button
                         classes={{selected: classes.selected}}
                         selected={deskType === "teachers"}
-                        onClick={() => selectDeskType("teachers")}
+                        onClick={() => setDeskType("teachers")}
                     >
                         <ListItemIcon>
                             <SvgIcon>
@@ -45,7 +54,7 @@ export default class DeskSelection extends React.PureComponent {
                         button
                         classes={{selected: classes.selected}}
                         selected={deskType === "students"}
-                        onClick={() => selectDeskType("students")}
+                        onClick={() => setDeskType("students")}
                     >
                         <ListItemIcon>
                             <SvgIcon>
@@ -58,7 +67,7 @@ export default class DeskSelection extends React.PureComponent {
                         button
                         classes={{selected: classes.selected}}
                         selected={deskType === "groups"}
-                        onClick={() => selectDeskType("groups")}
+                        onClick={() => setDeskType("groups")}
                     >
                         <ListItemIcon>
                             <SvgIcon>
