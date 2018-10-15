@@ -23,7 +23,8 @@ const map = require('vinyl-map');
 const named = require('vinyl-named');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
-const webpackConfig = require('./webpack.config');
+const webpackConfig = require('./webpack.config.static');
+const webpackConfigWatch = require('./webpack.config.watch');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -144,6 +145,7 @@ gulp.task('scripts', () => {
         }]
       ],
     }))
+    .pipe(webpackStream(webpackConfig, webpack))
     .pipe(gulp.dest(`./build/${themeName()}/scripts`))
     .pipe(browserSync.stream());
   
@@ -152,7 +154,7 @@ gulp.task('scripts', () => {
 gulp.task('webpack', () => {
   gulp.src(webpackScripts)
     .pipe(filelog())
-    .pipe(webpackStream(webpackConfig, webpack))
+    .pipe(webpackStream(webpackConfigWatch, webpack))
     .pipe(gulp.dest(`./build/${themeName()}/webpacked/`))
     .pipe(browserSync.stream());
 });
