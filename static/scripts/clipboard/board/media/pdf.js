@@ -34,7 +34,7 @@ export default class PdfViewer extends React.Component {
     }
 
     render() {
-        const { classes, preview } = this.props;
+        const { classes } = this.props;
         return <div className={classes.root} ref={this.myRef} />;
     }
 }

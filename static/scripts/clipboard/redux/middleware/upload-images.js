@@ -7,11 +7,13 @@ export const uploadImagesMiddleware = store => next => action => {
     next(action);
     if(action.type === UPLOAD_FILES && store.getState().socket.uploader) {
         let uploader = store.getState().socket.uploader;
+        let url = store.getState().socket.url;
 
         let upload = (file) => {
             file.meta = {
                 desk: action.payload.desk,
                 deskType: action.payload.deskType,
+                url
             };
             uploader.submitFiles([file]);
             var urlCreator = window.URL || window.webkitURL;

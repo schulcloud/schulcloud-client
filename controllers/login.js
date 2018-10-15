@@ -38,6 +38,7 @@ router.post('/login/', function (req, res, next) {
                     return api(req).post('/authentication', {json: data}).then(data => {
                         res.cookie('jwt', data.accessToken, {
                             expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                            domain: req.hostname === 'localhost' ? undefined : '.' + req.hostname,
                         });
                         res.redirect('/login/success/');
                     }).catch(_ => {
@@ -179,7 +180,9 @@ router.get('/login/systems/:schoolId', function (req, res, next) {
 router.get('/logout/', function (req, res, next) {
     api(req).del('/authentication')
         .then(_ => {
-            res.clearCookie('jwt');
+            res.clearCookie('jwt', {
+                domain: req.hostname === 'localhost' ? undefined : '.' + req.hostname
+            });
             return res.redirect('/');
         }).catch(_ => {
         return res.redirect('/');
