@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import Thumbnail from './thumbnail';
 

@@ -38,7 +38,6 @@ const styles = (theme) => ({
 
 function mapStateToProps(state) {
     return {
-        uploads: state.uploads,
         url: state.socket.url,
     };
 }
