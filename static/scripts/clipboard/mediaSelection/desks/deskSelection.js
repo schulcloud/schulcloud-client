@@ -38,8 +38,9 @@ const styles = theme => ({
 
 @withStyles(styles)
 
-@connect(({desks}) => ({
+@connect(({desks, me}) => ({
     desks: desks[desks.deskType],
+    filter: me.role !== "teacher" && desks.deskType === "students" && me.id,
     desk: desks.desk,
     deskType: desks.deskType
 }), (dispatch) => ({
@@ -47,14 +48,6 @@ const styles = theme => ({
     setDesk: (desk) => dispatch(setDesk(desk))
 }))
 export default class DeskSelection extends React.PureComponent {
-
-    componentDidMount() {
-        const { desks, setDesk } = this.props;
-        if(!desks) return;
-        if(Object.keys(desks).length == 1) {
-            setDesk(Object.keys(desks)[0]);
-        } 
-    }
 
     state = {
         open: false
@@ -72,7 +65,7 @@ export default class DeskSelection extends React.PureComponent {
     }
     
     render() {
-        const { classes, desks, desk, setDesk, deskType } = this.props;
+        const { classes, desks, desk, setDesk, deskType, filter } = this.props;
         const { open } = this.state;
         if(!desks) return null;
         const nDesks = Object.keys(desks).length;
@@ -81,7 +74,7 @@ export default class DeskSelection extends React.PureComponent {
             <Slide key={deskType} direction="right" in={true} appear={true} mountOnEnter unmountOnExit>
                 <div className={classes.root}>
                     <List component="nav" className={classes.list}>
-                        {Object.keys(desks).map((id) => 
+                        {Object.keys(desks).filter((id) => !filter || filter === id).map((id) => 
                             <ListItem
                                 key={id}
                                 dense={true}

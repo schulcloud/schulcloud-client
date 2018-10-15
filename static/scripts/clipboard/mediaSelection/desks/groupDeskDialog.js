@@ -50,14 +50,11 @@ export default class CreateGroupDialog extends React.Component{
                     />
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={this.close} color="primary">
-                    Abbrechen
+                <Button onClick={this.close} color="secondary" variant="outlined">
+                    Schließen
                 </Button>
-                <Button onClick={this.submit} color="primary" variant="outlined">
+                <Button onClick={this.submit} color="secondary" variant="contained">
                     Erstellen
-                </Button>
-                <Button onClick={this.closeWithName}  color="primary" variant="outlined">
-                    Erstellen und schließen
                 </Button>
                 </DialogActions>
             </Dialog>

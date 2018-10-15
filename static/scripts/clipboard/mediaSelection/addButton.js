@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Grow from '@material-ui/core/Grow';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Menu from '@material-ui/core/Menu';
@@ -22,10 +23,18 @@ const styles = {
     },
 };
 
-function mapStateToProps(state) {
+function mapStateToProps({socket, me, desks}) {
     return {
-        uploader: state.socket.uploader,
-        url: state.socket.url,
+        uploader: socket.uploader,
+        url: socket.url,
+        desk: desks.desk,
+        deskType: desks.deskType,
+        show: desks.deskType && desks.desk && (
+            me.role === "teacher" 
+            || desks.deskType === me.bucket 
+                && desks.desk === me.id
+            || desks.deskType === "groups"
+        )
     };
 }
 
@@ -104,13 +113,15 @@ export default class AddButton extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, show } = this.props;
         const { menuEl, linkDialog, documentDialog } = this.state;
         return (
                 <React.Fragment>
-                    <Button variant="fab" className={classes.root} color="secondary" onClick={this.openMenu}>
-                        <AddIcon/>
-                    </Button>
+                    <Grow in={show}>
+                        <Button variant="fab" className={classes.root} color="secondary" onClick={this.openMenu}>
+                            <AddIcon/>
+                        </Button>
+                    </Grow>
                     <Menu
                         anchorEl={menuEl}
                         open={!!menuEl}

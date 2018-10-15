@@ -5,7 +5,7 @@ export function uploadProgress(update) {
         file: update.file.name,
         name: update.file.name,
         sender: update.convert ? "Konvertieren" : "Hochladen",
-        progress: update.progress,
+        progress: Math.floor(update.progress),
         type: {
             mime: update.file.type
         },

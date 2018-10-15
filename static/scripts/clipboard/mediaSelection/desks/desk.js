@@ -24,14 +24,15 @@ const styles = (theme) => ({
 @connect(({uploads, socket, desks}) => ({
     uploads,
     url: socket.url,
+    desk: desks.desk,
     media: desks.deskType && desks.desk && (desks[desks.deskType][desks.desk] || {}).media
 }))
 export default class TeacherDesk extends React.PureComponent {
     render() {
-        const { media, url, uploads, classes } = this.props;
+        const { media, url, uploads, desk, classes } = this.props;
         if(!media) return null;
         return (
-                <Slide direction="right" in={true} mountOnEnter unmountOnExit timeout={300}>
+                <Slide direction="right" in={true} key={desk} mountOnEnter unmountOnExit timeout={300}>
                     <div className={classes.root}>
                         {media.map((medium) => 
                             <Media key={medium.id} medium={medium} url={url} />

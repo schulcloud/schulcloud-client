@@ -15,6 +15,9 @@ const styles = theme => ({
     root: {
       width: 230,
       backgroundColor: theme.palette.background.paper,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
     },
     selected: {
         backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -24,20 +27,21 @@ const styles = theme => ({
 
 
 @withStyles(styles)
-@connect(({desks}) => ({
+@connect(({desks, me}) => ({
     desk: desks.desk,
-    deskType: desks.deskType
+    deskType: desks.deskType,
+    teacher: me.role === "teacher"
 }),(dispatch) => ({
     setDeskType: (desk) => dispatch(setDeskType(desk))
 }))
 export default class DeskSelection extends React.PureComponent {
 
     render() {
-        const { classes, deskType, setDeskType, bottomButton } = this.props;
+        const { classes, deskType, setDeskType, bottomButton, teacher } = this.props;
         return (
             <div className={classes.root}>
                 <List component="nav">
-                    <ListItem
+                    {teacher && <ListItem
                         button
                         classes={{selected: classes.selected}}
                         selected={deskType === "teachers"}
@@ -49,7 +53,7 @@ export default class DeskSelection extends React.PureComponent {
                             </SvgIcon>
                         </ListItemIcon>
                         <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary="Lehrertisch" />
-                    </ListItem>
+                    </ListItem>}
                     <ListItem
                         button
                         classes={{selected: classes.selected}}
@@ -78,7 +82,6 @@ export default class DeskSelection extends React.PureComponent {
                     </ListItem>
                 </List>
                 {bottomButton}
-                }
             </div>
         );
     }
