@@ -17,9 +17,9 @@ const styles = {
     },
 };
 
-function mapStateToProps(state) {
+function mapStateToProps({desks}) {
     return {
-        layout: state.board.layout
+        layout: desks.currentDesk && desks.currentDesk.board.layout
     };
 }
 

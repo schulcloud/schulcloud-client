@@ -9,18 +9,24 @@ import TextField from '@material-ui/core/TextField';
 
 export default class CreateGroupDialog extends React.Component{
 
-    closeWithName = () => {
-        this.props.onClose({
-            name: this.input.current.value,
-        });
-    }
-
     submit = () => {
         this.props.onClose({
             name: this.input.current.value,
             keepOpen: true,
         });
         this.input.current.value = "";
+    }
+
+    handleTextFieldKeyDown = event => {
+        switch (event.key) {
+            case 'Enter':
+                this.submit();
+                break;
+            case 'Escape':
+                this.close();
+                break;
+            default: break;
+        }
     }
 
     close = () => {
@@ -30,7 +36,7 @@ export default class CreateGroupDialog extends React.Component{
     input = React.createRef();
 
     componentDidUpdate() {
-        window.setTimeout(() => this.input.current && this.input.current.focus(), 100);
+        setTimeout(() => this.input.current && this.input.current.focus(), 500);
     }
 
     render() {
@@ -45,6 +51,7 @@ export default class CreateGroupDialog extends React.Component{
                     </DialogContentText>
                     <TextField
                         inputRef={this.input}
+                        onKeyDown={this.handleTextFieldKeyDown}
                         label="Name"
                         fullWidth
                     />

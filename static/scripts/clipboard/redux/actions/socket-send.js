@@ -8,6 +8,7 @@ export function setMediaOnBoard({
     return {
         type: SOCKET_SEND,
         message: "SET_MEDIA_ON_BOARD",
+        includeDesk: true,
         payload: {
             slot,
             media
@@ -19,6 +20,7 @@ export function addMedia(media) {
     return {
         type: SOCKET_SEND,
         message: "ADD_MEDIA",
+        includeDesk: true,
         payload: media
     };
 }
@@ -43,6 +45,7 @@ export function setBoardLayout(layout) {
     return {
         type: SOCKET_SEND,
         message: "SET_BOARD_LAYOUT",
+        includeDesk: true,
         payload: layout
     };
 }

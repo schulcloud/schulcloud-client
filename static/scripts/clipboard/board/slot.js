@@ -45,7 +45,7 @@ const styles = {
 
 function mapStateToProps(state, {slotId}) {
     return {
-        medium: state.board.media[slotId],
+        medium: state.desks.currentDesk && state.desks.currentDesk.board.media[slotId],
         url: state.socket.url,
     };
 }

@@ -18,11 +18,27 @@ export default class LinkDialog extends React.PureComponent{
         });
     }
 
+    handleTextFieldKeyDown = event => {
+        switch (event.key) {
+            case 'Enter':
+                this.closeWithLink();
+                break;
+            case 'Escape':
+                this.close();
+                break;
+            default: break;
+        }
+    }
+
     close = () => {
         this.props.onClose();
     }
 
     input = React.createRef();
+
+    componentDidUpdate() {
+        setTimeout(() => this.input.current && this.input.current.focus(), 500);
+    }
 
     render() {
         const { open } = this.props;
@@ -33,17 +49,17 @@ export default class LinkDialog extends React.PureComponent{
                 Füge hier ein Link ein, um es allen Geräten zur Verfügung zu stellen
             </DialogContentText>
             <TextField
-                autoFocus
+                onKeyDown={this.handleTextFieldKeyDown}
                 inputRef={this.input}
                 label="Link"
                 fullWidth
             />
             </DialogContent>
             <DialogActions>
-            <Button onClick={this.close} color="primary">
-                Abbrechen
+            <Button onClick={this.close} color="secondary" variant="outlined">
+                Schließen
             </Button>
-            <Button onClick={this.closeWithLink} color="primary">
+            <Button onClick={this.closeWithLink} color="secondary" variant="contained">
                 Teilen
             </Button>
             </DialogActions>

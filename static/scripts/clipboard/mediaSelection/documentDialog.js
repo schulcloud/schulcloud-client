@@ -19,6 +19,18 @@ export default class DocumentDialog extends React.Component{
         });
     }
 
+    handleTextFieldKeyDown = event => {
+        switch (event.key) {
+            case 'Enter':
+                this.closeWithDocument();
+                break;
+            case 'Escape':
+                this.close();
+                break;
+            default: break;
+        }
+    }
+
     close = () => {
         this.props.onClose();
     }
@@ -26,7 +38,7 @@ export default class DocumentDialog extends React.Component{
     input = React.createRef();
 
     componentDidUpdate() {
-        window.setTimeout(() => this.input.current && this.input.current.focus(), 100);
+        setTimeout(() => this.input.current && this.input.current.focus(), 500);
     }
 
     render() {
@@ -42,14 +54,15 @@ export default class DocumentDialog extends React.Component{
                     <TextField
                         inputRef={this.input}
                         label="Name"
+                        onKeyDown={this.handleTextFieldKeyDown}
                         fullWidth
                     />
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={this.close} color="primary">
-                    Abbrechen
+                <Button onClick={this.close} color="secondary" variant="outlined">
+                    Schließen
                 </Button>
-                <Button onClick={this.closeWithDocument} color="primary">
+                <Button onClick={this.closeWithDocument} color="secondary" variant="contained">
                     Erstellen
                 </Button>
                 </DialogActions>

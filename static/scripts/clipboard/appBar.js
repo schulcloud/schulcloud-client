@@ -26,7 +26,7 @@ const styles = {
 };
 
 
-const LayoutIcon = connect(({board}) => ({layout: board.layout}))(
+const LayoutIcon = connect(({desks}) => ({layout: desks.currentDesk && desks.currentDesk.board.layout}))(
   ({layout}) => {
     const SVG = ((layoutOptions[layout] || layoutOptions["1x1"]).svg);
     return <SVG />;
