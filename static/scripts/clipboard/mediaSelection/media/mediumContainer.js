@@ -42,7 +42,7 @@ export default class MediumContainer extends React.PureComponent {
                             infoClassName={classes.info}
                         />
                         {medium && medium.progress !== undefined && 
-                            <LinearProgress variant="determinate" value={medium.progress} />
+                            <LinearProgress variant="determinate" value={medium.progress} color="secondary" />
                         }
                     </CardActionArea>
                 </Card>;
