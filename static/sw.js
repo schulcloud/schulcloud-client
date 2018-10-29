@@ -36,22 +36,29 @@ workbox.routing.registerRoute(
 );
 
 // cache pages for one hour
+const pageHandler = workbox.strategies.networkFirst({
+    cacheName: 'pages',
+    maxAgeSeconds: 60 * 60,
+    networkTimeoutSeconds: 3,
+    plugins: [
+        new workbox.expiration.Plugin({
+            maxEntries: 50,
+            maxAgeSeconds: 60 * 60,
+        }),
+        new workbox.cacheableResponse.Plugin({
+            statuses: [0, 200],
+        }),
+    ],
+});
+const FALLBACK_URL = '/offline/';
 workbox.routing.registerRoute(
     /\/(dashboard|news|courses)\/$/,
-    workbox.strategies.networkFirst({
-        cacheName: 'pages',
-        maxAgeSeconds: 60 * 60,
-        networkTimeoutSeconds: 3,
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60,
-            }),
-            new workbox.cacheableResponse.Plugin({
-                statuses: [0, 200],
-            }),
-        ],
-    })
+    ({ event }) => {
+        return pageHandler.handle({ event })
+            .then((response) => {
+                return response || caches.match(FALLBACK_URL);
+            }).catch(() => caches.match(FALLBACK_URL));
+    }
 );
 
 const queue = new workbox.backgroundSync.Queue('logs');
