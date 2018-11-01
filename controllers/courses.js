@@ -363,6 +363,39 @@ router.get('/:courseId/json', function(req, res, next) {
     ]).then(([course, lessons]) => res.json({ course, lessons }));
 });
 
+router.get('/:courseId/offline', function(req, res, next){
+    Promise.all([
+        api(req).get('/courses/' + req.params.courseId, {
+            qs: {
+                $populate: ['ltiToolIds']
+            }
+        }),
+        api(req).get('/lessons/', {
+            qs: {
+                courseId: req.params.courseId
+            }
+        })
+    ]).then(([course, lessons]) => {
+        lessons = (lessons.data || []).map(lesson => {
+            return {
+                _id: lesson._id,
+                updatedAt: lesson.updatedAt,
+                url: '/courses/' + req.params.courseId + '/topics/' + lesson._id + '/'
+            };            
+        });
+        res.json({
+            course : {
+                _id: course._id,
+                updatedAt: course.updatedAt,
+                url: '/courses/' + course._id,
+                startDate: course.startDate,
+                untilDate: course.untilDate
+            },
+            lessons
+        });
+    });
+});
+
 router.get('/:courseId/usersJson', function(req, res, next) {
     Promise.all([
         api(req).get('/courses/' + req.params.courseId, {
