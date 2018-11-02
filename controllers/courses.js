@@ -379,14 +379,14 @@ router.get('/:courseId/offline', function(req, res, next){
         lessons = (lessons.data || []).map(lesson => {
             return {
                 _id: lesson._id,
-                updatedAt: lesson.updatedAt,
+                updatedAt: Date.parse(lesson.updatedAt),
                 url: '/courses/' + req.params.courseId + '/topics/' + lesson._id + '/'
             };            
         });
         res.json({
             course : {
                 _id: course._id,
-                updatedAt: course.updatedAt,
+                updatedAt: Date.parse(course.updatedAt),
                 url: '/courses/' + course._id,
                 startDate: course.startDate,
                 untilDate: course.untilDate
