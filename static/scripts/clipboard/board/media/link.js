@@ -33,10 +33,14 @@ export default class Link extends React.Component {
             && medium.src;
     }
 
-    static actions = {
-        qr: () => <SvgIcon><QrIcon/></SvgIcon>,
-        iframe: () => <IFrameIcon />,
-    }
+    static actions = [
+        {
+            icon: (medium) => medium.qr
+                ? <IFrameIcon />
+                : <SvgIcon><QrIcon/></SvgIcon>,
+            update: (medium) => ({qr : !medium.qr}),
+        }
+    ]
 
     render() {
         const { classes, medium } = this.props;

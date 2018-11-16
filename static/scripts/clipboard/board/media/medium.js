@@ -2,10 +2,9 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Image from './image';
 import PDF from './pdf';
-import YouTube from './youtube';
 import Link from './link';
 import Etherpad from './etherpad';
-import File from '../../mediaSelection/media/file';
+import File from './file';
 import MultiMedia from './multiMedia';
 
 const styles = {
@@ -32,7 +31,6 @@ export default class Media extends React.PureComponent {
         let Medium = File;
         if(Image.accepts(medium)) Medium = Image;
         else if(MultiMedia.accepts(medium)) Medium = MultiMedia;
-        else if(YouTube.accepts(medium)) Medium = YouTube;
         else if(PDF.accepts(medium)) Medium = PDF;
         else if(Link.accepts(medium)) Medium = Link;
         else if(Etherpad.accepts(medium)) Medium = Etherpad;
@@ -46,7 +44,7 @@ export default class Media extends React.PureComponent {
     }
 
     render() {
-        let { url, medium, onUpdate, classes, preview } = this.props;
+        let { url, medium, onUpdate, classes } = this.props;
 
         let Medium = this.state.Medium;
         if(!Medium) return;
@@ -55,7 +53,6 @@ export default class Media extends React.PureComponent {
             <div className={classes.media}>
                 <Medium 
                     url={url}
-                    preview={preview}
                     medium={medium}
                     onUpdate={onUpdate}
                 />

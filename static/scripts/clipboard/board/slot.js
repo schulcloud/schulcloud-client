@@ -32,6 +32,10 @@ const styles = {
         justifyContent: 'center',
         textAlign: 'center',
         padding: '5vmin',
+        fontSize: '100pt',
+        color: 'black',
+        background: 'rgba(255,255,255,0.8)',
+        border: 'solid 5px'
     },
     isOver:{
         background: "rgba(20,200,20,0.5)",
@@ -96,7 +100,7 @@ export default class Slot extends React.Component {
                     <div 
                         className={classes.empty + " " + ["", classes.canDrop, classes.isOver][isOver + canDrop]}
                     >
-                        <h1>Ziehe einen Inhalt hierhin, um ihn auf der Tafel anzuzeigen</h1>
+                        {slotId+1}
                     </div>
                 }
             </div>

@@ -85,14 +85,13 @@ export default class Media extends React.Component {
                                 {media.name} | {media.sender}
                             </Typography>
                             <div style={{flex:1}} />
-                            {Object.keys(this.state.actions || {}).map((action) => 
+                            {(this.state.actions || []).map((action) => 
                                 <IconButton
                                     key={action}
                                     color="inherit"
-                                    aria-label={action}
-                                    onClick={() => this.updateMedia({[action]: !media[action]})}
+                                    onClick={() => this.updateMedia(action.update(media))}
                                 >
-                                    {this.state.actions[action]()}
+                                    {action.icon(media)}
                                 </IconButton>
                             )}
                             <IconButton 

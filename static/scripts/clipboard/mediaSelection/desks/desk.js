@@ -25,7 +25,7 @@ const styles = (theme) => ({
     uploads,
     url: socket.url,
     desk: desks.desk,
-    media: desks.deskType && desks.desk && (desks[desks.deskType][desks.desk] || {}).media
+    media: desks.currentDesk && desks.currentDesk.media
 }))
 export default class TeacherDesk extends React.PureComponent {
     render() {

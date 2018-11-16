@@ -3,7 +3,7 @@ import ImageCompressor from 'image-compressor.js';
 import { UPLOAD_FILES } from "../actions/socket-send";
 import { uploadProgress } from "../actions/socket-upload";
 
-export const uploadImagesMiddleware = store => next => action => {
+export const uploadMiddleware = store => next => action => {
     next(action);
     if(action.type === UPLOAD_FILES && store.getState().socket.uploader) {
         let uploader = store.getState().socket.uploader;

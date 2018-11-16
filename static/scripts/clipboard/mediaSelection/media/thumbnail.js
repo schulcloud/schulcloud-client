@@ -22,11 +22,10 @@ const styles = {
 
 @withStyles(styles)
 
-export default class MediumContainer extends React.PureComponent {
+export default class Thumbnail extends React.PureComponent {
     
     render() {
-        const { medium, url, classes, upload } = this.props;
-        const { file, src } = medium;
+        const { medium, classes } = this.props;
         
         if(Image.accept(medium)) return <Image {...medium} infoClassName={classes.info} />;
         if(YouTube.accept(medium)) return <YouTube {...medium} infoClassName={classes.info}  />;
