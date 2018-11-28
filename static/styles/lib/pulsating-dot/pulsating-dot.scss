@@ -1,0 +1,97 @@
+// <div class="pulsating-dot">
+//   <div class="pulsating-dot__ripple">
+//     <span></span>
+//     <div></div>
+//     <div></div>
+//     <div></div>
+//   </div>
+// </div>
+
+.pulsating-dot-wrapper {
+  .pulsating-dot {
+    box-sizing: border-box;
+    display: flex;
+    width: 50px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0.1);
+      opacity: 1; }
+
+    30% {
+      transform: scale(0.8);
+      opacity: 0.1; }
+
+    50% {
+      transform: scale(1);
+      opacity: 0.0; }
+
+    100% {
+      opacity: 0.0; } }
+
+  @keyframes scale {
+    0%  { transform: scale(1); }
+    70% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+  }
+
+  .pulsating-dot__ripple {
+    position: relative;
+    transform: translateY(-25px) translateX(-25px);
+  }
+
+
+  .pulsating-dot__ripple > span {
+    box-sizing: border-box;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background-color: #$primaryColor;
+    box-shadow: 0 0 5px #fff, inset 0 0 5px #fff;
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+    -webkit-animation: scale 5.5s infinite linear;
+            animation: scale 5.5s infinite linear;
+
+  }
+
+
+  .pulsating-dot__ripple > div {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    border: 2px solid #$primaryColor;
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+    -webkit-animation: ripple 5.5s 0s infinite cubic-bezier(.2,.54,.58,.7);
+            animation: ripple 5.5s 0s infinite cubic-bezier(.2,.54,.58,.7);
+    }
+
+  .pulsating-dot__ripple > div:nth-child(0) {
+    -webkit-animation-delay: -1s;
+            animation-delay: -1s; }
+
+  .pulsating-dot__ripple > div:nth-child(1) {
+    -webkit-animation-delay: -2s;
+            animation-delay: -2s; }
+
+  .pulsating-dot__ripple > div:nth-child(2) {
+    -webkit-animation-delay: -3s;
+            animation-delay: -3s; }
+
+  .pulsating-dot__ripple > div:nth-child(3) {
+    -webkit-animation-delay: -4s;
+            animation-delay: -4s; }
+
+}
