@@ -43,7 +43,7 @@
       pagination,
     },
     name: 'ContentSearch',
-    props: ['inReview', 'heading', 'userId', 'task', 'passedMessage'],
+    props: ['inReview', 'heading', 'userId', 'passedMessage'],
     data() {
       return {
         data: [],
@@ -97,8 +97,8 @@
       },
       constructPathFromURL(urlQuery) {
         let queryString = '?limit=' + this.pagination.itemsPerPage + '&userId=' + this.userId + '&';
-        if (this.task) {
-          queryString += 'task=' + this.task + '&';
+        if (this.inReview) {
+          queryString += 'task=review&';
         } else {
           queryString += 'task=search&';
         }

@@ -26,8 +26,9 @@
       </div>
 
       <div class="badges">
-        <h3>Badges</h3>
+        <h3>Übersicht über schon erreichte und noch erreichbare Badges</h3>
 
+        <h5>Erreichte Badges</h5>
         {{#each userInfo.achievements}}
         <div class="badge-row">
           <img src="/images/badges/king.png" alt="">
@@ -43,6 +44,8 @@
           </div>
         </div>
         {{/each}}
+
+        <h5>Noch zu erreichende Badges</h5>
         {{#each possibleBadges}}
         <div class="badge-row opacityblur">
           <img src="/images/badges/king.png" alt="">

@@ -265,10 +265,10 @@
 
     .community-icon {
       position: absolute;
-      position: absolute;
-      transform: rotate(-10deg);
+      transform: rotate(-7deg);
       width: 150px;
-      top: -20px;
+      top: -7px;
+      left: 1px;
       border-radius: 0;
     }
 

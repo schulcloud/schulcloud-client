@@ -46,7 +46,7 @@
       return {
         contentId: window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1),
         data: {},
-        external,
+        external: false,
         oldTitle: '',
         oldContent: '',
         oldSubjects: [],

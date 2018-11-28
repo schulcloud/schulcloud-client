@@ -20,10 +20,10 @@
             Fach
             <md-tooltip class="tooltip" md-direction="right" v-if="!enoughPoints" md-delay="1000">Um diese Suchfilter benutzen zu können, benötigen Sie mehr Punkte. Wie Sie diese erhalten, können Sie hier (todo) nachlesen</md-tooltip>
         </md-menu-item>
-        <md-menu-item :disabled="!enoughPoints" v-if="!isApplied('topics')" v-on:click="visibleProvider = 'topics'">
+        <!-- <md-menu-item :disabled="!enoughPoints" v-if="!isApplied('topics')" v-on:click="visibleProvider = 'topics'">
             Thema
             <md-tooltip class="tooltip" md-direction="right" v-if="!enoughPoints" md-delay="1000">Um diese Suchfilter benutzen zu können, benötigen Sie mehr Punkte. Wie Sie diese erhalten, können Sie hier (todo) nachlesen</md-tooltip>
-        </md-menu-item>
+        </md-menu-item> -->
         <md-menu-item :disabled="!enoughPoints" v-if="!isApplied('goal')" v-on:click="visibleProvider = 'goal'">
             Unterrichtsziel
             <md-tooltip class="tooltip" md-direction="right" v-if="!enoughPoints" md-delay="1000">Um diese Suchfilter benutzen zu können, benötigen Sie mehr Punkte. Wie Sie diese erhalten, können Sie hier (todo) nachlesen</md-tooltip>

@@ -142,7 +142,7 @@
     data() {
       return {
         visibleDialog: '',
-        topics: ["Knochen", "Blutkreislauf", "Auge", "Blut", "Skelett"], // TODO: get selection from topic table
+        topics: ["Knochen", "Knochenbau", "Oberschenkelknochen", "Knochenbruch", "Knorpelschaden", "Blutkreislauf", "Auge", "Blut", "Skelett"], // TODO: get selection from topic table
         topic: '',
         newTopics: []
       };
