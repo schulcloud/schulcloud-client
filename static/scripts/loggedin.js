@@ -43,21 +43,25 @@ function sendFeedback(modal, e) {
     let type = (fmodal[0].className.includes('contactHPI-modal')) ? 'contactHPI' : 'contactAdmin';
 
     let subject = (type === 'contactHPI') ? 'Feedback' : 'Problem ' + fmodal.find('#title').val();
+    let files = fmodal.find('#files')[0];
+    let data = {
+        type: type,
+        subject: subject,
+        category: fmodal.find('#category').val(),
+        role: fmodal.find('#role').val(),
+        desire: fmodal.find('#desire').val(),
+        benefit: fmodal.find("#benefit").val(),
+        acceptanceCriteria: fmodal.find("#acceptance_criteria").val(),
+        currentState: fmodal.find('#hasHappened').val(),
+        targetState: fmodal.find('#supposedToHappen').val(),
+        appendedData: files
+    }
+    data.append('file', files);
 
     $.ajax({
         url: '/helpdesk',
         type: 'POST',
-        data: {
-            type: type,
-            subject: subject,
-            category: fmodal.find('#category').val(),
-            role: fmodal.find('#role').val(),
-            desire: fmodal.find('#desire').val(),
-            benefit: fmodal.find("#benefit").val(),
-            acceptanceCriteria: fmodal.find("#acceptance_criteria").val(),
-            currentState: fmodal.find('#hasHappened').val(),
-            targetState: fmodal.find('#supposedToHappen').val()
-        },
+        data: data,
         success: function (result) {
             showAJAXSuccess("Feedback erfolgreich versendet!", fmodal);
         },
