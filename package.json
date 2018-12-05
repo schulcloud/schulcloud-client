@@ -36,6 +36,7 @@
     "handlebars-wax": "^5.1.1",
     "hbs": "~4.0.1",
     "ipaddr.js": "^1.5.4",
+    "izitoast": "^1.4.0",
     "jquery-datetimepicker": "^2.5.20",
     "jsonwebtoken": "^7.3.0",
     "lodash": "^4.17.4",
