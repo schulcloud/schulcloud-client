@@ -43,25 +43,24 @@ function sendFeedback(modal, e) {
     let type = (fmodal[0].className.includes('contactHPI-modal')) ? 'contactHPI' : 'contactAdmin';
 
     let subject = (type === 'contactHPI') ? 'Feedback' : 'Problem ' + fmodal.find('#title').val();
-    let files = fmodal.find('#files')[0];
-    let data = {
-        type: type,
-        subject: subject,
-        category: fmodal.find('#category').val(),
-        role: fmodal.find('#role').val(),
-        desire: fmodal.find('#desire').val(),
-        benefit: fmodal.find("#benefit").val(),
-        acceptanceCriteria: fmodal.find("#acceptance_criteria").val(),
-        currentState: fmodal.find('#hasHappened').val(),
-        targetState: fmodal.find('#supposedToHappen').val(),
-        appendedData: files
-    }
-    data.append('file', files);
+    let data = new FormData();
+    data.append('file', fmodal.find('#files')[0]);//.files[0];  //--> scheint den Uncaught RangeError: Maximum call stack size exceeded auszulösen... mit hinterem gibts n Uncaught TypeError: Illegal invocation.
+    data.append('type', type);
+    data.append('subject', subject);
+    data.append('category', fmodal.find('#category').val());
+    data.append('role', fmodal.find('#role').val());
+    data.append('desire', fmodal.find('#desire').val());
+    data.append('benefit', fmodal.find("#benefit").val());
+    data.append('acceptanceCriteria', fmodal.find("#acceptance_criteria").val());
+    data.append('currentState', fmodal.find('#hasHappened').val());
+    data.append('targetState', fmodal.find('#supposedToHappen').val());
 
     $.ajax({
         url: '/helpdesk',
         type: 'POST',
         data: data,
+        processData: false,
+        contentType: false,
         success: function (result) {
             showAJAXSuccess("Feedback erfolgreich versendet!", fmodal);
         },

@@ -2,11 +2,14 @@ const express = require('express');
 const router = express.Router();
 const api = require('../api');
 const logger = require('winston');
+const bodyParser = require('body-parser');
 
 // secure routes
 router.use(require('../helpers/authentication').authChecker);
+//router.use(bodyParser.json()); ???
 
 router.post('/', function (req, res, next) {
+    let debug = req.body;
     if (!req.body.subject && req.body.target) {
         if(req.body.target === "HPI"){ // Contact Admin
             // title? Y: Feedback N: Problem
@@ -14,6 +17,9 @@ router.post('/', function (req, res, next) {
         }
         req.body.type = `contact${req.body.target}`;
     }
+    let data = req.body.data;
+    data.append('userId', res.locals.currentUser._id);
+    data.append('userId', res.locals.currentUser._id);
     api(req).post('/helpdesk', {
         json: {
             type: req.body.type,
@@ -29,7 +35,8 @@ router.post('/', function (req, res, next) {
             userId: res.locals.currentUser._id,
             email: req.body.email,
             schoolId: res.locals.currentSchoolData._id,
-            cloud: res.locals.theme.title
+            cloud: res.locals.theme.title,
+            appendedData: req.body.appendedData
         }
     })
     .then(_ => {
