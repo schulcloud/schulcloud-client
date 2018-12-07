@@ -15,6 +15,7 @@ import layoutOptions from './layoutOptions';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Tooltip from '@material-ui/core/Tooltip';
 import { setBoardLayout } from './redux/actions/socket-send';
+import LayoutIcon from 'svg-react-loader!./layoutOptions/split-browser.svg';
 
 const styles = {
     menuButton: {
@@ -25,14 +26,6 @@ const styles = {
       flex: 1
     },
 };
-
-
-const LayoutIcon = connect(({desks}) => ({layout: desks.currentDesk && desks.currentDesk.board && desks.currentDesk.board.layout}))(
-  ({layout}) => {
-    const SVG = ((layoutOptions[layout] || layoutOptions["1x1"]).svg);
-    return <SVG />;
-  }
-);
 
 const ConnectionText = connect(({socket}) => ({connected: socket.connected}))(
   ({connected}) => connected ? "" : "- Verbindung wird hergestellt"

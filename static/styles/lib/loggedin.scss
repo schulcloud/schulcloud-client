@@ -553,6 +553,9 @@ footer {
 }
 
 .navbar-nav {
+    .dropdown-menu{
+        z-index: 1200;
+    }
     .btn-thin {
         padding-left: 5px!important;
         padding-right: 5px!important;
