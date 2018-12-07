@@ -29,11 +29,12 @@ const styles = theme => ({
 @withStyles(styles)
 export default class MediumContainer extends React.PureComponent {
     render() {
-        const { medium, url, isDragging, classes, onClick } = this.props;
+        const { medium, url, isDragging, classes, onClick, onDoubleClick } = this.props;
 
         return  <Card 
                     className={classes.root + (isDragging ? ' ' + classes.isDragging : '')}
                     onClick={onClick}
+                    onDoubleClick={onDoubleClick}
                 >
                     <CardActionArea classes={{root: classes.button}}>
                         <Thumbnail 

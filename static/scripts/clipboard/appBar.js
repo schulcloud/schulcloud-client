@@ -13,6 +13,7 @@ import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import IconButton from '@material-ui/core/IconButton';
 import layoutOptions from './layoutOptions';
 import SvgIcon from '@material-ui/core/SvgIcon';
+import Tooltip from '@material-ui/core/Tooltip';
 import { setBoardLayout } from './redux/actions/socket-send';
 
 const styles = {
@@ -48,13 +49,15 @@ export default class MenuAppBar extends React.Component {
       <AppBar position="static">
         <Toolbar className="app-bar">
           <Typography variant="h6">
-            Digitaler Klassenraum <ConnectionText />
+            Digitales Klassenzimmer <ConnectionText />
           </Typography>
           <div className={classes.flexBuffer}> </div>
           <LayoutMenu />
-          <IconButton onClick={this.props.onToggleFullscreen} >
-            {this.props.fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </IconButton>
+          <Tooltip title= {"Vollbildmodus" + this.props.fullscreen ? "verlassen" : "öffnen"}>
+            <IconButton onClick={this.props.onToggleFullscreen} >
+              {this.props.fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
     );
@@ -110,11 +113,13 @@ class LayoutMenu extends React.PureComponent {
                     </MenuItem>;
             })}
         </Menu>
-        <IconButton onClick={this.handleClick} >
-          <SvgIcon>
-            <LayoutIcon />
-          </SvgIcon>
-        </IconButton>
+        <Tooltip title="Layout der Arbeitsfläche ändern">
+         <IconButton onClick={this.handleClick} >
+            <SvgIcon>
+              <LayoutIcon />
+            </SvgIcon>
+          </IconButton>
+        </Tooltip>
       </React.Fragment>
     );
   }

@@ -79,6 +79,7 @@ export default class MenuDecorator extends React.Component {
                     url={url} 
                     isDragging={isDragging} 
                     onClick={this.handleClick} 
+                    onDoubleClick={this.setMediaOnBoard}
                 />
                 <Menu
                     anchorEl={anchorEl}

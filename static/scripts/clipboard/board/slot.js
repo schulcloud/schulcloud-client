@@ -18,32 +18,29 @@ const drop = {
 
 const styles = {
     root: {
-        display: 'flex',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
     },
     empty: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        width: '100%',
+        height: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
         padding: '5vmin',
-        fontSize: '100pt',
-        color: 'black',
-        background: 'rgba(255,255,255,0.8)',
-        border: 'solid 5px'
     },
     isOver:{
         background: "rgba(20,200,20,0.5)",
-        zIndex: 1200,
+        zIndex: 100,
     },
     canDrop: {
         background: "rgba(200,200,20,0.5)",
-        zIndex: 1200,
+        zIndex: 100,
+    },
+    emptyText: {
+        textShadow: "2px 2px 1px black, 2px -2px 1px black, -2px  2px 1px black, -2px -2px 1px black",
+        color: "white"
     }
 };
 
@@ -87,6 +84,11 @@ export default class Slot extends React.Component {
                 className={className + " " + classes.root}
                 style={style}
             >
+                {(!medium || canDrop) && <div 
+                    className={classes.empty + " " + ["", classes.canDrop, classes.isOver][isOver + canDrop]}
+                >
+                    <h1 className={classes.emptyText}>Ziehe einen Inhalt hierhin, um ihn auf dieser Arbeitsfläche anzuzeigen</h1>
+                </div>}              
                 {medium && <Media
                     media={medium}
                     canDrop={canDrop}
@@ -96,13 +98,6 @@ export default class Slot extends React.Component {
                     url={url}
                     onUpdate={setMediaOnBoard}
                 />}
-                {(!medium || canDrop) && 
-                    <div 
-                        className={classes.empty + " " + ["", classes.canDrop, classes.isOver][isOver + canDrop]}
-                    >
-                        {slotId+1}
-                    </div>
-                }
             </div>
         );          
     }

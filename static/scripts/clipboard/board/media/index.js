@@ -18,12 +18,14 @@ const styles = {
         bottom:0,
         left:0,
         right:0,
-        zIndex: 1200
+        zIndex: 1200,
+        height: '100%',
     },
     flexParent:{
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
+        height: '100%',
     },
 };
 
