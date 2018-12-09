@@ -9,8 +9,8 @@ import Thumbnail from './thumbnail';
 const styles = theme => ({
     root:{
         backgroundColor: theme.palette.primary.main,
-        maxWidth: 150,
-        minWidth: 150,
+        maxWidth: 125,
+        minWidth: 125,
         margin: 5,
         paddingBottom: 5,
         color: 'white',

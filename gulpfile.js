@@ -155,7 +155,7 @@ gulp.task('scripts', () => {
 let webpackTask = (debug=false) => () => {
   return webpackStream(webpackConfigWatch({debug}), webpack)
   .pipe(gulp.dest(`./build/${themeName()}/webpacked`))
-  .pipe(browserSync.reload);
+  .pipe(browserSync.stream());
 };
 
 gulp.task('webpack', webpackTask(false));
