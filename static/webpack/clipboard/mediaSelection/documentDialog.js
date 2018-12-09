@@ -11,10 +11,9 @@ export default class DocumentDialog extends React.Component{
 
     closeWithDocument = () => {
         const name = this.input.current.value;
-        const rand = Math.floor((1 + Math.random()) * 0x10000);
         this.props.onClose({
-            src: `https://etherpad.mjanke.com/p/clipboard-${rand}-${name}?showControls=true&showChat=false&showLineNumbers=true&useMonospaceFont=false&lang=de`,
             name: `Etherpad: ${name}`,
+            etherpadName: name,
             type: 'etherpad'
         });
     }
