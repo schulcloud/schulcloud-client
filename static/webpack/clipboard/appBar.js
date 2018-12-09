@@ -10,12 +10,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';    
+import Delete from '@material-ui/icons/DeleteForever';
 import IconButton from '@material-ui/core/IconButton';
 import layoutOptions from './layoutOptions';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Tooltip from '@material-ui/core/Tooltip';
-import { setBoardLayout } from './redux/actions/socket-send';
+import { setBoardLayout, resetClipboard } from './redux/actions/socket-send';
 import LayoutIcon from 'svg-react-loader!./layoutOptions/split-browser.svg';
+import ConfirmDialog from './helper/confirmDialog';
 
 const styles = {
     menuButton: {
@@ -33,10 +35,30 @@ const ConnectionText = connect(({socket}) => ({connected: socket.connected}))(
 
 
 @withStyles(styles)
+@connect(({me}) => ({
+  teacher: me.role === "teacher"
+}), (dispatch) => ({
+  reset: () => dispatch(resetClipboard())
+}))
 export default class MenuAppBar extends React.Component {
+
+  state = {
+    confirm: false
+  }
+
+  reset = () => {
+    this.setState({confirm: true});
+  };
+
+  onResetConfirm = (confirmed) => {
+    this.setState({confirm: false});
+    if(confirmed) {
+      this.props.reset();
+    }
+  };
   
   render() {
-    const { classes } = this.props;
+    const { classes, teacher } = this.props;
 
     return (
       <AppBar position="static">
@@ -46,12 +68,24 @@ export default class MenuAppBar extends React.Component {
           </Typography>
           <div className={classes.flexBuffer}> </div>
           <LayoutMenu />
-          <Tooltip title= {"Vollbildmodus" + this.props.fullscreen ? "verlassen" : "öffnen"}>
+          <Tooltip title= {"Vollbildmodus" + (this.props.fullscreen ? "verlassen" : "öffnen")}>
             <IconButton onClick={this.props.onToggleFullscreen} >
               {this.props.fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
           </Tooltip>
+          {teacher && 
+            <Tooltip title="Klassenzimmer zurücksetzen">
+              <IconButton onClick={this.reset} >
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          }
         </Toolbar>
+        <ConfirmDialog 
+            open = {this.state.confirm}
+            title = "Klassenzimmer zurücksetzen?"
+            onClose = {this.onResetConfirm}
+          />
       </AppBar>
     );
   }

@@ -7,7 +7,7 @@ import { initializeSocket } from './redux/initalizeSocket';
 import { connect } from 'react-redux';
 
 @withDragDropContext
-@connect()
+@connect() //is needed to get the dispatch function
 export default class ClipboardApp extends React.Component {
     constructor(props) {
         super(props);

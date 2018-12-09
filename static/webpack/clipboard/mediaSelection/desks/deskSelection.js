@@ -4,13 +4,17 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-import { createGroupDesk } from '../../redux/actions/socket-send';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { createGroupDesk, deleteGroupDesk } from '../../redux/actions/socket-send';
 import { setDesk } from '../../redux/actions/local';
 
 import GroupDeskDialog from './groupDeskDialog';
+import ConfirmDialog from '../../helper/confirmDialog';
 
 const styles = theme => ({
     root: {
@@ -42,9 +46,12 @@ const styles = theme => ({
     desks: desks[desks.deskType],
     filter: me.role !== "teacher" && desks.deskType === "students" && me.id,
     desk: desks.desk,
-    deskType: desks.deskType
+    deskType: desks.deskType,
+    groupDesk: desks.deskType === 'groups',
+    teacher: me.role === 'teacher'
 }), (dispatch) => ({
     createGroupDesk: (name) => dispatch(createGroupDesk(name)),
+    deleteGroupDesk: (name) => dispatch(deleteGroupDesk(name)),
     setDesk: (desk) => dispatch(setDesk(desk))
 }))
 export default class DeskSelection extends React.PureComponent {
@@ -63,14 +70,31 @@ export default class DeskSelection extends React.PureComponent {
             this.props.createGroupDesk(name);
         }
     }
+
+    deleteGroupDesk = (confirmed) => {
+        if(confirmed) {
+            this.props.deleteGroupDesk(this.state.confirmDelete);
+        }
+        this.setState({confirmDelete: false});
+    };
     
+    confirmDeleteGroupDesk = (name) => () => {
+        this.setState({confirmDelete: name});
+    }
+
     render() {
-        const { classes, desks, desk, setDesk, deskType, filter } = this.props;
+        const { classes, desks, desk, setDesk, deskType, filter, teacher, groupDesk, deleteGroupDesk } = this.props;
         const { open } = this.state;
         if(!desks) return null;
         const nDesks = Object.keys(desks).length;
         return (
         <React.Fragment>
+            {teacher && groupDesk && <ConfirmDialog
+                open = {!!this.state.confirmDelete}
+                title = {`Gruppe ${this.state.confirmDelete} löschen?`}
+                onClose = {this.deleteGroupDesk}
+            />}
+            <GroupDeskDialog open={open} onClose={this.createGroupDesk}/>
             <Slide key={deskType} direction="right" in={true} appear={true} mountOnEnter unmountOnExit>
                 <div className={classes.root}>
                     <List component="nav" className={classes.list}>
@@ -84,6 +108,12 @@ export default class DeskSelection extends React.PureComponent {
                                 onClick={() => setDesk(id)}
                             >
                                 <ListItemText primaryTypographyProps={{variant: 'subtitle1'}} primary={desks[id].name} />
+                                {teacher && groupDesk && 
+                                    <ListItemSecondaryAction>
+                                        <IconButton aria-label="Gruppen löschen" onClick={this.confirmDeleteGroupDesk(desks[id].name)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>}
                             </ListItem>
                         )}
                     </List>
@@ -95,7 +125,6 @@ export default class DeskSelection extends React.PureComponent {
                     }
                 </div>
             </Slide>
-            <GroupDeskDialog open={open} onClose={this.createGroupDesk}/>
         </React.Fragment>
         );
     }

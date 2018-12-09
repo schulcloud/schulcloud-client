@@ -59,3 +59,20 @@ export function createGroupDesk(name) {
         }
     };
 }
+
+export function deleteGroupDesk(name) {
+    return {
+        type: SOCKET_SEND,
+        message: "DELETE_GROUP_DESK",
+        payload: {
+            name
+        }
+    };
+}
+
+export function resetClipboard() {
+    return {
+        type: SOCKET_SEND,
+        message: "RESET_CLIPBOARD"
+    };
+}

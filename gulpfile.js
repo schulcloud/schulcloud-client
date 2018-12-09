@@ -28,7 +28,6 @@ const webpackConfigWatch = require('./webpack.config.watch');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync');
 
-const webpackDevMiddleware = require('webpack-dev-middleware');
 const workbox = require('workbox-build');
 
 const baseScripts = [
@@ -43,11 +42,8 @@ const baseScripts = [
   './static/scripts/qrcode/kjua-0.1.1.min.js'
 ];
 
-const webpackScripts = ['./static/scripts/clipboard/**/*.js'];
-
 const nonBaseScripts = ['./static/scripts/**/*.js', '!./static/scripts/sw/workbox/*.*']
-  .concat(baseScripts.map(script => '!' + script))
-  .concat(webpackScripts.map(script => '!' + script));
+  .concat(baseScripts.map(script => '!' + script));
 //used by all gulp tasks instead of gulp.src(...)
 //plumber prevents pipes from stopping when errors occur
 //changed only passes on files that were modified since last time
