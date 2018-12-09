@@ -27,7 +27,9 @@ const webpackConfig = require('./webpack.config.static');
 const webpackConfigWatch = require('./webpack.config.watch');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync');
+
 const webpackDevMiddleware = require('webpack-dev-middleware');
+const workbox = require('workbox-build');
 
 const baseScripts = [
   './static/scripts/jquery/jquery.min.js',
@@ -43,7 +45,7 @@ const baseScripts = [
 
 const webpackScripts = ['./static/scripts/clipboard/**/*.js'];
 
-const nonBaseScripts = ['./static/scripts/**/*.js']
+const nonBaseScripts = ['./static/scripts/**/*.js', '!./static/scripts/sw/workbox/*.*']
   .concat(baseScripts.map(script => '!' + script))
   .concat(webpackScripts.map(script => '!' + script));
 //used by all gulp tasks instead of gulp.src(...)
@@ -77,14 +79,14 @@ function themeName() {
 }
 //minify images
 gulp.task('images', () => {
-  beginPipe('./static/images/**/*.*')
+  return beginPipe('./static/images/**/*.*')
     .pipe(imagemin())
     .pipe(gulp.dest(`./build/${themeName()}/images`));
 });
 
 //minify static/other
 gulp.task('other', () => {
-  gulp.src('./static/other/**/*.*')
+  return gulp.src('./static/other/**/*.*')
     .pipe(gulp.dest(`./build/${themeName()}/other`));
 });
 
@@ -95,14 +97,15 @@ sassGrapher.init('./static/styles/', {
 var firstRun = true;
 gulp.task('styles', () => {
   var themeFile = `./theme/${themeName()}/style.scss`;
-  beginPipe('./static/styles/**/*.{css,sass,scss}')
+  return beginPipe('./static/styles/**/*.{css,sass,scss}')
     .pipe(gulpif(!firstRun, sassGrapher.ancestors()))
     .pipe(header(fs.readFileSync(themeFile, 'utf8')))
     .pipe(filelog("PROCESS: "))
     .pipe(sourcemaps.init())
     .pipe(sass({
-      sourceMap: true
-    }))
+      sourceMap: true,
+      includePaths: ['node_modules']
+    }).on('error', sass.logError))
     .pipe(postcss([
       autoprefixer({
         browsers: ['last 3 version']
@@ -114,18 +117,21 @@ gulp.task('styles', () => {
     .pipe(sourcemaps.write('./sourcemaps'))
     .pipe(gulp.dest(`./build/${themeName()}/styles`))
     .pipe(browserSync.stream());
+});
+
+gulp.task('styles-done', ['styles'], () =>{
   firstRun = false;
 });
 
 //copy fonts
 gulp.task('fonts', () => {
-  beginPipe('./static/fonts/**/*.*')
+  return beginPipe('./static/fonts/**/*.*')
     .pipe(gulp.dest(`./build/${themeName()}/fonts`));
 });
 
 //compile/transpile JSX and ES6 to ES5 and minify scripts
 gulp.task('scripts', () => {
-  beginPipe(nonBaseScripts)
+  return beginPipeAll(nonBaseScripts)
     .pipe(named(
       file => {
         // As a preparation for webpack stream: Transform nonBaseScripts paths
@@ -147,22 +153,21 @@ gulp.task('scripts', () => {
     }))
     .pipe(webpackStream(webpackConfig, webpack))
     .pipe(gulp.dest(`./build/${themeName()}/scripts`))
-    .pipe(browserSync.stream());
-  
+    .pipe(browserSync.stream()); 
 });
 
-gulp.task('webpack', () => {
-  gulp.src(webpackScripts)
-    .pipe(filelog())
-    .pipe(webpackStream(webpackConfigWatch, webpack))
-    .pipe(gulp.dest(`./build/${themeName()}/webpacked/`))
-    .pipe(browserSync.stream());
-});
+let webpackTask = (debug=false) => () => {
+  return webpackStream(webpackConfigWatch({debug}), webpack)
+  .pipe(gulp.dest(`./build/${themeName()}/webpacked`))
+  .pipe(browserSync.stream());
+};
 
+gulp.task('webpack', webpackTask(false));
+gulp.task('webpack-dev', webpackTask(true));
 
 //compile/transpile JSX and ES6 to ES5, minify and concatenate base scripts into all.js
 gulp.task('base-scripts', () => {
-  beginPipeAll(baseScripts)
+  return beginPipeAll(baseScripts)
     .pipe(count('## js-files selected'))
     .pipe(babel({
       presets: [
@@ -179,7 +184,7 @@ gulp.task('base-scripts', () => {
 
 //compile vendor SASS/SCSS to CSS and minify it
 gulp.task('vendor-styles', () => {
-  beginPipe('./static/vendor/**/*.{css,sass,scss}')
+  return beginPipe('./static/vendor/**/*.{css,sass,scss}')
     .pipe(sourcemaps.init())
     .pipe(sass({
       sourceMap: true
@@ -199,7 +204,7 @@ gulp.task('vendor-styles', () => {
 
 //compile/transpile vendor JSX and ES6 to ES5 and minify scripts
 gulp.task('vendor-scripts', () => {
-  beginPipe('./static/vendor/**/*.js')
+  return beginPipe('./static/vendor/**/*.js')
     .pipe(babel({
       compact: false,
       presets: [
@@ -216,41 +221,118 @@ gulp.task('vendor-scripts', () => {
 
 //copy other vendor files
 gulp.task('vendor-assets', () => {
-  beginPipe(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
+  return beginPipe(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
       '!./static/vendor/**/*.{css,sass,scss}'
     ])
     .pipe(gulp.dest(`./build/${themeName()}/vendor`));
 });
 
+//copy vendor-optimized files
+gulp.task('vendor-optimized-assets', () => {
+  return beginPipe(['./static/vendor-optimized/**/*.*'])
+    .pipe(gulp.dest(`./build/${themeName()}/vendor-optimized`));
+});
+
+// copy node modules
+const nodeModules = ['mathjax', 'font-awesome'];
+gulp.task('node-modules', () =>
+  Promise.all(nodeModules.map(module =>
+    beginPipe([`./node_modules/${module}/**/*.*`])
+      .pipe(gulp.dest(`./build/${themeName()}/vendor-optimized/${module}`))
+  ))
+);
+
+gulp.task('sw-workbox', () => {
+  return beginPipe(['./static/scripts/sw/workbox/*.js'])
+    .pipe(gulp.dest(`./build/${themeName()}/scripts/sw/workbox`));
+});
+
+// service worker patterns used for precaching of files
+let globPatterns = [
+    'fonts/**/*.{woff,css}',
+    'images/logo/*.svg',
+    'images/footer-logo.png',
+    'scripts/all.js',
+    'scripts/loggedin.js',
+    'scripts/sw/metrix.js',
+    'scripts/calendar.js',
+    'scripts/dashboard.js',
+    'scripts/courses.js',
+    'scripts/news.js',
+    'styles/lib/*.css',
+    'styles/lib/toggle/*.min.css',
+    'styles/lib/datetimepicker/*.min.css',
+    'styles/calendar/*.css',
+    'styles/news/*.css',
+    'styles/courses/*.css',
+    'styles/dashboard/*.css',
+    'vendor/introjs/intro*.{js,css}',
+    'vendor-optimized/firebasejs/3.9.0/firebase-app.js',
+    'vendor-optimized/firebasejs/3.9.0/firebase-messaging.js',
+    'vendor/feathersjs/feathers.js',
+    'vendor-optimized/mathjax/MathJax.js',
+    'images/manifest.json'
+  ];
+
+gulp.task('generate-service-worker',
+  ['images', 'other', 'styles', 'fonts', 'scripts', 'base-scripts',
+  'vendor-styles', 'vendor-scripts', 'vendor-assets'], () => {
+    return workbox.injectManifest({
+      globDirectory: `./build/${themeName()}/`,
+      globPatterns: globPatterns,
+      swSrc: './static/sw.js',
+      swDest: `./build/${themeName()}/sw.js`,
+      templatedUrls: {
+        '/calendar/': [
+          '../../views/calendar/calendar.hbs',
+         ]
+      },
+    })
+    .then(({count, size, warnings}) => {
+        // Optionally, log any warnings and details.
+        warnings.forEach(console.warn);
+        console.log(`${count} files will be precached, totaling ${size} bytes.`);
+        })
+    .catch((error) => {
+        console.warn('Service worker generation failed:', error);
+    });
+  });
+
 //clear build folder + smart cache
 gulp.task('clear', () => {
-  gulp.src(['./build/*', './.gulp-changed-smart.json', './.webpack-changed-plugin-cache/*'], { 
+  return gulp.src(['./build/*', './.gulp-changed-smart.json', './.webpack-changed-plugin-cache/*'], {
       read: false
     })
     .pipe(rimraf());
 });
 
 //run all tasks, processing changed files
-gulp.task('build-all', ['images', 'other', 'styles', 'fonts', 'scripts', 'base-scripts',
-  'vendor-styles', 'vendor-scripts', 'vendor-assets', 'webpack'
+gulp.task('build', ['images', 'other', 'styles', 'styles-done', 'fonts', 'scripts', 'base-scripts',
+                        'vendor-styles', 'vendor-scripts', 'vendor-assets', 'vendor-optimized-assets',
+                        'generate-service-worker', 'sw-workbox', 'node-modules'
 ]);
 
-gulp.task('build-theme-files', ['styles']);
+gulp.task('build-all', ['build', 'webpack']);
+gulp.task('build-dev', ['build', 'webpack-dev']);
+
+gulp.task('build-theme-files', ['styles', 'styles-done', 'images']);
 
 //watch and run corresponding task on change, process changed files only
-gulp.task('watch', ['build-all'], () => {
-
+gulp.task('watch', ['build-dev'], () => {
   let watchOptions = { interval: 1000 };
-  gulp.watch(withTheme('./static/styles/**/*.{css,sass,scss}'), watchOptions, ['styles']);
+  gulp.watch(withTheme('./static/styles/**/*.{css,sass,scss}'), watchOptions, ['styles', 'styles-done']);
   gulp.watch(withTheme('./static/images/**/*.*'), watchOptions, ['images'])
     .on('change', browserSync.reload);
-  gulp.watch(withTheme(nonBaseScripts), watchOptions, ['scripts']);
   
-  gulp.watch(`./build/${themeName()}/webpacked/*.*`, watchOptions)
-    .on('change', browserSync.reload);
+  gulp.watch(withTheme(nonBaseScripts), watchOptions, ['scripts', 'generate-service-worker']);
+
+  gulp.watch(withTheme('./static/vendor-optimized/**/*.*'), watchOptions, ['vendor-optimized-assets']);
+  gulp.watch(withTheme('./static/sw.js'), watchOptions, ['generate-service-worker']);
+  gulp.watch(withTheme('./static/scripts/sw/workbox/*.*'), watchOptions, ['sw-workbox']);
+
 });
 
-gulp.task('watch-reload', ['watch', 'browser-sync', 'webpack']);
+gulp.task('watch-reload', ['watch', 'browser-sync']);
 
 gulp.task('browser-sync', ['nodemon'], function() {
 	browserSync.init(null, {
@@ -262,7 +344,7 @@ gulp.task('browser-sync', ['nodemon'], function() {
         socket:{
           clients: {
             heartbeatTimeout: 60000
-          } 
+          }
         }
 	});
 });
@@ -272,9 +354,10 @@ gulp.task('nodemon', function (cb) {
 	return nodemon({
     ext: 'js hbs',
     script: './bin/www',
-    watch: ['views/', 'controllers/']
+    watch: ['views/', 'controllers/'],
+    exec: "node --inspect=9310",
 	}).on('start', function () {
-    
+
 		if (!started) {
 			cb();
 			started = true; 
