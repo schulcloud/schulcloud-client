@@ -87,6 +87,11 @@ export default class DeskSelection extends React.PureComponent {
         const { open } = this.state;
         if(!desks) return null;
         const nDesks = Object.keys(desks).length;
+
+        let nameCompare = (a,b) => {
+            return desks[a].name.toLowerCase().localeCompare(desks[b].name.toLowerCase());
+        };
+        
         return (
         <React.Fragment>
             {teacher && groupDesk && <ConfirmDialog
@@ -98,7 +103,7 @@ export default class DeskSelection extends React.PureComponent {
             <Slide key={deskType} direction="right" in={true} appear={true} mountOnEnter unmountOnExit>
                 <div className={classes.root}>
                     <List component="nav" className={classes.list}>
-                        {Object.keys(desks).filter((id) => !filter || filter === id).map((id) => 
+                        {Object.keys(desks).sort(nameCompare).filter((id) => !filter || filter === id).map((id) => 
                             <ListItem
                                 key={id}
                                 dense={true}
