@@ -38,9 +38,24 @@ export default class MenuDecorator extends React.Component {
     }
 
     handleClick = event => {
-        this.setState({ anchorEl: event.currentTarget });
+        if(this.state.singleClickWait) return;
+        let target = event.currentTarget;
+        let singleClickWait = setTimeout(() => this.openMenu(target), 200);
+        this.setState({singleClickWait});
         event.stopPropagation();
     };
+
+    openMenu = target => {
+        this.setState({ anchorEl: target, singleClickWait: false });
+    }
+
+    handleDoubleClick = event => {
+        if(this.state.singleClickWait) {
+            clearTimeout(this.state.singleClickWait);
+            this.setState({singleClickWait: false});
+        }
+        this.setMediaOnBoard(event);
+    }
 
     handleClose = (event) => {
         this.setState({ anchorEl: null });
@@ -79,14 +94,14 @@ export default class MenuDecorator extends React.Component {
                     url={url} 
                     isDragging={isDragging} 
                     onClick={this.handleClick} 
-                    onDoubleClick={this.setMediaOnBoard}
+                    onDoubleClick={this.handleDoubleClick}
                 />
                 <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={this.setMediaOnBoard}>Auf der Tafel anzeigen</MenuItem>
+                    <MenuItem onClick={this.setMediaOnBoard}>Auf der Arbeitsfläche öffnen</MenuItem>
                     <MenuItem onClick={this.openWindow}>Im neuen Fenster öffnen</MenuItem>
                     <MenuItem onClick={this.startDownload}>Herunterladen</MenuItem>
                     <MenuItem onClick={this.delete}>Löschen</MenuItem>
