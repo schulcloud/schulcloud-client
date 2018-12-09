@@ -22,7 +22,9 @@ const mapDispatchToProps = dispatch => {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
 }))
-@connect(null, mapDispatchToProps)
+@connect(({me}, {medium}) => ({
+    allowDelete: me.role === 'teacher' || medium.senderId === me.id
+}), mapDispatchToProps)
 export default class MenuDecorator extends React.Component {
     constructor(props) {
         super(props);
@@ -43,6 +45,13 @@ export default class MenuDecorator extends React.Component {
         let singleClickWait = setTimeout(() => this.openMenu(target), 200);
         this.setState({singleClickWait});
         event.stopPropagation();
+    };
+
+    handleRightClick = event => {
+        this.openMenu(event.currentTarget);
+        event.stopPropagation();
+        event.preventDefault();
+        return false;
     };
 
     openMenu = target => {
@@ -83,7 +92,7 @@ export default class MenuDecorator extends React.Component {
     }
 
     render() {
-        const { medium, url, isDragging, connectDragSource, style } = this.props;
+        const { medium, url, isDragging, connectDragSource, style, teacher, allowDelete } = this.props;
         const { src } = medium;
         const { anchorEl } = this.state;
 
@@ -95,6 +104,7 @@ export default class MenuDecorator extends React.Component {
                     isDragging={isDragging} 
                     onClick={this.handleClick} 
                     onDoubleClick={this.handleDoubleClick}
+                    onRightClick={this.handleRightClick}
                 />
                 <Menu
                     anchorEl={anchorEl}
@@ -104,7 +114,7 @@ export default class MenuDecorator extends React.Component {
                     <MenuItem onClick={this.setMediaOnBoard}>Auf der Arbeitsfläche öffnen</MenuItem>
                     <MenuItem onClick={this.openWindow}>Im neuen Fenster öffnen</MenuItem>
                     <MenuItem onClick={this.startDownload}>Herunterladen</MenuItem>
-                    <MenuItem onClick={this.delete}>Löschen</MenuItem>
+                    {allowDelete && <MenuItem onClick={this.delete}>Löschen</MenuItem>}
                 </Menu>
                 <a 
                     ref={this.downloadLinkRef} 
