@@ -3,6 +3,7 @@
     {{#content "styles" mode="append"}}
         <link rel="stylesheet" href="/styles/teams/teams.css"/>
         <link rel="stylesheet" href="/styles/files/files.css"/>
+        <link rel="stylesheet" href="/styles/teams/team.css"/>
         <link rel="stylesheet" href="/vendor/jquery/jquery-ui.css"/>
     {{/content}}
 
@@ -15,16 +16,24 @@
     {{/content}}
 
     {{#content "page"}}
-
+    <div id="team-wrapper">
         <section class="section-teams" data-id="{{../_id}}">
-
             <div class="row description">
                 <div class="col-sm-12">
                     <p class="lead">{{description}}</p>
                 </div>
             </div>
 
-            <section style="margin-top: 2rem" class="row">
+            {{#if rocketChatChannelName}}
+            <section class="section-chat" style="margin-top: 2rem">
+                <h4>Chat</h4>
+                <div class="rocketchat">
+                    <iframe src="http://dev-rocketchat.schul-cloud.org:3000/group/{{rocketChatChannelName}}?layout=embedded" frameborder="0"></iframe>
+                </div>
+            </section>
+            {{/if}}
+
+            <section class="section-members row">
                 <div class="col-sm-12">
                     <h4>Teilnehmer</h4>
                     <p>
@@ -231,5 +240,7 @@
                 {{/content}}
             {{/embed}}            
         </section>
+    </div>
+
     {{/content}}
 {{/extend}}
