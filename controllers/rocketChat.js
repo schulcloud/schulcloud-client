@@ -8,7 +8,8 @@ router.use(authHelper.authChecker);
 
 router.get('/Iframe', function(req, res, next) {
     return api(req).get('/rocketChat/login/' + res.locals.currentUser._id).then(result => {
-        let rocketChatURL = 'http://dev-rocketchat.schul-cloud.org:3000/home';
+        let shortURL = process.env.ROCKET_CHAT;
+        let rocketChatURL = `${shortURL}/home`;
         return res.send(`<script>
             window.parent.postMessage({
                 event: 'login-with-token',
