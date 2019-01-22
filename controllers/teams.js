@@ -371,15 +371,16 @@ router.get('/:teamId', async function(req, res, next) {
             }
         });
 
-        let rocketChatChannelName;
+        let rocketChatCompleteURL;
         if (process.env.ROCKETCHAT_SERVICE_ENABLED) {
             try{
                 const rocketChatChannel = await api(req).get('/rocketChat/channel/' + req.params.teamId);
-                rocketChatChannelName = rocketChatChannel.channelName;
+                const rocketChatURL = process.env.ROCKET_CHAT
+                rocketChatCompleteURL = rocketChatURL + "/group/" + rocketChatChannel.channelName;
             }
             catch(e) {
                 logger.warn(e);
-                rocketChatChannelName = undefined;
+                rocketChatCompleteURL = undefined;
             }
         }
 
@@ -511,7 +512,7 @@ router.get('/:teamId', async function(req, res, next) {
             nextEvent: recurringEventsHelper.getNextEventForCourseTimes(course.times),
             userId: res.locals.currentUser._id,
             teamId: req.params.teamId,
-            rocketChatChannelName
+            rocketChatURL: rocketChatCompleteURL
         }));
     } catch (e) {
         next(e);
