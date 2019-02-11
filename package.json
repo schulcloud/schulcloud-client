@@ -28,6 +28,7 @@
     "express": "~4.14.1",
     "express-session": "^1.15.2",
     "fast-csv": "^2.4.1",
+    "faye": "^1.2.4",
     "feedr": "^2.13.5",
     "font-awesome": "^4.7.0",
     "fullcalendar": "^3.9.0",

@@ -6,6 +6,7 @@
 
 var app = require('../app');
 var http = require('http');
+var faye = require('faye');
 
 /**
  * Get port from environment and store in Express.
@@ -27,6 +28,13 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+/**
+ * Initialize faye
+ */
+
+var bayeux = new faye.NodeAdapter({mount: '/faye', timeout: 45});
+bayeux.attach(server);
 
 /**
  * Gracefully stops server on SIGINT. Makes it possible to run tasks before exit.

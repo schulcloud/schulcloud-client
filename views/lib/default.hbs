@@ -51,6 +51,45 @@
         {{#embed "lib/sw-metrix"}}{{/embed}}
         <script src="/scripts/all.js" type="text/javascript" defer></script>
         <script src="/vendor-optimized/turbolinks/turbolinks.js"></script>
+        {{#if p2pCDNEnabled}}
+            {{#if currentUser}}
+              <script src="/vendor-optimized/faye/client/faye-browser-min.js"></script>
+              <script src="/vendor-optimized/p2pCDN/p2pCDN.js"></script>
+              <script>
+                  localStorage.debug = '*,-socket.io*,-engine*';
+                  var config = {
+                      channel: 'p2pCDN/school/{{currentUser.schoolId}}',
+                      clientId: '{{currentPayload.jti}}',
+                      idLength: 15,
+                      stunServer: {
+                          'iceServers': [
+                              {
+                                  'urls': 'stun:stun.l.google.com:19302',
+                              },
+                          ]
+                          },
+                      serviceWorker: {
+                          urlsToShare:[
+                              '/images/',
+                              '/video/',
+                              '/vod/',
+                              '/scripts/',
+                              '/wikipedia/',
+                              '/vendor-optimized/',
+                              '/vendor/',
+                              '/styles/',
+                              '/fonts/'
+                          ],
+                          path: '/p2pCDNsw.js',
+                          scope: '/',
+                          basePath: '/',
+                          storageQuota: '1000'
+                      }
+                  };
+                  var p2pCDN = new P2pCDN(config);
+              </script>
+            {{/if}}
+        {{/if}}
     {{/block}}
 
 </head>

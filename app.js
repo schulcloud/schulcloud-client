@@ -15,6 +15,8 @@ const layouts = require("handlebars-layouts");
 const handlebarsWax = require('handlebars-wax');
 const turbolinksConfig = require('./turbolinks.config')
 const app = express();
+const p2pCDNEnabled = process.env.P2P_CDN_ENABLED === 'true' || false;
+
 app.use(compression());
 app.set('trust proxy', true);
 const themeName = process.env.SC_THEME || 'default';
@@ -52,6 +54,11 @@ app.use(session({
     resave: 'true',
     secret: 'secret'
 }));
+
+app.use(function(req, res, next){
+    res.locals.p2pCDNEnabled = p2pCDNEnabled;
+    next();
+});
 
 // activate turbolinks for supported routes
 app.all(turbolinksConfig.routes, function (req, res, next) {
