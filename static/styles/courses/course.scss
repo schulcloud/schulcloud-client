@@ -127,8 +127,8 @@
   }
 
   .times {
-    padding: 16px;
-    box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+    //padding: 16px;
+    //box-shadow: 0 1px 1px 0 #C7C7C7 inset;
     background: none repeat scroll 0 0;
     margin-bottom: 30px;
 
@@ -142,6 +142,11 @@
       padding-left: 5px;
       cursor: pointer;
       color: $primaryColor;
+    }
+
+    .course-times-table{
+      margin-top: 10px;
+      box-shadow: 0 1px 1px 0 #C7C7C7 inset;
     }
   }
 
@@ -206,6 +211,50 @@
     margin-top: 50px;
     margin-bottom: 20px;
   }
+
+  .step-label-wrapper{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    .step-label{
+      font-size: .75rem;
+    }
+  }
+
+  .wizard-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 20px 0;
+
+    .header-icon {
+      margin-right: 20px;
+    }
+  }
+
+  .wizard-card{
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    padding-bottom: 50px;
+    .progressbar{
+      margin-top: 20px;
+    }
+    .panels label{
+      font-size: .75rem;
+    }
+    .btn-delete-course{
+      margin-right: 10px;
+    }
+    .final-step {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 30px;
+      .image {
+        padding: 30px;
+        opacity: 0.8;
+      }
+    }
 }
 .course-tasks-header, .course-groups-header {
   padding: 0.5rem 0.75rem;

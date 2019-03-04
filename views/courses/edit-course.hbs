@@ -33,11 +33,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Beschreibung des Kurses</label>
-                    <textarea class="form-control" name="description">{{{stripOnlyScript course.description}}}</textarea>
-                </div>
-
-                <div class="form-group">
                   <label>Farbe des Kurses:</label>
                   <div class="color-picker">
                     {{#if course.color}}
@@ -55,27 +50,6 @@
                       {{/ifneq}}
                     {{/each}}
                   </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Klasse(n) <small>(Nach dem Speichern werden alle Schüler automatisch hinzugefügt!)</small></label>
-
-                    <select name="classIds[]" multiple data-placeholder="Klasse(n) auswählen">
-                        {{#each classes}}
-                            <option value="{{this._id}}" {{#if this.selected}}selected{{/if}}>
-                                {{log this.year}}
-                                {{#if this.name}}
-                                    {{this.displayName}}
-                                {{else}}
-                                    {{this.name}}
-                                {{/if}}
-
-                                {{#if this.year}}
-                                    ({{this.year.name}})
-                                {{/if}}
-                            </option>
-                        {{/each}}
-                    </select>
                 </div>
 
                 <div class="form-group">
@@ -100,6 +74,28 @@
                         {{#each substitutions}}
                             <option value="{{this._id}}" {{#if this.selected}}selected{{/if}}>
                                 {{this.firstName}} {{this.lastName}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Klasse(n) <small>(Nach dem Speichern werden alle Schüler automatisch hinzugefügt!)</small></label>
+
+                    <select name="classIds[]" multiple data-placeholder="Klasse(n) auswählen">
+                        {{#each classes}}
+                            <option value="{{this._id}}" {{#if this.selected}}selected{{/if}}>
+                                {{log this.year}}
+                                {{#if this.name}}
+                                    {{this.displayName}}
+                                {{else}}
+                                    {{this.name}}
+                                {{/if}}
+
+                                {{#if this.year}}
+                                    ({{this.year.name}})
+                                {{/if}}
                             </option>
                         {{/each}}
                     </select>
