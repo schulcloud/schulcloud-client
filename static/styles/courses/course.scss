@@ -185,11 +185,9 @@
       }
     }
     .image.topic-image{
+      max-width: 80px;
       @include media-breakpoint-down(xs) {
         max-width: 60px;
-      }
-      @include media-breakpoint-up(xs) {
-        max-width: 80px;
       }
     }
   }
@@ -222,13 +220,17 @@
   }
 
   .wizard-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 20px 0;
+  	display: flex;
+  	flex-direction: row;
+  	align-items: center;
+  	margin: 20px 0;
 
-    .header-icon {
-      margin-right: 20px;
+  	.header-icon {
+  		margin-right: 20px;
+    }
+    
+    .subtitle {
+      margin-bottom: 0;
     }
   }
 
@@ -246,14 +248,14 @@
       margin-right: 10px;
     }
     .final-step {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin-bottom: 30px;
-      .image {
-        padding: 30px;
+    	display: flex;
+    	flex-direction: row;
+    	align-items: center;
+    	margin-bottom: 30px;
+    	.image {
+    		padding: 30px;
         opacity: 0.8;
-      }
+    	}
     }
   }
 }
