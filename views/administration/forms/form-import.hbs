@@ -1,8 +1,20 @@
 <input name="schoolId" type="hidden" data-force-value="true" value="{{currentSchool}}" />
 <input name="roles[]" type="hidden" data-force-value="true" value="{{roles}}" />
 
+<p>
+    Importiere Nutzerdaten per .csv-Datei
+    (<a href="#" id="csv-import-example">Beispiel</a>)
+    und lass deinen Nutzern einen Registrierungslink zukommen.
+</p>
+<p>
+    Mehr Informationen zu Struktur der .csv-Datei, Klassenzuordnung und Ablauf des Registrierungsprozesses findest du
+    <a href="https://docs.schul-cloud.org/x/NYBgAw" target="_blank">hier</a>.
+</p>
+<p>
+    <img src="/images/csv_example.png" />
+</p>
 <div class="form-group">
-    <label>CSV Datei</label>
+    <label>CSV-Datei auswählen</label>
     <input class="form-control" name="csvFile" type="file" required />
     <p>
         <strong>Struktur der .csv:</strong><br>
@@ -20,15 +32,12 @@
     </label>
     <p>Wenn keine Registrierungslinks per E-Mail verschickt werden, müssen diese nachträglich pro Nutzer im "Nutzer bearbeiten"-Dialog erstellt und weitergegeben werden.</p>
 </div>
-
 <div class="form-group">
-    <label>Ausgangssystem</label>
-
-    <select name="exportSystem" data-placeholder="Ausgangssystem auswählen">
-        {{#each classes}}
-            <option value="{{this._id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
-        {{/each}}
-        <option value="">Anderes</option>
-    </select>
-    <p>Falls Sie ihr derzeitiges System nicht in der Liste unterstützter Systeme finden, wählen Sie bitte "Anderes".</p>
+    <label>
+        <input name="sendRegistration" type="checkbox" value="sendRegistration" />
+        Registrierungslinks sofort nach Import an Nutzer senden
+    </label>
+    <p>
+        Alternativ kannst du die Registrierungslinks später abrufen und deinen Nutzern per Mail oder QR-Druckbogen zukommen lassen.
+    </p>
 </div>

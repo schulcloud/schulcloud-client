@@ -35,6 +35,27 @@ function readConnectionType(result) {
   }
 }
 
+function setProtocol(result, perfEntry) {
+  var value = "nextHopProtocol" in perfEntry;
+  if (value) {
+    result['networkProtocol'] = perfEntry.nextHopProtocol;
+  } else {
+    result['networkProtocol'] = 'unknown';
+  }
+  return;
+}
+
+function readNetworkProtocol(result) {
+  if(performance && performance.getEntriesByType){
+    var p = performance.getEntriesByType("resource");
+    for (var i = 0; i < p.length; i++) {
+      setProtocol(result, p[i]);
+      break;
+    }
+  }
+  return;
+}
+
 import ttiPolyfill from './tti-polyfill.js';
 
 function sendResults(result) {
@@ -59,6 +80,7 @@ function calculateMetrics() {
     measureCRP(result);
     calculatePaintingTimes(result);
     readConnectionType(result);
+    readNetworkProtocol(result);
     sendResults(result);
   });
 }
@@ -71,12 +93,15 @@ window.addEventListener('load', function () {
       $('#offlineAlert').show();
     }
   }
-  let testUserGroup = parseInt(document.getElementById('testUserGroup').value);
-  if (testUserGroup == 1) {
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    updateOnlineStatus();
+  if(document.getElementById('testUserGroup')){
+    let testUserGroup = parseInt(document.getElementById('testUserGroup').value);
+    if (testUserGroup == 1) {
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      updateOnlineStatus();
+    }
+    setTimeout(function () {
+      calculateMetrics();
+    }, 0); 
   }
 });
-
-calculateMetrics();

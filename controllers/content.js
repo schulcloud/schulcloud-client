@@ -72,7 +72,7 @@ router.get('/', function (req, res, next) {
             })
         ]).then(([featured, trending]) => {
             return res.render('content/store', {
-                title: 'LernStore',
+                title: 'Lern-Store',
                 featuredContent: featured.data,
                 trendingContent: trending.data,
                 totalCount: trending.total,
@@ -80,6 +80,8 @@ router.get('/', function (req, res, next) {
                 inline: req.query.inline,
                 action
             });
+        }).catch((error) => {
+            next(error);
         });
     // Search Results
     } else {
@@ -103,7 +105,7 @@ router.get('/', function (req, res, next) {
             $skip: itemsPerPage * (currentPage - 1),
         };
         dbQuery = Object.assign(dbQuery, filterQuery);
-        
+
         return api(req)({
             uri: '/content/search/',
             qs: dbQuery,
@@ -115,7 +117,7 @@ router.get('/', function (req, res, next) {
                 baseUrl: `${req.baseUrl}/?q=${query}&p={{page}}&${filterQueryString}`
             };
             return res.render('content/store', {
-                title: 'LernStore',
+                title: 'Lern-Store',
                 query: query,
                 searchResults: (searchResults.total)?searchResults:undefined,
                 pagination,

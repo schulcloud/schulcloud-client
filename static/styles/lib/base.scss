@@ -60,6 +60,10 @@ a[data-toggle="collapse"]:focus{
 	text-decoration:none !important;
 }
 
+img{
+	max-width: 100%;
+}
+
 .btn-link{
 	margin: 0;
 	padding: 0;
@@ -108,13 +112,26 @@ label,
 	display: initial;
 }
 
+[data-toggle="collapse"]{
+	&[aria-expanded="true"] {
+		[data-expand]{
+			display: none;
+		}
+	}
+
+	&[aria-expanded="false"] {
+		[data-collapse]{
+			display: none;
+		}
+	}
+}
+
 .btn-loading {
 	font-size: 0px !important;
 	transition: width 0.3s;
 
 	&:before {
 		content: "\f1ce";
-		-webkit-animation: fa-spin 2s infinite linear;
 		animation: fa-spin 2s infinite linear;
 		font-family: "FontAwesome";
 		display: inline-block;
@@ -143,6 +160,7 @@ footer {
 
 		@include media-breakpoint-down(xs) {
 			background: $colorBeige;
+			margin-top: 50px;
 
 			img {
 				clear: both;
@@ -248,7 +266,7 @@ form.inline {
 .card-deck-row {
 
 	& > div {
-		margin-bottom: 30px;
+		margin-bottom: 1.5rem;
 	}
 
 	.card {
@@ -308,15 +326,8 @@ form.inline {
 	position: absolute !important;
 }
 
-//the following adds fa-share-square-o for each external link except images
-.section-course .content-block{
-	a:not( [href*='https://schul-cloud.org'] ):not( [href^='#'] ):not( [href^='/'] ){
-		&:not( [href$='.jpg'] ):not( [href$='.png'] ):not( [href$='.jpeg'] ):not( [href$='.gif'] ):not( [href$='.bmp'] ){
-			&:after{
-				font-family: 'FontAwesome';
-				content: "  \f08e";
-				font-size: .7em;
-			}
-		}
-	}
+.externalLink:after {
+	font-family: 'FontAwesome';
+	content: "  \f08e";
+	font-size: .7em;
 }

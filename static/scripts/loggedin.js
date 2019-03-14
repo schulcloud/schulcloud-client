@@ -1,6 +1,15 @@
 /* global kjua jQuery introJs*/
 import { setupFirebasePush } from './notificationService/indexFirebase';
 import { sendShownCallback, sendReadCallback} from './notificationService/callback';
+import { iFrameListen } from './helpers/iFrameResize';
+
+iFrameListen();
+
+var $contactHPIModal;
+var $contactAdminModal;
+
+var $contactHPIModal;
+var $contactAdminModal;
 
 var $contactHPIModal;
 var $contactAdminModal;
@@ -10,7 +19,7 @@ if (window.opener && window.opener !== window) {
 }
 
 function toggleMobileNav() {
-    document.querySelector('aside.nav-sidebar nav:first-child').classList.toggle('active');
+    document.querySelector('aside.nav-sidebar').classList.toggle('active');
     this.classList.toggle('active');
 }
 
@@ -41,22 +50,21 @@ function sendFeedback(modal, e) {
     e.preventDefault();
 
     let type = (fmodal[0].className.includes('contactHPI-modal')) ? 'contactHPI' : 'contactAdmin';
-
     let subject = (type === 'contactHPI') ? 'Feedback' : 'Problem ' + fmodal.find('#title').val();
-   
+
     $.ajax({
         url: '/helpdesk',
         type: 'POST',
         data: {
             type: type,
-                subject: subject,
-                category: fmodal.find('#category').val(),
-                role: fmodal.find('#role').val(),
-                desire: fmodal.find('#desire').val(),
-                benefit: fmodal.find("#benefit").val(),
-                acceptanceCriteria: fmodal.find("#acceptance_criteria").val(),
-                currentState: fmodal.find('#hasHappened').val(),
-                targetState: fmodal.find('#supposedToHappen').val()
+            subject: subject,
+            category: fmodal.find('#category').val(),
+            role: fmodal.find('#role').val(),
+            desire: fmodal.find('#desire').val(),
+            benefit: fmodal.find("#benefit").val(),
+            acceptanceCriteria: fmodal.find("#acceptance_criteria").val(),
+            currentState: fmodal.find('#hasHappened').val(),
+            targetState: fmodal.find('#supposedToHappen').val()
         },
         success: function (result) {
             showAJAXSuccess("Feedback erfolgreich versendet!", fmodal);
@@ -102,7 +110,7 @@ $(document).ready(function () {
                 feedbackType: "userstory"
             }
         });
-        
+
         $($contactHPIModal).appendTo('body').modal('show');
     });
     $contactHPIModal.querySelector('.modal-form').addEventListener("submit", sendFeedback.bind(this, $contactHPIModal));
@@ -116,9 +124,12 @@ $(document).ready(function () {
             closeLabel: 'Abbrechen',
             submitLabel: 'Senden'
         });
-
         $($contactAdminModal).appendTo('body').modal('show');
     });
+    
+    $contactAdminModal.querySelector('.modal-form').addEventListener("submit", sendFeedback.bind(this, $contactAdminModal));
+
+    $contactAdminModal.querySelector('.modal-form').addEventListener("submit", sendFeedback.bind(this, $contactAdminModal));
 
     $contactAdminModal.querySelector('.modal-form').addEventListener("submit", sendFeedback.bind(this, $contactAdminModal));
 
@@ -145,7 +156,7 @@ $(document).ready(function () {
         $qrbox.empty();
         $qrbox.append(image);
     });
-  
+
     // Init mobile nav
     if (document.getElementById('searchBar') instanceof Object) {
         document.querySelector('.mobile-nav-toggle').addEventListener('click', toggleMobileNav);
@@ -175,16 +186,6 @@ $(document).ready(function () {
     populateModalForm($featureModal, {
         title: 'Neue Features sind verfügbar',
         closeLabel: 'Abbrechen'
-    });
-  
-    // loading animation
-    window.addEventListener("beforeunload", function (e) {
-        const loaderClassList = document.querySelector(".preload-screen").classList;
-        loaderClassList.remove("hidden");
-    });
-    window.addEventListener("pageshow", function (e) {
-        const loaderClassList = document.querySelector(".preload-screen").classList;
-        loaderClassList.add("hidden");
     });
 
     // from: https://stackoverflow.com/a/187557
@@ -221,7 +222,7 @@ window.addEventListener('DOMContentLoaded', function() {
         setupFirebasePush();
     }
 
-    let  feedbackSelector = document.querySelector('#feedbackType');
+    let feedbackSelector = document.querySelector('#feedbackType');
     if(feedbackSelector){
         feedbackSelector.onchange = function(){
             if(feedbackSelector.value === "problem"){
@@ -244,11 +245,21 @@ window.addEventListener('DOMContentLoaded', function() {
                 });
                 document.getElementById("acceptance_criteria").required = false;
             }
-        }
+        };
     }
 });
-window.addEventListener("resize", function () {
-    $('.sidebar-list').css({"height": window.innerHeight});
+
+// loading animation
+document.addEventListener("DOMContentLoaded", function (e) {
+    document.querySelector("body").classList.add("loaded");
+});
+window.addEventListener("beforeunload", function (e) {
+    document.querySelector("body").classList.remove("loaded");
+
+});
+window.addEventListener("pageshow", function (e) {
+    document.querySelector("body").classList.add("loaded");
+
 });
 
 function changeNavBarPositionToAbsolute() {
@@ -280,13 +291,24 @@ window.addEventListener("load", () => {
         startIntro();
         localStorage.setItem('Tutorial', false);
     }
-    if ('serviceWorker' in navigator) { 
+    if ('serviceWorker' in navigator) {
         // enable sw for half of users only
         let testUserGroup = parseInt(document.getElementById('testUserGroup').value);
         if(testUserGroup == 1) {
             navigator.serviceWorker.register('/sw.js');
         }
     }
-}); 
+    document.getElementById("intro-loggedin").addEventListener("click", startIntro, false);
+});
 
-document.getElementById("intro-loggedin").addEventListener("click", startIntro, false);
+document.querySelectorAll('#main-content a').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (a.querySelector('img, .fa') == null && href) {
+        if (!(href.startsWith('https://schul-cloud.org') || href.startsWith('#') || href.startsWith('/') || href === '')) {
+            if (!a.getAttribute('target')) {
+                a.setAttribute('target', '_blank');
+            }
+            a.classList.add('externalLink');
+        }
+    }
+});

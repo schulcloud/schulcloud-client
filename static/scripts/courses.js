@@ -5,6 +5,7 @@ $(document).ready(function () {
         e.preventDefault();
         var $hiddenToggleBtn = $(this);
         var $hiddenToggleIcon = $(this).find('.fa');
+        var $card = $(this).closest('.card');
         $.ajax({
             method: 'PATCH',
             url: window.location.href + '/topics/' + $(this).attr('href') + '?json=true',
@@ -14,10 +15,12 @@ $(document).ready(function () {
                     $hiddenToggleIcon.addClass('fa-eye-slash');
                     $hiddenToggleIcon.removeClass('fa-eye');
                     $hiddenToggleBtn.attr('data-original-title', "Thema sichtbar machen");
+                    $card.addClass('card-transparent');
                 } else {
                     $hiddenToggleIcon.removeClass('fa-eye-slash');
                     $hiddenToggleIcon.addClass('fa-eye');
                     $hiddenToggleBtn.attr('data-original-title', "Thema verstecken");
+                    $card.removeClass('card-transparent');
                 }
             }
         });
@@ -74,22 +77,25 @@ $(document).ready(function () {
         e.stopPropagation();
     });
 
-    $("#topic-list").sortable({
-        placeholder: "ui-state-highlight",
-        handle: '.move-handle',
-        update: function(event, ui) {
-            let positions = {};
-            $( "#topic-list .card-topic" ).each(function(i) {
-                positions[($( this ).attr("data-topicId"))] = i;
-            });
-            $.ajax({
-                type: "PATCH",
-                url: window.location.href + "/positions",
-                data: positions
-            });
-        },
-    });
-    $( "#topic-list" ).disableSelection();
+    if ($('#topic-list').length) {
+        $("#topic-list").sortable({
+            placeholder: "ui-state-highlight",
+            handle: '.move-handle',
+            update: function(event, ui) {
+                let positions = {};
+                $( "#topic-list .card-topic" ).each(function(i) {
+                    positions[($( this ).attr("data-topicId"))] = i;
+                });
+                $.ajax({
+                    type: "PATCH",
+                    url: window.location.href + "/positions",
+                    data: positions
+                });
+            },
+        });
+
+        $( "#topic-list" ).disableSelection();
+    }
 
     $('.btn-create-share-course').click(function (e) {
         e.stopPropagation();

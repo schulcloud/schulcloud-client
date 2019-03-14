@@ -48,14 +48,14 @@
             {{/userHasPermission}}
             {{/inArray}}
         {{/ifvalue}}
-        
+
         {{#inArray this.currentUser._id this.archived}}
             {{#userHasPermission "HOMEWORK_CREATE"}}
             <a class="btn btn-secondary btn-archive"
                 href="{{this.url}}"
                 target="_blank"
                 data="archive=open"
-                data-toggle="tooltip" title="Verschiebe Aufgabe zwischen Übersichtsseite und Archiv"
+                data-toggle="tooltip" title="Verschiebe Aufgabe aus Archiv in die Übersichtsseite"
                 alt-text="<i class='fa fa-archive'></i> Archivieren">
                     <i class='fa fa-mail-reply'></i> Wiederherstellen
             </a>
@@ -66,17 +66,24 @@
                 href="{{this.url}}"
                 target="_blank"
                 data="archive=done"
-                data-toggle="tooltip" title="Verschiebe Aufgabe zwischen Übersichtsseite und Archiv"
+                data-toggle="tooltip" title="Verschiebe Aufgabe von Übersichtsseite ins Archiv"
                 alt-text="<i class='fa fa-mail-reply'></i> Wiederherstellen">
                     <i class='fa fa-archive'></i> Archivieren
             </a>
             {{/userHasPermission}}
         {{/inArray}}
         {{#if courseId._id}}
-            <a class="btn btn-secondary" href="/courses/{{courseId._id}}" alt="zum Kurs der Aufgabe">zum Kurs</a>
+            <a href="/files/courses/{{courseId._id}}" class="btn btn-add btn-secondary">
+              <i class="fa fa-folder-open"></i>
+              Zu den Kursdateien
+            </a>
+            <a class="btn btn-secondary" href="/courses/{{courseId._id}}" alt="Zum Kurs der Aufgabe">
+              <i class="fa fa-graduation-cap"></i>
+              Zum Kurs
+            </a>
             {{#if lessonId}}
                 <a class="btn btn-secondary" href="/courses/{{courseId._id}}/topics/{{lessonId}}"
-                   alt="zum Thema der Aufgabe">zum Thema</a>
+                   alt="Zum Thema der Aufgabe">Zum Thema</a>
             {{/if}}
         {{/if}}
     </div>
