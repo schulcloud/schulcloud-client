@@ -136,10 +136,12 @@ const runToolHandler = (req, res, next) => {
 			formData = {
 				id_token: jwt.sign(id_token, fs.readFileSync('private_key.pem'), {algorithm: 'RS256'})
 			}
+			console.log("jwt", formData);
+			console.log(req.device);
 	   }
-
+				console.log(tool.url);
         res.render('courses/components/run-lti-frame', {
-            url: tool.url,
+            url: tool.url + '/lti-mobile',
             method: 'POST',
             formData: Object.keys(formData).map(key => {
                 return {name: key, value: formData[key]};
@@ -167,6 +169,9 @@ const getDetailHandler = (req, res, next) => {
 
 const showToolHandler = (req, res, next) => {
     const context = req.originalUrl.split('/')[1];
+
+    // console.log(req);
+		// console.log(req.device);
 
     Promise.all([
         api(req).get('/ltiTools/' + req.params.ltiToolId),

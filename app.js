@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const querystring = require('querystring');
+const device = require('express-device');
 
 const session = require('express-session');
 
@@ -15,6 +16,7 @@ const layouts = require("handlebars-layouts");
 const handlebarsWax = require('handlebars-wax');
 
 const app = express();
+app.use(device.capture());
 app.use(compression());
 app.set('trust proxy', true);
 const themeName = process.env.SC_THEME || 'default';
