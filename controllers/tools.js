@@ -150,6 +150,11 @@ const runToolHandler = (req, res, next) => {
     });
 };
 
+// z 144 muss aus Datenbank kommen. /lti-mobile muss in der Datenbank drinnestehen "ltitools" Tabelle.
+// Wenn der Lehrer ein Tool dem Unterricht hinzufügt, dann wird der Datenbankeintrag dubliziert und
+// auf den eigentlichen Inhalt angepasst.
+// Mein Fall: Hard codiert in die Datenbank direkt reinschreiben.
+
 const getDetailHandler = (req, res, next) => {
     const context = req.originalUrl.split('/')[1];
     Promise.all([
