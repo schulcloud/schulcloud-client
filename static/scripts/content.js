@@ -27,7 +27,7 @@ window.addEventListener("turbolinks:load", function(){
 	}
 });
 
-$(document).ready(function () {
+window.addEventListener("turbolinks:load", function () {
 	var $modals = $('.modal');
 	var $editModal = $('.edit-modal');
 	var $externalLinkModal = $('.external-link-modal');

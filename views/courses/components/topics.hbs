@@ -14,7 +14,7 @@
           {{#each lessons}}
             {{#unless this.hidden}}
               <!-- TOPIC IS NOT HIDDEN, teacher and student has access -->
-              <div class="card card-topic" onclick="location.href='{{this.url}}'" {{#userHasPermission "COURSE_EDIT"}} data-topicId="{{../_id}}" {{/userHasPermission}}>
+              <div class="card card-topic" onclick="Turbolinks.visit('{{this.url}}')" {{#userHasPermission "COURSE_EDIT"}} data-topicId="{{../_id}}" {{/userHasPermission}}>
                 <div class="card-header">
                   <div class="input-group">
                     {{#userHasPermission "COURSE_EDIT"}}

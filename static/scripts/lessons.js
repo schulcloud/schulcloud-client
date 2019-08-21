@@ -1,4 +1,4 @@
-$(document).ready(function() {
+window.addEventListener("turbolinks:load", function () {
     var $modals = $('.modal');
     var $deleteModal = $('.delete-modal');
 

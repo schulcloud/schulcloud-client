@@ -740,4 +740,3 @@ function writeFileSizePretty(filesize) {
     }
     return (filesize + unit);
 }
-

@@ -1,17 +1,16 @@
-{{#extend "lib/loggedin"}} 
+{{#extend "lib/loggedin"}}
 
     {{#content "styles" mode="append"}}
         <link rel="stylesheet" href="/styles/courses/course.css" />
         <link rel="stylesheet" href="/styles/homework/homework.css" />
-        <link rel="stylesheet" href="/vendor/jquery/jquery-ui.css" /> 
-    {{/content}} 
+        <link rel="stylesheet" href="/vendor/jquery/jquery-ui.css" />
+    {{/content}}
 
     {{#content "scripts" mode="append"}}
-    <script src="/scripts/jquery/jquery-ui.min.js" type="text/javascript" defer></script>
-    <script src="/scripts/jquery/jquery.ui.touch-punch.js" type="text/javascript" defer></script>
-    <script src="/scripts/courses.js" type="text/javascript" defer></script> 
-
-    {{/content}} 
+        <script src="/scripts/jquery/jquery-ui.min.js" type="text/javascript" defer></script>
+        <script src="/scripts/jquery/jquery.ui.touch-punch.js" type="text/javascript" defer></script>
+        <script src="/scripts/courses.js" type="text/javascript" defer></script>
+    {{/content}}
 
     {{#content "page"}}
 
@@ -47,7 +46,7 @@
                                 <div class="card-header">
                                     <div class="input-group">
                                         <p class="topic-label ml-1">{{{stripOnlyScript this.name}}}</p>
-                                    
+
                                         <div class="right-btn-group">
                                             <a class="delete-topic btn btn-secondary btn-sm btn-icon-card" href="/courses/{{../courseId}}/topics/{{_id}}?courseGroup={{../_id}}" target="_blank" data-method="DELETE"
                                                 data-name="{{this.name}}" redirect="/courses/{{../courseId}}/groups/{{../_id}}">
@@ -122,7 +121,7 @@
             </div>
         </div>
 
-        {{#embed "lib/components/modal" class="delete-modal" title="Bist du dir sicher?"}} 
+        {{#embed "lib/components/modal" class="delete-modal" title="Bist du dir sicher?"}}
 
             {{#content "body"}}
                 <div class="modal-footer">
@@ -136,8 +135,8 @@
                 </div>
             {{/content}}
 
-        {{/embed}} 
-        
+        {{/embed}}
+
     {{/content}}
- 
+
  {{/extend}}

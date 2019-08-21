@@ -1,5 +1,4 @@
-$(document).ready(function () {
-
+window.addEventListener("turbolinks:load", function () {
 
     $('.btn-member').on('click', function (e) {
         e.stopPropagation();

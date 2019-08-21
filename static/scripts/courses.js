@@ -1,4 +1,4 @@
-$(document).ready(function () {
+window.addEventListener("turbolinks:load", function () {
 
     $('.btn-hidden-toggle').click(function (e) {
         e.stopPropagation();

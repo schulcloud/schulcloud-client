@@ -48,6 +48,9 @@
         {{#embed "lib/sw-metrix"}}{{/embed}}
         <script src="/scripts/all.js" type="text/javascript" defer></script>
         <script src="/vendor-optimized/turbolinks/turbolinks.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/idb-keyval@3/dist/idb-keyval-iife.min.js"></script>
+        <script src="/scripts/tabbar.js" type="text/javascript" defer></script>
+
         {{#if p2pCDNEnabled}}
             {{#if currentUser}}
 
@@ -84,8 +87,7 @@
                         scope: '/',
                         verbose: true,
                         basePath: '/',
-                        storageQuota: '10000',
-                        statisticPath: 'http://localhost:8080/logs'
+                        storageQuota: '10000'
                     }
                 };
                 var p2pCDN = new P2pCDN(config);
