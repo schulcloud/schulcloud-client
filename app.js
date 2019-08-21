@@ -15,7 +15,7 @@ const layouts = require("handlebars-layouts");
 const handlebarsWax = require('handlebars-wax');
 const turbolinksConfig = require('./turbolinks.config')
 const app = express();
-const p2pCDNEnabled = process.env.P2P_CDN_ENABLED === 'true' || false;
+const p2pCDNEnabled = true;// process.env.P2P_CDN_ENABLED === 'true' || false;
 
 app.use(compression());
 app.set('trust proxy', true);
