@@ -15,9 +15,6 @@
 		Mit Node, React und Feathers verknüpfst du eher die Sprache Javascript als Englisch? Du suchst ein junges Team, lockere Atmosphäre und flache Hierarchien? Dann schau dir unsere Stellen an: https://schul-cloud.org/community#jobs
 	-->
     {{#block "meta"}}
-        {{#unless turbolinks}}
-            <meta name="turbolinks-visit-control" content="reload">
-        {{/unless}}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="#b10438">
@@ -53,40 +50,45 @@
         <script src="/vendor-optimized/turbolinks/turbolinks.js"></script>
         {{#if p2pCDNEnabled}}
             {{#if currentUser}}
+
               <script src="/vendor-optimized/faye/client/faye-browser-min.js"></script>
-              <script src="/vendor-optimized/p2pCDN/p2pCDN.js"></script>
+              <script src="/p2pCDN.js"></script>
               <script>
-                  localStorage.debug = '*,-socket.io*,-engine*';
-                  var config = {
-                      channel: 'p2pCDN/school/{{currentUser.schoolId}}',
-                      clientId: '{{currentPayload.jti}}',
-                      idLength: 15,
-                      stunServer: {
-                          'iceServers': [
-                              {
-                                  'urls': 'stun:stun.l.google.com:19302',
-                              },
-                          ]
-                          },
-                      serviceWorker: {
-                          urlsToShare:[
-                              '/images/',
-                              '/video/',
-                              '/vod/',
-                              '/scripts/',
-                              '/wikipedia/',
-                              '/vendor-optimized/',
-                              '/vendor/',
-                              '/styles/',
-                              '/fonts/'
-                          ],
-                          path: '/p2pCDNsw.js',
-                          scope: '/',
-                          basePath: '/',
-                          storageQuota: '1000'
-                      }
-                  };
-                  var p2pCDN = new P2pCDN(config);
+                localStorage.debug = '*,-socket.io*,-engine*';
+                var config = {
+                    channel: 'p2pCDN/school/{{currentUser.schoolId}}',
+                    clientId: '{{currentPayload.jti}}',
+                    idLength: 15,
+                    logLevel: 'all',
+                    verbose: true,
+                    stunServer: {
+                        'iceServers': [
+                            {
+                                'urls': 'stun:stun.l.google.com:19302',
+                            },
+                        ]
+                        },
+                    serviceWorker: {
+                        urlsToShare:[
+                            '/images/',
+                            '/video/',
+                            '/vod/',
+                            '/scripts/',
+                            '/wikipedia/',
+                            '/vendor-optimized/',
+                            '/vendor/',
+                            '/styles/',
+                            '/fonts/'
+                        ],
+                        path: '/p2pCDNsw.js',
+                        scope: '/',
+                        verbose: true,
+                        basePath: '/',
+                        storageQuota: '10000',
+                        statisticPath: 'http://localhost:8080/logs'
+                    }
+                };
+                var p2pCDN = new P2pCDN(config);
               </script>
             {{/if}}
         {{/if}}

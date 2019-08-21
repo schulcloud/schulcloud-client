@@ -1,8 +1,9 @@
 module.exports = {
     routes: [
-        '/dashboard/',
-        '/news/',
-        '/courses/',
-        '/administration/'
+        // '/dashboard/',
+        // '/news/',
+        // '/courses/',
+        // '/administration/'
+        '/'
     ]
 }
