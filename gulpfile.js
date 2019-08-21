@@ -117,6 +117,11 @@ gulp.task('styles-done', ['styles'], () =>{
   firstRun = false;
 });
 
+gulp.task('copy-p2p-cdn', () => {
+  gulp.src('./node_modules/webrtc-p2p-cdn/build/src/*')
+  .pipe(gulp.dest(`./build/${themeName()}`))
+});
+
 //copy fonts
 gulp.task('fonts', () => {
   return beginPipe('./static/fonts/**/*.*')
@@ -287,7 +292,7 @@ gulp.task('clear', () => {
 });
 
 //run all tasks, processing changed files
-gulp.task('build-all', ['images', 'other', 'styles', 'styles-done', 'fonts', 'scripts', 'base-scripts',
+gulp.task('build-all', ['copy-p2p-cdn', 'images', 'other', 'styles', 'styles-done', 'fonts', 'scripts', 'base-scripts',
                         'vendor-styles', 'vendor-scripts', 'vendor-assets', 'vendor-optimized-assets',
                         'generate-service-worker', 'sw-workbox', 'node-modules'
 ]);

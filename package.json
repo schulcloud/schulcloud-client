@@ -63,7 +63,7 @@
     "string-strip-html": "^3.2.0",
     "string_decoder": "^1.0.1",
     "truncate-html": "^1.0.0",
-    "webrtc-p2p-cdn": "^1.0.3",
+    "webrtc-p2p-cdn": "https://github.com/schul-cloud/p2p#b575f291b47485599ad9b87ca26020b842eb5c03",
     "winston": "^3.0.0"
   },
   "devDependencies": {
