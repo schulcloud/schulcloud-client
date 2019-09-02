@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
 const handlebars = require('handlebars');
 const layouts = require('handlebars-layouts');
 const handlebarsWax = require('handlebars-wax');
+const listEndpoints = require('express-list-endpoints')
 
 const app = express();
 
@@ -119,6 +120,8 @@ app.use(methodOverride((req, res, next) => { // for POST requests
 
 // Initialize the modules and their routes
 app.use(require('./controllers/'));
+
+app.get('/endpoints', (req, res, next) => res.json(listEndpoints(app)));
 
 app.get('/', (req, res, next) => {
 	res.redirect('/login/');
