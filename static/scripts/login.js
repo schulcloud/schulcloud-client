@@ -35,6 +35,12 @@ $(document).ready(function() {
     var $pwRecoveryModal = $('.pwrecovery-modal');
     var $modalForm = $('.modal-form');
 
+    // Display schools and systems when cookie is set
+    if (localStorage.getItem('showProviders') === 'true'){
+        $btnToggleProviers.hide();
+        $loginProviders.show();
+    }
+
     var loadSystems = function(schoolId) {
         $systems.empty();
         $.getJSON('/login/systems/' + schoolId, function(systems) {
@@ -55,10 +61,12 @@ $(document).ready(function() {
         e.preventDefault();
         $btnToggleProviers.hide();
         $loginProviders.show();
+        localStorage.setItem('showProviders', 'true');
     });
 
     $btnHideProviers.on('click', function(e) {
         e.preventDefault();
+        localStorage.setItem('showProviders', 'false');
         $btnToggleProviers.show();
         $loginProviders.hide();
         $school.val('');
