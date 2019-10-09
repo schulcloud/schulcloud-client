@@ -36,7 +36,7 @@
 
         <div class="form-group">
           <label>Geburtsdatum des Schülers: <sup>*</sup></label>
-          <input class="form-control linked" name="birthDate" type="text"
+          <input class="form-control linked" id="birthdateID" name="birthDate" type="text"
             data-date data-min-date="{{datePickerTodayMinus CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS 0 -1}}" data-max-date="{{datePickerTodayMinus 4 0 0}}"
             value="{{#if user.birthday}}{{dateToPicker user.birthday}}{{/if}}" autocomplete="off" required {{#if user.birthday}}readonly{{/if}}/>
         </div>
