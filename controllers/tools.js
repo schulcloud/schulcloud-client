@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router({ mergeParams: true });
 const api = require('../api');
@@ -139,6 +140,23 @@ const showToolHandler = (req, res, next) => {
 	});
 };
 
+const addLinkHandler = (req, res, next) => {
+	const { iss } = jwt.decode(req.body.id_token);
+	api(req).get(`/ltiTools/?oAuthClientId=${iss}&lti_version=1.3.0&isTemplate=true`)
+		.then((tool) => {
+			const idToken = jwt.verify(req.body.id_token, tool.data[0].key, { algorithm: 'RS256' });
+			if (idToken.aud !== (process.env.FRONTEND_URL || 'http://localhost:3100/')) {
+				res.send('Audience stimmt nicht überein.');
+			}
+
+			const content = idToken['https://purl.imsglobal.org/spec/lti-dl/claim/content_items'];
+			res.render('courses/deep-link', {
+				url: content.url,
+				title: content.title,
+				id: req.params.ltiToolId,
+			});
+		});
+};
 
 // secure routes
 router.use(authHelper.authChecker);
@@ -153,6 +171,7 @@ router.post('/add', createToolHandler);
 
 router.get('/run/:ltiToolId', runToolHandler);
 router.get('/show/:ltiToolId', showToolHandler);
+router.post('/link/:ltiToolId', addLinkHandler);
 
 router.get('/:id', getDetailHandler);
 

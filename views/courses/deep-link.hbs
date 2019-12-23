@@ -1,0 +1,35 @@
+{{#extend "lib/default"}}
+
+	{{#content "styles" mode="append"}}
+		<link rel="stylesheet" href="/styles/authentication/home.css"/>
+		<link rel="stylesheet" href="/styles/authentication/login.css"/>
+	{{/content}}
+
+	{{#content "body"}}
+		<main class="container">
+			<div class="row">
+				<section class="col-md-6 offset-md-3">
+					<section class="card">
+						<div class="card-block">
+							<div class="text-center">
+								<h3>Inhalt gewählt</h3>
+								<h4>Bitte speichern, um {{title}} in den Kurs einzufügen.</h4>
+							</div>
+						</div>
+					</section>
+				</section>
+			</div>
+		</main>
+	{{/content}}
+
+	{{#content "scripts" mode="append"}}
+
+		<script type="text/javascript">
+
+			window.parent.document.getElementById('{{id}}-title').value = '{{title}}';
+			window.parent.document.getElementById('{{id}}-url').value = '{{url}}';
+			if(window.parent['link-{{id}}']) window.parent['link-{{id}}']('{{url}}');
+		</script>
+
+	{{/content}}
+{{/extend}}
