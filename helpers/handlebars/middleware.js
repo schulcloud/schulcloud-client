@@ -57,7 +57,7 @@ module.exports = (req, res, next) => {
                 link: '/homework/asked/'
             },
             {
-                name: 'Meine ToDos',
+                name: 'Entwürfe',
                 icon: 'lock',
                 link: '/homework/private/'
             },
@@ -115,11 +115,11 @@ module.exports = (req, res, next) => {
     // Extensions Feature Toggle
     const extensionsEnabled = process.env.FEATURE_EXTENSIONS_ENABLED === 'true';
     if (extensionsEnabled) {
-      res.locals.sidebarItems.push({
-        name: "Add-ons",
-        icon: "puzzle-piece",
-        link: "/addons"
-      });
+        res.locals.sidebarItems.push({
+            name: "Add-ons",
+            icon: "puzzle-piece",
+            link: "/addons"
+        });
     }
 
     // teacher views
@@ -182,8 +182,8 @@ module.exports = (req, res, next) => {
                 name: 'Klassen',
                 icon: 'users',
                 link: '/administration/classes/'
-			},
-			{
+            },
+            {
                 name: 'Teams',
                 icon: 'users',
                 link: '/administration/teams/'
