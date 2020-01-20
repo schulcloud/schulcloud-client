@@ -40,7 +40,7 @@
                 {{#unless query }}
                     {{#with featuredContent}}
                     <h2 class="h3">Aktuelle Inhalte</h2>
-                    <div class="row equal-height">
+                    <div class="row equal-height" data-testid="material-container">
                         {{#each this}}
                             <div class="col-md-6 col-lg-4">
                                 {{> "content/item" }}
