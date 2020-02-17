@@ -130,6 +130,7 @@ const showToolHandler = (req, res, next) => {
 				message: 'Das Tool konnte nicht gefunden werden.',
 			});
 		} else {
+			tool.url = tool.url.replace('{{COURSE}}', course._id);
 			const renderPath = tool.isLocal ? 'courses/run-tool-local' : 'courses/run-lti';
 			res.render(renderPath, {
 				course,
