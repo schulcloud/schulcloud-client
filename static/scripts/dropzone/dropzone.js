@@ -557,6 +557,7 @@
             if (_this.options.capture != null) {
               _this.hiddenFileInput.setAttribute("capture", _this.options.capture);
             }
+            _this.hiddenFileInput.setAttribute("data-testid", "uploadField")
             _this.hiddenFileInput.style.visibility = "hidden";
             _this.hiddenFileInput.style.position = "absolute";
             _this.hiddenFileInput.style.top = "0";
