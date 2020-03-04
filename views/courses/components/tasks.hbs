@@ -37,7 +37,7 @@
 			</div>
 		{{/if}}
 	</div>
-	<div class="col-sm-12 add-button" data-testid="btn-add-homework">
+	<div class="col-sm-12 add-button">
 		{{#userHasPermission "COURSE_EDIT" }}
 			{{#unless @root.isArchived}}
 				<a href="/homework/new?course={{../_id}}"
