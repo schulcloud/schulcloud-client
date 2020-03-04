@@ -34,7 +34,7 @@
     </a>
     {{/if}}
     <a class="content" href="{{this.url}}" title="Details der Aufgabe: '{{{escapeHtml this.name}}}'">
-        <h2 class="h5 title">
+        <h2 class="h5 title" data-testid="title">
             {{#if this.courseId}}
             [<span>{{{stripOnlyScript this.courseId.name}}}</span>{{#if this.isSubstitution}}
             <sub>Vertretung</sub>{{/if}}] -
