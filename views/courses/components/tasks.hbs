@@ -42,7 +42,7 @@
 			{{#unless @root.isArchived}}
 				<a href="/homework/new?course={{../_id}}"
 					class="btn btn-primary {{#if ../homeworks}}w-100{{else}}btn-empty{{/if}}"
-					title="Aufgabe hinzufügen">
+					data-testid="btn-add-homework" title="Aufgabe hinzufügen">
 					<span>Erstelle eine Aufgabe</span>
 				</a>
 			{{/unless}}
