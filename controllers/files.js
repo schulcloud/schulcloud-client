@@ -172,8 +172,6 @@ const FileGetter = (req, res, next) => {
 
 	return Promise.all(promises)
 		.then(([role, result]) => {
-			const { data: [{ _id: studentRoleId }] } = role;
-
 			if (!Array.isArray(result) && result.code === 403) {
 				res.locals.files = { files: [], directories: [] };
 				logger.warn(result);
@@ -182,13 +180,6 @@ const FileGetter = (req, res, next) => {
 			}
 
 			const files = result.filter(f => f).map((file) => {
-				const studentPerm = file.permissions.find(perm => (perm.refId || '').toString() === studentRoleId);
-				if (studentPerm) {
-					Object.assign(file, {
-						studentCanEdit: studentPerm.write,
-					});
-				}
-
 				if (file.permissions[0].refId === userId) {
 					Object.assign(file, {
 						userIsOwner: true,
@@ -211,16 +202,18 @@ const FileGetter = (req, res, next) => {
  * fetches all sub-scopes (courses, classes etc.) for a given user and super-scope
  */
 const getScopeDirs = (req, res, scope) => {
+	const currentUserId = String(res.locals.currentUser._id);
 	let qs = {
 		$or: [
-			{ userIds: res.locals.currentUser._id },
-			{ teacherIds: res.locals.currentUser._id },
+			{ userIds: currentUserId },
+			{ teacherIds: currentUserId },
+			{ substitutionIds: currentUserId },
 		],
 	};
 	if (scope === 'teams') {
 		qs = {
 			userIds: {
-				$elemMatch: { userId: res.locals.currentUser._id },
+				$elemMatch: { userId: currentUserId },
 			},
 		};
 	}
@@ -348,7 +341,6 @@ router.delete('/file', (req, res, next) => {
 	const data = {
 		_id: req.body.id,
 	};
-
 	api(req).delete('/fileStorage/', {
 		qs: data,
 	}).then(() => {
@@ -370,6 +362,7 @@ router.get('/file', (req, res, next) => {
 		name,
 		download: download || false,
 	};
+
 	const sharedPromise = share && share !== 'undefined'
 		? registerSharedPermission(res.locals.currentUser._id, data.file, share, req)
 		: Promise.resolve();
@@ -433,7 +426,6 @@ router.post('/newFile', (req, res, next) => {
 		type,
 		owner,
 		parent,
-		studentEdit,
 	} = req.body;
 
 	const fileName = name || 'Neue Datei';
@@ -441,7 +433,6 @@ router.post('/newFile', (req, res, next) => {
 	api(req).post('fileStorage/files/new', {
 		json: {
 			name: `${fileName}.${type}`,
-			studentCanEdit: studentEdit,
 			owner,
 			parent,
 		},
@@ -501,6 +492,11 @@ router.get('/my/:folderId?/:subFolderId?', FileGetter, async (req, res, next) =>
 		breadcrumbs = [...breadcrumbs, ...folderBreadcrumbs];
 	}
 
+	res.locals.files.files = res.locals.files.files.map((file) => {
+		file.saveName = file.name.replace(/'/g, "\\'");
+		return file;
+	});
+
 	res.render('files/files', Object.assign({
 		title: 'Dateien',
 		path: res.locals.files.path,
@@ -519,39 +515,45 @@ router.get('/my/:folderId?/:subFolderId?', FileGetter, async (req, res, next) =>
 router.get('/shared/', (req, res) => {
 	const userId = res.locals.currentUser._id;
 
-	api(req).get('/files')
-		.then(async (result) => {
-			let { data } = result;
-			data = data
-				.filter(f => Boolean(f))
-				.filter((file) => {
-					if (file.owner === userId) {
-						return false;
-					}
-					const permission = file.permissions.find(perm => perm.refId === userId);
-					return permission ? !permission.write : false;
-				})
-				.map(addThumbnails);
+	api(req).get('/files', {
+		qs: {
+			$and: [
+				{ permissions: { $elemMatch: { refPermModel: 'user', refId: userId } } },
+				{ 'permissions.0.refId': { $ne: userId } },
+			],
+		},
+	}).then(async (result) => {
+		let { data } = result;
+		data = data
+			.filter(f => Boolean(f))
+			.filter((file) => {
+				if (file.owner === userId) {
+					return false;
+				}
+				const permission = file.permissions.find(perm => perm.refId === userId);
+				return permission ? !permission.write : false;
+			})
+			.map(addThumbnails);
 
-			const files = {
-				files: checkIfOfficeFiles(data.filter(f => !f.isDirectory)),
-				directories: data.filter(f => f.isDirectory),
-			};
+		const files = {
+			files: checkIfOfficeFiles(data.filter(f => !f.isDirectory)),
+			directories: data.filter(f => f.isDirectory),
+		};
 
-			res.render('files/files', Object.assign({
-				title: 'Dateien',
-				path: '/',
-				breadcrumbs: [{
-					label: 'Mit mir geteilte Dateien',
-					url: '/files/shared/',
-				}],
-				canUploadFile: false,
-				canCreateDir: false,
-				showSearch: true,
-				inline: req.query.inline || req.query.CKEditor,
-				CKEditor: req.query.CKEditor,
-			}, files));
-		});
+		res.render('files/files', Object.assign({
+			title: 'Dateien',
+			path: '/',
+			breadcrumbs: [{
+				label: 'Mit mir geteilte Dateien',
+				url: '/files/shared/',
+			}],
+			canUploadFile: false,
+			canCreateDir: false,
+			showSearch: true,
+			inline: req.query.inline || req.query.CKEditor,
+			CKEditor: req.query.CKEditor,
+		}, files));
+	});
 });
 
 router.get('/', (req, res, next) => {
@@ -946,16 +948,5 @@ router.post('/directoryModel/:id/rename', (req, res, next) => {
 			res.redirect(req.header('Referer'));
 		});
 });
-
-router.post('/studentCanEdit', (req, res, next) => {
-	api(req).patch(`/fileStorage/permission/${req.body.id}`, {
-		json: {
-			role: 'student',
-			write: req.body.bool,
-		},
-	})
-		.then(() => res.json({ success: true }));
-});
-
 
 module.exports = router;

@@ -4,7 +4,7 @@ if (!window.datetimepicker) {
 	window.datetimepicker = () => {
 		/* DATE(-TIME) PICKER */
 		function triggerInputEvent(currentDateTime) {
-			const event = new Event('input', {
+			const event = new CustomEvent('input', {
 				bubbles: true,
 				cancelable: true,
 			});
@@ -32,6 +32,7 @@ if (!window.datetimepicker) {
 				scrollMonth: false,
 				scrollTime: false,
 				scrollInput: false,
+				dayOfWeekStart: 1,
 			});
 			input.setAttribute('autocomplete', 'off');
 			if (input.hasAttribute('required')) {

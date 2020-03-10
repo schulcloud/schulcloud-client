@@ -1,15 +1,8 @@
-/* global kjua jQuery introJs*/
-// import { setupFirebasePush } from './notificationService/indexFirebase';
 import { sendShownCallback, sendReadCallback} from './notificationService/callback';
 import { iFrameListen } from './helpers/iFrameResize';
+import './cleanup'; // see login.js for loggedout users
 
 iFrameListen();
-
-var $contactHPIModal;
-var $contactAdminModal;
-
-var $contactHPIModal;
-var $contactAdminModal;
 
 if (window.opener && window.opener !== window) {
     window.isInline = true;
@@ -42,43 +35,28 @@ function fullscreenBtnClicked() {
     sessionStorage.setItem("fullscreen", JSON.stringify(fullscreen));
 }
 
-function sendFeedback(modal, e) {
-    let fmodal = $(modal);
-    e.preventDefault();
-
-	const type = (fmodal[0].className.includes('contactHPI-modal')) ? 'contactHPI' : 'contactAdmin';
-	const subject = (type === 'contactHPI') ? 'Feedback' : `Problem ${fmodal.find('#title').val()}`;
-	const title = fmodal.find('#wishTitle').val() || fmodal.find('#problemTitle').val();
-
-    $.ajax({
-        url: '/helpdesk',
-        type: 'POST',
-        data: {
-			type,
-			subject,
-			title,
-            category: fmodal.find('#category').val(),
-            role: fmodal.find('#role').val(),
-            desire: fmodal.find('#desire').val(),
-            benefit: fmodal.find("#benefit").val(),
-            acceptanceCriteria: fmodal.find("#acceptance_criteria").val(),
-            currentState: fmodal.find('#hasHappened').val(),
-            targetState: fmodal.find('#supposedToHappen').val()
-        },
-        success: function (result) {
-            showAJAXSuccess("Feedback erfolgreich versendet!", fmodal);
-        },
-        error: function (result) {
-            showAJAXError({}, "Fehler beim senden des Feedbacks", result);
-        }
-    });
-    $('.contactHPI-modal').find('.btn-submit').prop("disabled", true);
-};
-
 function showAJAXSuccess(message, modal) {
     modal.modal('hide');
     $.showNotification(message, "success", true);
 }
+
+function initEnterTheCloud() {
+	const buttons = document.querySelectorAll('.enterthecloud-btn');
+	const modal = document.querySelector('.enterthecloud-modal');
+	if (!buttons.length || !modal) {
+		return false;
+	}
+	buttons.forEach((btn) => {
+		$(btn).on('click', () => {
+			$(modal).appendTo('body').modal('show');
+		});
+	});
+	return true;
+}
+
+$(document).ready(() => {
+	initEnterTheCloud();
+});
 
 $(document).ready(function () {
     // Init mobile nav
@@ -93,40 +71,7 @@ $(document).ready(function () {
 
     // Init modals
     var $modals = $('.modal');
-    $contactHPIModal = document.querySelector('.contactHPI-modal');
     var $featureModal = $('.feature-modal');
-    $contactAdminModal = document.querySelector('.contactAdmin-modal');
-
-    $('.submit-contactHPI').on('click', function (e) {
-        e.preventDefault();
-
-        $('.contactHPI-modal').find('.btn-submit').prop("disabled", false);
-        populateModalForm($($contactHPIModal), {
-            title: 'Wunsch oder Problem senden',
-            closeLabel: 'Abbrechen',
-            submitLabel: 'Senden',
-            fields: {
-                feedbackType: "userstory"
-            }
-        });
-
-        $($contactHPIModal).appendTo('body').modal('show');
-    });
-    $contactHPIModal.querySelector('.modal-form').addEventListener("submit", sendFeedback.bind(this, $contactHPIModal));
-
-    $('.submit-contactAdmin').on('click', function (e) {
-        e.preventDefault();
-
-        $('.contactAdmin-modal').find('.btn-submit').prop("disabled", false);
-        populateModalForm($($contactAdminModal), {
-            title: 'Admin deiner Schule kontaktieren',
-            closeLabel: 'Abbrechen',
-            submitLabel: 'Senden'
-        });
-        $($contactAdminModal).appendTo('body').modal('show');
-    });
-    
-    $contactAdminModal.querySelector('.modal-form').addEventListener("submit", sendFeedback.bind(this, $contactAdminModal));
 
     $modals.find('.close, .btn-close').on('click', function () {
         $modals.modal('hide');
@@ -204,7 +149,7 @@ $(document).ready(function () {
 	// check for LDAP Transfer Mode
 	if ($('#schuljahrtransfer').length) {
 		if ($('#schuljahrtransfer').val() === 'Lehrer') {
-			$.showNotification(`Die Schule befindet sich in der Transferphase zum neuen Schuljahr. 
+			$.showNotification(`Die Schule befindet sich in der Transferphase zum neuen Schuljahr.
 			Es können keine Klassen und Nutzer angelegt werden.
 			Bitte kontaktiere den Schul-Administrator!`, 'warning');
 		} else if ($('#schuljahrtransfer').val() === 'Administrator') {
@@ -216,8 +161,6 @@ $(document).ready(function () {
 });
 
 function showAJAXError(req, textStatus, errorThrown) {
-    $($contactHPIModal).modal('hide');
-    $($contactAdminModal).modal('hide');
     if (textStatus === "timeout") {
         $.showNotification("Zeitüberschreitung der Anfrage", "warn", true);
     } else {
@@ -279,37 +222,6 @@ function changeNavBarPositionToFixed() {
     var navBar = document.querySelector('.nav-sidebar');
     navBar.classList.remove("position-absolute");
 }
-
-function startIntro() {
-    changeNavBarPositionToAbsolute();
-    introJs()
-    .setOptions({
-        nextLabel: "Weiter",
-        prevLabel: "Zurück",
-        doneLabel: "Fertig",
-        skipLabel: "Überspringen",
-        hidePrev: true, //hide previous button in the first step
-        hideNext: true  //hide next button in the last step
-    })
-    .start()
-    .oncomplete(changeNavBarPositionToFixed);
-}
-
-window.addEventListener("load", () => {
-    var continueTuorial=localStorage.getItem('Tutorial');
-    if(continueTuorial=='true') {
-        startIntro();
-        localStorage.setItem('Tutorial', false);
-    }
-    if ('serviceWorker' in navigator) {
-        // enable sw for half of users only
-        let testUserGroup = parseInt(document.getElementById('testUserGroup').value);
-        if(testUserGroup == 1) {
-            navigator.serviceWorker.register('/sw.js');
-        }
-    }
-    document.getElementById("intro-loggedin").addEventListener("click", startIntro, false);
-});
 
 document.querySelectorAll('#main-content a').forEach((a) => {
     const href = a.getAttribute('href');

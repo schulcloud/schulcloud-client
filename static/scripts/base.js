@@ -19,17 +19,23 @@ if (!NodeList.prototype.addEventListener) {
 	NodeList.prototype.addEventListener = nodeListAddEventListener;
 }
 
-const nativeEventListener = EventTarget.prototype.addEventListener;
-function customAddEventListener(events,
-	callback,
-	useCapture) {
-	this.nativeListener = nativeEventListener;
-	events.split(' ').forEach((event) => {
-		this.nativeListener(event, callback, useCapture);
-	});
-	return this;
+// if is needed for IE11
+if (window.EventTarget) {
+	const nativeEventListener = EventTarget.prototype.addEventListener;
+	// eslint-disable-next-line no-inner-declarations
+	function customAddEventListener(events, callback, useCapture) {
+		this.nativeListener = nativeEventListener;
+		events.split(' ').forEach((event) => {
+			this.nativeListener(event, callback, useCapture);
+		});
+		return this;
+	}
+	EventTarget.prototype.addEventListener = customAddEventListener;
 }
-EventTarget.prototype.addEventListener = customAddEventListener;
+
+// IE11 Polyfill
+// eslint-disable-next-line
+Number.isInteger = Number.isInteger || (value => typeof value === 'number' && isFinite(value) && Math.floor(value) === value);
 
 function populateModal(modal, identifier, data) {
 	const block = modal.find(identifier);
@@ -186,7 +192,7 @@ $(document).ready(() => {
 
 	// Initialize bootstrap-select
 	function dispatchInputEvent() {
-		this.dispatchEvent(new Event('input'));
+		this.dispatchEvent(new CustomEvent('input'));
 	}
 
 	$('select:not(.no-bootstrap):not(.search-enabled)')
@@ -311,13 +317,6 @@ $(document).ready(() => {
 	document.querySelectorAll('.print .btn-print').forEach((btn) => {
 		btn.addEventListener('click', printPart);
 	});
-
-	// eslint-disable-next-line no-restricted-globals
-	if (document.querySelector('*[data-intro]') && screen.width > 1024) {
-		document.querySelectorAll('.intro-trigger').forEach((trigger) => {
-			trigger.classList.add('show');
-		});
-	}
 
 	// from: https://coderwall.com/p/i817wa/one-line-function-to-detect-mobile-devices-with-javascript
 	function isMobileDevice() {

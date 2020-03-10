@@ -93,11 +93,14 @@ label {
 	font-weight: bold;
 }
 
-video,
-audio {
+video {
 	width: 100%;
 	height: auto;
 	object-fit: cover;
+}
+
+audio {
+	width: 100%;
 }
 
 .pagination-wrapper {
@@ -108,10 +111,6 @@ audio {
 label,
 .noselect {
 	user-select: none;
-}
-
-.intro-trigger {
-	display: none;
 }
 
 .hidden {
@@ -164,8 +163,17 @@ label,
 
 footer {
 	display: block;
-	.android-app {
-		margin-left: -11px;
+	.mobile-app {
+
+		img {
+			height: 70px;
+		}
+
+		.ios-app {
+			img {
+				padding: 11.5px;
+			}
+		}
 	}
 	&.small-footer {
 		@include media-breakpoint-down(xs) {

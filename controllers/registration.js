@@ -1,24 +1,26 @@
 const express = require('express');
-const DeviceDetector = require('device-detector-js');
 
 const router = express.Router();
 const api = require('../api');
-const { cookieDomain } = require('../helpers/authentication');
-
-const deviceDetectorObj = new DeviceDetector();
 
 const { CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS } = require('../config/consent');
 const setTheme = require('../helpers/theme');
 
-const detectIE = (req) => {
-	const device = deviceDetectorObj.parse(req.headers['user-agent']);
-	const isIE = (((device || {}).client || {}).name || '').includes('Internet Explorer');
-	return isIE;
-};
+let invalid = false;
 
 const resetThemeForPrivacyDocuments = async (req, res) => {
 	res.locals.currentSchoolData = await api(req).get(`registrationSchool/${req.params.classOrSchoolId}`);
 	setTheme(res);
+};
+
+const checkValidRegistration = async (req) => {
+	if (req.query.importHash) {
+		const existingUser = await api(req).get(`/users/linkImport/${req.query.importHash}`);
+		if (!existingUser.userId) {
+			return true;
+		}
+	}
+	return false;
 };
 
 /*
@@ -44,12 +46,6 @@ router.post('/registration/pincreation', (req, res, next) => {
 });
 
 router.post(['/registration/submit', '/registration/submit/:sso/:accountId'], (req, res, next) => {
-	const isIE = detectIE(req);
-
-	if (isIE) {
-		return res.status(500).send('Absenden der Registrierung mit Internet Explorer nicht erlaubt.');
-	}
-
 	// normalize form data
 	req.body.roles = Array.isArray(req.body.roles) ? req.body.roles : [req.body.roles];
 
@@ -68,9 +64,9 @@ router.post(['/registration/submit', '/registration/submit/:sso/:accountId'], (r
 				if (req.body.roles.includes('student')) {
 					passwordText = `Startpasswort: ${req.body.password_1}`;
 					studentInfotext = `Für Schüler: Nach dem ersten Login musst du ein persönliches Passwort festlegen.
-						Wenn du zwischen 14 und ${CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS} Jahre alt bist,
-						bestätige bitte zusätzlich die Einverständniserklärung,
-						damit du die ${res.locals.theme.short_title} nutzen kannst.`;
+Wenn du zwischen 14 und ${CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS} Jahre alt bist,
+bestätige bitte zusätzlich die Einverständniserklärung,
+damit du die ${res.locals.theme.short_title} nutzen kannst.`;
 				}
 				return api(req).post('/mails/', {
 					json: {
@@ -96,13 +92,12 @@ ${res.locals.theme.short_title}-Team`,
 				res.cookie(
 					'jwt',
 					req.cookies.jwt,
-					Object.assign({},
-						{
-							expires: new Date(Date.now() - 100000),
-							httpOnly: true,
-							secure: process.env.NODE_ENV === 'production',
-						},
-						cookieDomain(res)),
+					{
+						expires: new Date(Date.now() - 100000),
+						httpOnly: false,
+						hostOnly: true,
+						secure: process.env.NODE_ENV === 'production',
+					},
 				);
 			}
 		})
@@ -116,8 +111,6 @@ ${res.locals.theme.short_title}-Team`,
 
 router.get(['/registration/:classOrSchoolId/byparent', '/registration/:classOrSchoolId/byparent/:sso/:accountId'],
 	async (req, res, next) => {
-		const isIE = detectIE(req);
-
 		if (!RegExp('^[0-9a-fA-F]{24}$').test(req.params.classOrSchoolId)) {
 			if (req.params.sso && !RegExp('^[0-9a-fA-F]{24}$').test(req.params.accountId)) {
 				return res.sendStatus(400);
@@ -129,6 +122,8 @@ router.get(['/registration/:classOrSchoolId/byparent', '/registration/:classOrSc
 		user.classOrSchoolId = req.params.classOrSchoolId;
 		user.sso = req.params.sso === 'sso';
 		user.account = req.params.accountId || '';
+
+		invalid = await checkValidRegistration(req);
 
 		await resetThemeForPrivacyDocuments(req, res);
 
@@ -140,15 +135,13 @@ router.get(['/registration/:classOrSchoolId/byparent', '/registration/:classOrSc
 			title: 'Registrierung - Eltern',
 			hideMenu: true,
 			user,
-			isIE,
 			CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS,
+			invalid,
 		});
 	});
 
 router.get(['/registration/:classOrSchoolId/bystudent', '/registration/:classOrSchoolId/bystudent/:sso/:accountId'],
 	async (req, res, next) => {
-		const isIE = detectIE(req);
-
 		if (!RegExp('^[0-9a-fA-F]{24}$').test(req.params.classOrSchoolId)) {
 			if (req.params.sso && !RegExp('^[0-9a-fA-F]{24}$').test(req.params.accountId)) {
 				return res.sendStatus(400);
@@ -160,6 +153,8 @@ router.get(['/registration/:classOrSchoolId/bystudent', '/registration/:classOrS
 		user.classOrSchoolId = req.params.classOrSchoolId;
 		user.sso = req.params.sso === 'sso';
 		user.account = req.params.accountId || '';
+
+		invalid = await checkValidRegistration(req);
 
 		await resetThemeForPrivacyDocuments(req, res);
 
@@ -172,14 +167,12 @@ router.get(['/registration/:classOrSchoolId/bystudent', '/registration/:classOrS
 			title: 'Registrierung - Schüler*',
 			hideMenu: true,
 			user,
-			isIE,
 			CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS,
+			invalid,
 		});
 	});
 
 router.get(['/registration/:classOrSchoolId/:byRole'], async (req, res, next) => {
-	const isIE = detectIE(req);
-
 	if (!RegExp('^[0-9a-fA-F]{24}$').test(req.params.classOrSchoolId)) {
 		if (req.params.sso && !RegExp('^[0-9a-fA-F]{24}$').test(req.params.accountId)) {
 			return res.sendStatus(400);
@@ -189,6 +182,8 @@ router.get(['/registration/:classOrSchoolId/:byRole'], async (req, res, next) =>
 	const user = {};
 	user.importHash = req.query.importHash || req.query.id; // req.query.id is deprecated
 	user.classOrSchoolId = req.params.classOrSchoolId;
+
+	invalid = await checkValidRegistration(req);
 
 	await resetThemeForPrivacyDocuments(req, res);
 
@@ -210,20 +205,20 @@ router.get(['/registration/:classOrSchoolId/:byRole'], async (req, res, next) =>
 		title: `Registrierung - ${roleText}`,
 		hideMenu: true,
 		user,
-		isIE,
+		invalid,
 	});
 });
 
 router.get(
 	['/registration/:classOrSchoolId', '/registration/:classOrSchoolId/:sso/:accountId'],
 	async (req, res, next) => {
-		const isIE = detectIE(req);
-
 		if (!RegExp('^[0-9a-fA-F]{24}$').test(req.params.classOrSchoolId)) {
 			if (req.params.sso && !RegExp('^[0-9a-fA-F]{24}$').test(req.params.accountId)) {
 				return res.sendStatus(400);
 			}
 		}
+
+		invalid = await checkValidRegistration(req);
 
 		await resetThemeForPrivacyDocuments(req, res);
 
@@ -234,8 +229,8 @@ router.get(
 			classOrSchoolId: req.params.classOrSchoolId,
 			sso: req.params.sso === 'sso',
 			account: req.params.accountId || '',
-			isIE,
 			CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS,
+			invalid,
 		});
 	},
 );

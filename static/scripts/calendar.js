@@ -25,9 +25,9 @@ $(document).ready(function () {
     }
 
     /**
-     * transform a event modal-form for course events
+     * Transforms an event modal-form for course/team events
      * @param modal {DOM-Element} - the given modal which will be transformed
-     * @param event {object} - a event, maybe a course-event
+     * @param event {object} - an event, might be a course/team event
      */
     function transformCourseOrTeamEvent(modal, event) {
         if (event["x-sc-courseId"]) {
@@ -53,7 +53,7 @@ $(document).ready(function () {
                 var $title = modal.find(".modal-title");
                 $title.html($title.html() + ", Team: " + team.team.name);
 
-                // if not teacher, not allow editing team events
+                // if not teacher, don't allow editing team events
                 if($('.create-team-event').length <= 0) {
                     modal.find(".modal-form :input").attr("disabled", true);
                 }
@@ -72,18 +72,6 @@ $(document).ready(function () {
         editable: false,
         timezone: 'UTC',
         events: function (start, end, timezone, callback) {
-            if('serviceWorker' in navigator){
-                navigator.serviceWorker.addEventListener('message', function (event) {
-                    if (event.origin !== location.origin)
-                        return;
-                    if (event.data.tag == 'calendar-event-updates') {
-                        caches.open(event.data.cacheName)
-                            .then(cache => cache.match(event.data.url))
-                            .then(response => response.json())
-                            .then(data => callback(data));
-                    }
-                });
-            }
             $.getJSON('/calendar/events/',
                 function (events) {
                     callback(events);
@@ -206,6 +194,7 @@ $(document).ready(function () {
         var ref = $(this).attr("data-collapseRef");
         var $collapse = $("#" + $(this).attr("data-collapseRef"));
         var $selection = $collapse.find('.team-selection');
+        var $videoconferenceToggle = $('.create-videoconference');
         $selection.find('option')
             .remove()
             .end();
@@ -223,9 +212,11 @@ $(document).ready(function () {
                     $selection.append(option);
                 });
                 $selection.chosen().trigger("chosen:updated");
+                $videoconferenceToggle.show();
             });
         } else {
             $collapse.collapse('hide');
+            $videoconferenceToggle.hide();
         }
     });
 

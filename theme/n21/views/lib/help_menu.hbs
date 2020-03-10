@@ -1,4 +1,4 @@
-<li class="nav-item help-drodown" data-step="5" data-intro="Dies ist der Hilfebereich für deine Fragen und Probleme.">
+<li class="nav-item help-drodown">
     <div class="dropdown minimal-button">
         <a class="btn btn-secondary btn-thin dropdown-toggle" title="Hilfe" data-toggle="dropdown">
             <i class="fa fa-question"></i>
@@ -12,26 +12,44 @@
                     </span>
                 </li>
 
-                <li id="intro-loggedin" class="list-group-item list-group-item-action">
-                    <span>
-                        <i class="fa fa-map-signs"aria-hidden="true"></i>
-                        <a href="#" class="link">Intro</a>
-                    </span>
-                </li>
+				{{#ifEnv "FEATURE_ENTERTHECLOUD" "true"}}
+                {{#userHasPermission "ENTERTHECLOUD_START"}}
+                    <li class="list-group-item list-group-item-action enterthecloud-btn">
+                        <span>
+                            <i class="fa fa-gamepad"aria-hidden="true"></i>
+                            <button type="button" class="link btn-link enterthecloud-btn" style="line-height: initial">Enter The Cloud spielen</button>
+                        </span>
+                    </li>
+                {{/userHasPermission}}
+				{{/ifEnv}}
 
                 <li class="list-group-item list-group-item-action">
                     <span>
                         <i class="fa fa-pencil" aria-hidden="true"></i>
-                        <a href="#" class="link submit-contactHPI">Wunsch oder Problem senden</a>
+                        <a href="/help?activeForm=team#contact-form" class="link">Wunsch oder Problem senden</a>
                     </span>
                 </li>
                 <li class="list-group-item list-group-item-action">
                     <span>
                         <i class="fa fa-comment" aria-hidden="true"></i>
-                        <a href="#" class="link submit-contactAdmin">Admin deiner Schule kontaktieren</a>
+                        <a href="/help?activeForm=admin#contact-form" class="link">Admin deiner Schule kontaktieren</a>
                     </span>
                 </li>
             </ul>
         </div>
     </div>
 </li>
+
+{{#ifEnv "FEATURE_ENTERTHECLOUD" "true"}}
+{{#userHasPermission "ENTERTHECLOUD_START"}}
+{{#embed "lib/components/modal" class="enterthecloud-modal" title="Enter The Cloud spielen"}}
+    {{#content "body"}}
+        <div class="modal-body">
+            <p>Benutzername: <code>...</code></p>
+            <p>Passwort: <code>...</code></p>
+            <a class="btn btn-primary" href="TODO">Spiel öffnen</a>
+        </div>
+    {{/content}}
+{{/embed}}
+{{/userHasPermission}}
+{{/ifEnv}}

@@ -10,7 +10,7 @@ const getDataValue = function (attr) {
 };
 
 window.openFolder = function (id) {
-	const pathname = location.pathname;
+	const { pathname } = window.location;
 	const reg = new RegExp('/files/(?:my|teams|courses)/(?:.+?)/(.+)');
 	let target;
 
@@ -20,7 +20,7 @@ window.openFolder = function (id) {
 		target = pathname + (pathname.split('').pop() !== '/' ? '/' : '') + id;
 	}
 
-	return target + location.search || '';
+	return target + window.location.search || '';
 };
 
 const getOwnerId = getDataValue('owner');
@@ -79,8 +79,8 @@ $(document).ready(() => {
 	/** loads dropzone, if it exists on current page * */
 	let progressBarActive = false;
 	let finishedFilesSize = 0;
-	$form.dropzone
-		? $form.dropzone({
+	if ($form.dropzone) {
+		$form.dropzone({
 			accept(file, done) {
 				if (file.fullPath) {
 					const promisePost = function (name, parent) {
@@ -172,8 +172,7 @@ $(document).ready(() => {
 				});
 
 				this.on('totaluploadprogress', (progress, total, uploaded) => {
-					const realProgress = (uploaded + finishedFilesSize)
-              / ((total + finishedFilesSize) / 100);
+					const realProgress = (uploaded + finishedFilesSize) / ((total + finishedFilesSize) / 100);
 
 					$progress.stop().animate(
 						{ width: `${realProgress}%` },
@@ -238,8 +237,8 @@ $(document).ready(() => {
 					$form.removeClass('focus');
 				});
 			},
-		})
-		: '';
+		});
+	}
 
 	$('a[data-method="download"]').on('click', (e) => {
 		e.stopPropagation();
@@ -319,7 +318,7 @@ $(document).ready(() => {
 			const $newFilterOption = $(
 				`<div data-key="${
 					fo.key
-				}" class="filter-option" onClick="location.href = '/files/search?filter=${
+				}" class="filter-option" onClick="window.location.href = '/files/search?filter=${
 					fo.key
 				}'"></div>`,
 			);
@@ -437,38 +436,6 @@ $(document).ready(() => {
 		);
 	});
 
-	if (!window.location.href.includes('/courses/')) { $('.btn-student-allow').hide(); }
-
-	$('.btn-student-allow').click(function (e) {
-		const $button = $(this);
-		e.stopPropagation();
-		e.preventDefault();
-		const fileId = $button.attr('data-file-id');
-		const bool = $button.data('file-can-edit');
-
-		$.ajax({
-			type: 'POST',
-			url: '/files/studentCanEdit/',
-			data: {
-				id: fileId,
-				bool: !bool,
-			},
-			success(data) {
-				if (data.success) {
-					$button.data('file-can-edit', !bool);
-					let id = e.target.id;
-					if (!id.includes('ban')) id = `ban-${id}`;
-
-					if ($(`#${id}`).is(':visible')) $(`#${id}`).hide();
-					else {
-						$(`#${id}`).removeAttr('hidden');
-						$(`#${id}`).show();
-					}
-				}
-			},
-		});
-	});
-
 	$('a[data-method="dir-rename"]').on('click', function (e) {
 		e.stopPropagation();
 		e.preventDefault();
@@ -488,6 +455,13 @@ $(document).ready(() => {
 		const fileId = $(this).attr('data-file-id');
 		const $shareModal = $('.share-modal');
 		fileShare(fileId, $shareModal);
+	});
+
+	$('.btn-file-danger').click(function ev(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		const $dangerModal = $('.danger-modal');
+		$dangerModal.appendTo('body').modal('show');
 	});
 
 	$('.btn-file-settings').click(function (e) {
@@ -633,6 +607,9 @@ $(document).ready(() => {
 				return $.ajax({
 					type: 'POST',
 					url: '/link/',
+					beforeSend(xhr) {
+						xhr.setRequestHeader('Csrf-Token', csrftoken);
+					},
 					data: { target },
 				});
 			})
@@ -780,10 +757,10 @@ window.videoClick = function videoClick(e) {
 
 const fileTypes = {
 	docx:
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 	xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 	pptx:
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+		'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 	ppt: 'application/vnd.ms-powerpoint',
 	xls: 'application/vnd.ms-excel',
 	doc: 'application/vnd.ms-word',
@@ -794,6 +771,7 @@ const fileTypes = {
 
 window.fileViewer = function fileViewer(type, name, id) {
 	$('#my-video').css('display', 'none');
+	let win;
 
 	// detect filetype according to line ending
 	if (type.length === 0) {
@@ -802,21 +780,15 @@ window.fileViewer = function fileViewer(type, name, id) {
 	}
 
 	switch (type) {
-		case 'application/pdf':
-			$('#file-view').hide();
-			win = window.open(`/files/file?file=${id}`, '_blank');
-			win.focus();
-			break;
-
 		case `image/${type.substr(6)}`:
-	  location.href = '#file-view';
+			window.location.href = '#file-view';
 			$('#file-view').css('display', '');
 			$('#picture').attr('src', `/files/file?file=${id}&name=${name}`);
 			break;
 
 		case `audio/${type.substr(6)}`:
 		case `video/${type.substr(6)}`:
-			location.href = '#file-view';
+			window.location.href = '#file-view';
 			$('#file-view').css('display', '');
 			videojs('my-video').ready(function () {
 				this.src({ type, src: `/files/file?file=${id}` });
@@ -841,10 +813,13 @@ window.fileViewer = function fileViewer(type, name, id) {
 			win = window.open(`/files/file/${id}/lool`, '_self');
 			win.focus();
 
-			break;
-
+		case 'application/pdf': // .pdf
+			$('#file-view').hide();
+			win = window.open(`/files/file?file=${id}`, '_blank');
+			win.focus();
+		break;
 		default:
-	  $('#file-view').hide();
+			$('#file-view').hide();
 			win = window.open(`/files/file?file=${id}&download`, '_blank');
 			win.focus();
 	}
@@ -863,7 +838,7 @@ function openInIframe(source) {
 				`<iframe class="vieweriframe" src=${
 					source
 				}>`
-          + '<p>Dein Browser unterstützt dies nicht.</p></iframe>',
+				+ '<p>Dein Browser unterstützt dies nicht.</p></iframe>',
 			);
 			$('#link').css('display', '');
 		} else {
@@ -885,7 +860,7 @@ function openInIframe(source) {
 						`<iframe class="vieweriframe" src=${
 							source
 						}>`
-              + '<p>Dein Browser unterstützt dies nicht.</p></iframe>',
+						+ '<p>Dein Browser unterstützt dies nicht.</p></iframe>',
 					);
 					$('#link').css('display', '');
 					$openModal.modal('hide');
@@ -908,7 +883,7 @@ function writeFileSizePretty(filesize) {
 
 	while (filesize > 1024) {
 		filesize = Math.round((filesize / 1024) * 100) / 100;
-		iterator++;
+		iterator += 1;
 	}
 	switch (iterator) {
 		case 0:
@@ -926,6 +901,8 @@ function writeFileSizePretty(filesize) {
 		case 4:
 			unit = 'TB';
 			break;
+		default:
+			unit = '';
 	}
 	return filesize + unit;
 }

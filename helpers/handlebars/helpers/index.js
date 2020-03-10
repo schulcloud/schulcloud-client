@@ -3,10 +3,11 @@ const moment = require('moment');
 const truncatehtml = require('truncate-html');
 const stripHtml = require('string-strip-html');
 const permissionsHelper = require('../../permissions');
+const i18n = require('../../i18n');
 
 moment.locale('de');
 
-function ifCondBool(v1, operator, v2) {
+const ifCondBool = (v1, operator, v2) => {
 	switch (operator) {
 		case '==':
 			return (v1 == v2);
@@ -35,9 +36,9 @@ function ifCondBool(v1, operator, v2) {
 		default:
 			return false;
 	}
-}
+};
 
-module.exports = {
+const helpers = app => ({
 	pagination: require('./pagination'),
 	ifArray: (item, options) => {
 		if (Array.isArray(item)) {
@@ -126,6 +127,13 @@ module.exports = {
 			return options.inverse(this);
 		}
 		return options.fn(this);
+	},
+	ifConfig: (key, value, options) => {
+		const exist = app.Config.has(key);
+		if (exist && app.Config.get(key) === value) {
+			return options.fn(this);
+		}
+		return options.inverse(this);
 	},
 	userHasPermission: (permission, opts) => {
 		if (permissionsHelper.userHasPermission(opts.data.local.currentUser, permission)) {
@@ -251,4 +259,14 @@ module.exports = {
 		.replace(/>/g, '&gt;')
 		.replace(/"/g, '&quot;')
 		.replace(/'/g, '&#039;'),
-};
+	encodeURI: data => encodeURI(data),
+	$t: (key, data, opts) => {
+		if (!opts) {
+			return i18n.getInstance(data.data.local.currentUser)(key);
+		}
+		return i18n.getInstance(opts.data.local.currentUser)(key, data);
+	},
+});
+
+
+module.exports = helpers;

@@ -1,4 +1,5 @@
 import { getCookiesMap, pushManager } from './notificationService/index';
+import './pwd.js';
 
 $(document).ready(function() {
     var $deleteModal = $('.delete-modal');
@@ -14,8 +15,8 @@ $(document).ready(function() {
         }
     }
 
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
+    if (password) password.onchange = validatePassword;
+    if (confirm_password) confirm_password.onkeyup = validatePassword;
 
     // TODO: replace with something cooler
     var reloadSite = function() {

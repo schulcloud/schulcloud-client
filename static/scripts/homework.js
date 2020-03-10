@@ -1,6 +1,7 @@
 /* global CKEDITOR */
 
 import { softNavigate } from './helpers/navigation';
+import { getQueryParameters } from './helpers/queryStringParameter';
 
 const getDataValue = function(attr) {
     return function() {
@@ -11,6 +12,10 @@ const getDataValue = function(attr) {
 
 const getOwnerId = getDataValue('owner');
 const getCurrentParent = getDataValue('parent');
+
+$(document).on('pageload', () => {
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub])
+});
 
 function archiveTask(e){
     e.preventDefault();
@@ -55,30 +60,60 @@ function importSubmission(e){
     }
 }
 
-window.addEventListener("DOMContentLoaded", function(){
-    /* FEATHERS FILTER MODULE */
-    const filterModule = document.getElementById("filter");
-    if(!filterModule){return;}
-    filterModule.addEventListener('newFilter', (e) => {
-        document.querySelectorAll("circular-progress").forEach(graphic => {graphic.remove();});
-        const filter = e.detail;
-        const newurl = "?filterQuery=" + escape(JSON.stringify(filter[0]));
-        softNavigate(newurl, ".homework", ".pagination");
-    });
-    document.querySelector(".filter").dispatchEvent(new CustomEvent("getFilter"));
+window.addEventListener('DOMContentLoaded', () => {
+	/* FEATHERS FILTER MODULE */
+	const filterModule = document.getElementById('filter');
+	if (!filterModule) { return; }
+	filterModule.addEventListener('newFilter', (e) => {
+		const filter = e.detail;
+		const params = getQueryParameters();
+		let newurl = `?filterQuery=${escape(JSON.stringify(filter[0]))}`;
+		if (params.p) {
+			newurl += `&p=${params.p}`;
+		}
+		softNavigate(newurl, '.homework', '.pagination');
+	});
+	document.querySelector('.filter').dispatchEvent(new CustomEvent('getFilter'));
 });
-$(document).ready(function() {
+
+$(document).ready(() => {
+	let fileIsUploaded = false;
+	let editorContainsText = false;
+
+	function enableSubmissionWhenFileIsUploaded() {
+		const fileList = $('.list-group-files');
+		const filesCount = fileList.children().length;
+		fileIsUploaded = !!filesCount;
+		const submitButton = fileList.closest('form').find('button[type="submit"]')[0];
+		if (submitButton) {
+			submitButton.disabled = !editorContainsText && !fileIsUploaded;
+		}
+	}
+
+	// enable submit button when at least one file was uploaded
+	enableSubmissionWhenFileIsUploaded();
+	$('.list-group-files').bind('DOMSubtreeModified', () => {
+		enableSubmissionWhenFileIsUploaded();
+	});
+
+	function enableSubmissionWhenEditorContainsText(editor) {
+		// find the closest submit button and disable it if no content is given and no file is uploaded
+		const submitButton = $(editor.element.$.closest('form')).find('button[type="submit"]')[0];
+		const content = editor.document.getBody().getText();
+		editorContainsText = !!content.trim();
+		if (submitButton) {
+			submitButton.disabled = !editorContainsText && !fileIsUploaded;
+		}
+	}
+
+	// enable submit button when editor contains text
 	const editorInstanceNames = Object.keys((window.CKEDITOR || {}).instances || {});
 	editorInstanceNames
 		.filter(e => e.startsWith('evaluation'))
 		.forEach((name) => {
 			const editor = window.CKEDITOR.instances[name];
-			editor.on('change', () => {
-				// find the closest submit button and disable it if no content is given
-				const submitButton = $(editor.element.$.closest('form')).find('button[type="submit"]')[0];
-				const content = editor.document.getBody().getText();
-				submitButton.disabled = !content.trim();
-			});
+			editor.on('instanceReady', () => { enableSubmissionWhenEditorContainsText(editor); });
+			editor.on('change', () => { enableSubmissionWhenEditorContainsText(editor); });
 		});
 
     function showAJAXError(req, textStatus, errorThrown) {
@@ -117,7 +152,7 @@ $(document).ready(function() {
             url: url,
             data: content,
             context: element
-        });
+		});
         request.done(function(r) {
             var saved = setInterval(_ => {
                 submitButton.innerHTML = submitButtonText;
@@ -145,12 +180,19 @@ $(document).ready(function() {
                 if(e.name == "teamMembers"){
                     teamMembers.push(e.value);
                 }
-            });
+			});
             if(teamMembers != [] && $(".me").val() && !teamMembers.includes($(".me").val())){
                 location.reload();
             }
 		});
         return false;
+    });
+
+    $('.btn-file-danger').on('click', function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		const $dangerModal = $('.danger-modal');
+		$dangerModal.appendTo('body').modal('show');
     });
 
     // Abgabe löschen
@@ -245,9 +287,9 @@ $(document).ready(function() {
      */
     function addNewUploadedFile(section, file) {
         let filesCount = section.children().length === 0 ? -1 : section.children().length;
-        let $fileListItem = $(`<li class="list-group-item"><i class="fa fa-file" aria-hidden="true"></i>${file.name}</li>`)
+        let $fileListItem = $(`<li class="list-group-item"><i class="fa fa-file" aria-hidden="true"></i><a href="/files/file?file=${file._id}" target="_blank">${file.name}</a></li>`)
             .append(`<input type="hidden" name="fileIds[${filesCount + 1}]" value="${file._id}" />`);
-        section.append($fileListItem);
+		section.append($fileListItem);
     }
 
     $uploadForm.dropzone ? $uploadForm.dropzone({
@@ -347,11 +389,11 @@ $(document).ready(function() {
                             $.post(`/homework/submit/${submissionId}/files/${data._id}/permissions`, {teamMembers: teamMembers});
                         });
                     } else {
-                        addNewUploadedFile($('.list-group-files'), data);
+                        addNewUploadedFile($('.js-file-list'), data);
 
                         // 'empty' submissionId is ok because the route takes the homeworkId first
                         $.post(`/homework/submit/0/files/${data._id}/permissions`, {homeworkId: homeworkId});
-                    }
+					}
                 }).fail(showAJAXError);
 
                 this.removeFile(file);
@@ -399,7 +441,7 @@ $(document).ready(function() {
                 success: function (_) {
                     // delete reference in submission
                     let submissionId = $("input[name='submissionId']").val();
-                    let teamMembers = $('#teamMembers').val();
+					let teamMembers = $('#teamMembers').val();
                     $.ajax({
                         url: `/homework/submit/${submissionId}/files`,
                         data: {fileId: fileId, teamMembers: teamMembers},
@@ -413,4 +455,42 @@ $(document).ready(function() {
             });
         });
     });
+
+    $('a[data-method="delete-file-homework-edit"]').on('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        let $buttonContext = $(this);
+        let $deleteModal = $('.delete-modal');
+        let fileId = $buttonContext.data('file-id');
+
+        $deleteModal.appendTo('body').modal('show');
+        $deleteModal.find('.modal-title').text("Bist du dir sicher, dass du '" + $buttonContext.data('file-name') + "' löschen möchtest?");
+
+        $deleteModal.find('.btn-submit').unbind('click').on('click', function () {
+            $.ajax({
+                url: $buttonContext.attr('href'),
+                type: 'DELETE',
+                data: {
+                    key: $buttonContext.data('file-key')
+                },
+                success: function () {
+                    // delete reference in homework
+                    let homeworkId = $("input[name='homeworkId']").val();
+					let teamMembers = $('#teamMembers').val();
+                    $.ajax({
+                        url: `/homework/${homeworkId}/file`,
+                        data: {fileId: fileId},
+                        type: 'DELETE',
+                        success: function () {
+                            window.location.reload();
+                        }
+                    });
+                },
+                error: showAJAXError
+            });
+        });
+    });
+
+    // typeset all MathJAX formulas displayed
+    MathJax.Hub.Typeset()
 });

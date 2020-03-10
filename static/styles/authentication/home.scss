@@ -128,7 +128,6 @@ body {
             white-space: normal;
         }
         input {
-            margin-bottom: 10px;
             font-size: 1rem;
             padding: .5rem;
         }
@@ -172,10 +171,4 @@ body {
 	img {
 		padding: 5px 20px;
 	}
-}
-
-@media (max-width: 1024px) {
-    .intro-trigger {
-        display: none;
-  }
 }

@@ -1,16 +1,17 @@
+/* eslint-disable no-console */
+
 const autoprefixer = require('autoprefixer');
 const fs = require('fs');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
-const changed = require('gulp-changed-smart');
 const cleanCSS = require('gulp-clean-css');
 const concat = require('gulp-concat');
 const gulpCount = require('gulp-count');
+const gulpErrorHandler = require('gulp-error-handle');
 const filelog = require('gulp-filelog');
 const header = require('gulp-header');
 const gulpif = require('gulp-if');
 const optimizejs = require('gulp-optimize-js');
-const imagemin = require('gulp-imagemin');
 const plumber = require('gulp-plumber');
 const postcss = require('gulp-postcss');
 const cssvariables = require('postcss-css-variables');
@@ -25,7 +26,6 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync');
-const workbox = require('workbox-build');
 const webpackConfig = require('./webpack.config');
 
 const baseScripts = [
@@ -38,17 +38,21 @@ const baseScripts = [
 	'./static/scripts/toggle/bootstrap-toggle.min.js',
 	'./static/scripts/mailchimp/mailchimp.js',
 	'./static/scripts/qrcode/kjua-0.1.1.min.js',
+	'./static/scripts/ajaxconfig.js',
 ];
 
 function themeName() {
 	return process.env.SC_THEME || 'default';
 }
 
+const EXIT_ON_ERROR = process.env.GULP_EXIT_ON_ERROR
+	? process.env.GULP_EXIT_ON_ERROR === 'true'
+	: process.env.NODE_ENV !== 'development';
+
 const nonBaseScripts = [
 	'./static/scripts/**/*.js',
-	'!./static/scripts/sw/workbox/*.*',
 ].concat(baseScripts.map(script => `!${script}`));
-// used by all gulp tasks instead of gulp.src(...)
+// used by almost all gulp tasks instead of gulp.src(...)
 // plumber prevents pipes from stopping when errors occur
 // changed only passes on files that were modified since last time
 // filelog logs and counts all processed files
@@ -61,26 +65,38 @@ function withTheme(src) {
 		.map(e => `./theme/${themeName()}/${e.slice(2)}`));
 }
 
+const handleError = (error) => {
+	console.error(error);
+	process.exit(1);
+};
+
 const beginPipe = src => gulp
-	.src(withTheme(src))
-	.pipe(plumber())
-	.pipe(changed(gulp))
+	.src(withTheme(src), { allowEmpty: true, since: gulp.lastRun('build-all') })
+	.pipe(gulpif(EXIT_ON_ERROR, gulpErrorHandler(handleError), plumber()))
 	.pipe(filelog());
 
 const beginPipeAll = src => gulp
-	.src(withTheme(src))
-	.pipe(plumber())
+	.src(withTheme(src), { allowEmpty: true, since: gulp.lastRun('build-all') })
+	.pipe(gulpif(EXIT_ON_ERROR, gulpErrorHandler(handleError), plumber()))
 	.pipe(filelog());
 
-// minify images
-gulp.task('images', () => beginPipe('./static/images/**/*.*')
-	.pipe(imagemin())
+// copy images
+// uses gulp.src instead of beginPipe for performance reasons (logging is slow)
+gulp.task('images', () => gulp
+	.src(withTheme('./static/images/**/*.*'))
 	.pipe(gulp.dest(`./build/${themeName()}/images`)));
 
 // minify static/other
+// uses gulp.src instead of beginPipe for performance reasons (logging is slow)
 gulp.task('other', () => gulp
-	.src('./static/other/**/*.*')
+	.src(withTheme('./static/other/**/*.*'))
 	.pipe(gulp.dest(`./build/${themeName()}/other`)));
+
+// minify static/other
+// uses gulp.src instead of beginPipe for performance reasons (logging is slow)
+gulp.task('other-with-theme', gulp.series('other', () => gulp
+	.src(withTheme('./static/other/**/*.*'))
+	.pipe(gulp.dest(`./build/${themeName()}/other`))));
 
 const loadPaths = path.resolve('./static/styles/');
 sassGrapher.init('./static/styles/', {
@@ -97,13 +113,13 @@ gulp.task('styles', () => {
 		.pipe(sass({
 			sourceMap: true,
 			includePaths: ['node_modules'],
-		}).on('error', sass.logError))
+		}).on('error', handleError))
 		.pipe(postcss([
 			cssvariables({
 				preserve: true,
 			}),
 			autoprefixer({
-				browsers: ['last 3 version'],
+				browsers: ['> 1%', 'not dead'],
 			}),
 		]))
 		.pipe(cleanCSS({
@@ -114,15 +130,17 @@ gulp.task('styles', () => {
 		.pipe(browserSync.stream());
 });
 
-gulp.task('styles-done', ['styles'], () => {
+gulp.task('styles-done', gulp.series('styles'), () => {
 	firstRun = false;
 });
 
 // copy fonts
-gulp.task('fonts', () => beginPipe('./static/fonts/**/*.*').pipe(gulp.dest(`./build/${themeName()}/fonts`)));
+gulp.task('fonts', () => beginPipe('./static/fonts/**/*.*')
+	.pipe(gulp.dest(`./build/${themeName()}/fonts`)));
 
 // copy static assets
-gulp.task('static', () => beginPipe('./static/*').pipe(gulp.dest(`./build/${themeName()}/`)));
+gulp.task('static', () => beginPipe('./static/*')
+	.pipe(gulp.dest(`./build/${themeName()}/`)));
 
 // compile/transpile JSX and ES6 to ES5 and minify scripts
 gulp.task('scripts', () => beginPipeAll(nonBaseScripts)
@@ -153,9 +171,10 @@ gulp.task('base-scripts', () => beginPipeAll(baseScripts)
 	.pipe(babel({
 		presets: [
 			[
-				'es2015',
+				'@babel/preset-env',
 				{
 					modules: false,
+					targets: '> 1%, not dead',
 				},
 			],
 		],
@@ -173,7 +192,7 @@ gulp.task('vendor-styles', () => beginPipe('./static/vendor/**/*.{css,sass,scss}
 	}))
 	.pipe(postcss([
 		autoprefixer({
-			browsers: ['last 3 version'],
+			browsers: ['> 1%', 'not dead'],
 		}),
 	]))
 	.pipe(cleanCSS({
@@ -189,13 +208,14 @@ gulp.task('vendor-scripts', () => beginPipe('./static/vendor/**/*.js')
 		compact: false,
 		presets: [
 			[
-				'es2015',
+				'@babel/preset-env',
 				{
 					modules: false,
+					targets: '> 1%, not dead',
 				},
 			],
 		],
-		plugins: ['transform-react-jsx'],
+		plugins: ['@babel/plugin-transform-react-jsx'],
 	}))
 	.pipe(optimizejs())
 	.pipe(uglify())
@@ -213,84 +233,17 @@ gulp.task('vendor-optimized-assets', () => beginPipe(['./static/vendor-optimized
 	.pipe(gulp.dest(`./build/${themeName()}/vendor-optimized`)));
 
 // copy node modules
-const nodeModules = ['mathjax', 'font-awesome'];
+const nodeModules = ['mathjax', 'font-awesome/fonts'];
 gulp.task('node-modules', () => Promise.all(nodeModules
-	.map(module => beginPipe([`./node_modules/${module}/**/*.*`])
+	// uses gulp.src instead of beginPipe for performance reasons (logging is slow)
+	.map(module => gulp.src([`./node_modules/${module}/**/*.*`])
 		.pipe(gulp.dest(`./build/${themeName()}/vendor-optimized/${module}`)))));
-
-gulp.task('sw-workbox', () => beginPipe(['./static/scripts/sw/workbox/*.js'])
-	.pipe(gulp.dest(`./build/${themeName()}/scripts/sw/workbox`)));
-
-// service worker patterns used for precaching of files
-const globPatterns = [
-	'fonts/**/*.{woff,css}',
-	'images/logo/*.svg',
-	'images/footer-logo.png',
-	'scripts/all.js',
-	'scripts/loggedin.js',
-	'scripts/sw/metrix.js',
-	'scripts/calendar.js',
-	'scripts/dashboard.js',
-	'scripts/courses.js',
-	'scripts/news.js',
-	'styles/lib/*.css',
-	'styles/lib/toggle/*.min.css',
-	'styles/lib/datetimepicker/*.min.css',
-	'styles/calendar/*.css',
-	'styles/news/*.css',
-	'styles/courses/*.css',
-	'styles/dashboard/*.css',
-	'vendor/introjs/intro*.{js,css}',
-	'vendor-optimized/firebasejs/3.9.0/firebase-app.js',
-	'vendor-optimized/firebasejs/3.9.0/firebase-messaging.js',
-	'vendor/feathersjs/feathers.js',
-	'vendor-optimized/mathjax/MathJax.js',
-	'images/manifest.json',
-];
-
-gulp.task(
-	'generate-service-worker',
-	[
-		'images',
-		'other',
-		'styles',
-		'fonts',
-		'scripts',
-		'base-scripts',
-		'vendor-styles',
-		'vendor-scripts',
-		'vendor-assets',
-		'node-modules',
-	],
-	() => workbox
-		.injectManifest({
-			globDirectory: `./build/${themeName()}/`,
-			globPatterns,
-			swSrc: './static/sw.js',
-			swDest: `./build/${themeName()}/sw.js`,
-			templatedUrls: {
-				'/calendar/': [
-					'../../views/calendar/calendar.hbs',
-					'../../views/lib/loggedin.hbs',
-				],
-			},
-		})
-		.then(({ count, size, warnings }) => {
-			// Optionally, log any warnings and details.
-			warnings.forEach(console.warn); // eslint-disable-line no-console
-			console.log(`${count} files will be precached, totaling ${size} bytes.`); // eslint-disable-line no-console
-		})
-		.catch((error) => {
-			console.warn('Service worker generation failed:', error); // eslint-disable-line no-console
-		}),
-);
 
 // clear build folder + smart cache
 gulp.task('clear', () => gulp
 	.src(
 		[
 			'./build/*',
-			'./.gulp-changed-smart.json',
 			'./.webpack-changed-plugin-cache/*',
 		],
 		{
@@ -300,9 +253,10 @@ gulp.task('clear', () => gulp
 	.pipe(rimraf()));
 
 // run all tasks, processing changed files
-gulp.task('build-all', [
+gulp.task('build-all', gulp.series(
 	'images',
 	'other',
+	'other-with-theme',
 	'styles',
 	'styles-done',
 	'fonts',
@@ -313,58 +267,27 @@ gulp.task('build-all', [
 	'vendor-assets',
 	'vendor-optimized-assets',
 	'node-modules',
-	'sw-workbox',
-	'generate-service-worker',
 	'static',
-]);
+));
 
-gulp.task('build-theme-files', ['styles', 'styles-done', 'images', 'static']);
+gulp.task('build-theme-files', gulp.series('styles', 'styles-done', 'images', 'static'));
 
 // watch and run corresponding task on change, process changed files only
-gulp.task('watch', ['build-all'], () => {
+gulp.task('watch', gulp.series('build-all', () => {
 	const watchOptions = { interval: 1000 };
-	gulp.watch(baseScripts, watchOptions, ['base-scripts']);
+	gulp.watch(baseScripts, watchOptions, gulp.series('base-scripts'));
 	gulp.watch(
 		withTheme('./static/styles/**/*.{css,sass,scss}'),
 		watchOptions,
-		['styles', 'styles-done'],
+		gulp.series('styles', 'styles-done'),
 	);
-	gulp.watch(withTheme('./static/images/**/*.*'), watchOptions, [
-		'images',
-	]).on('change', browserSync.reload);
-	gulp.watch(withTheme(nonBaseScripts), watchOptions, [
-		'scripts',
-		'generate-service-worker',
-	]);
+	gulp.watch(withTheme('./static/images/**/*.*'), watchOptions, gulp.series('images'))
+		.on('change', browserSync.reload);
+	gulp.watch(withTheme(nonBaseScripts), watchOptions, gulp.series('scripts'));
 
-	gulp.watch(withTheme('./static/vendor-optimized/**/*.*'), watchOptions, [
-		'vendor-optimized-assets',
-	]);
-	gulp.watch(withTheme('./static/sw.js'), watchOptions, [
-		'generate-service-worker',
-	]);
-	gulp.watch(withTheme('./static/*.*'), watchOptions, ['static']);
-	gulp.watch(withTheme('./static/scripts/sw/workbox/*.*'), watchOptions, [
-		'sw-workbox',
-	]);
-});
-
-gulp.task('watch-reload', ['watch', 'browser-sync']);
-
-gulp.task('browser-sync', ['nodemon'], () => {
-	browserSync.init(null, {
-		proxy: 'http://localhost:3100',
-		open: false,
-		port: 7000,
-		ghostMode: false,
-		reloadOnRestart: false,
-		socket: {
-			clients: {
-				heartbeatTimeout: 60000,
-			},
-		},
-	});
-});
+	gulp.watch(withTheme('./static/vendor-optimized/**/*.*'), watchOptions, gulp.series('vendor-optimized-assets'));
+	gulp.watch(withTheme('./static/*.*'), watchOptions, gulp.series('static'));
+}));
 
 gulp.task('nodemon', (cb) => {
 	let started = false;
@@ -382,5 +305,23 @@ gulp.task('nodemon', (cb) => {
 	});
 });
 
+gulp.task('browser-sync', () => {
+	browserSync.init(null, {
+		proxy: 'http://localhost:3100',
+		open: false,
+		port: 7000,
+		ghostMode: false,
+		reloadOnRestart: false,
+		socket: {
+			clients: {
+				heartbeatTimeout: 60000,
+			},
+		},
+	});
+});
+
+gulp.task('watch-reload', gulp.parallel('watch', 'nodemon', 'browser-sync'));
+
+
 // run this if only 'gulp' is run on the commandline with no task specified
-gulp.task('default', ['build-all']);
+gulp.task('default', gulp.series('build-all'));

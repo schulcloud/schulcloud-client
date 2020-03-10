@@ -13,15 +13,6 @@
     {{/content}}
 
     {{#content "page"}}
-        {{#if topicId}}
-            <div class="edtr-link-wrapper">
-                <a href="/courses/{{courseId}}/topics/{{topicId}}?edtr=true" target="_blank" class="edtr-link">
-                    <button class="btn btn-primary edtr-btn">
-                        Neuen Editor ausprobieren
-                    </button>
-                </a>
-            </div>
-        {{/if}}
         <section class="section-course-edit">
             <form action="{{action}}" method="post">
                 {{#if method}}
@@ -53,13 +44,15 @@
 
                     <!-- React Magic -->
                     <div id="content-blocks" data-value="{{lesson.contents}}" data-etherpadbaseurl="{{etherpadBaseUrl}}"
-                        data-iscoursegroup="{{courseGroupId}}"></div>
+                        data-iscoursegroup="{{courseGroupId}}" data-nexboardenabled="{{#ifEnv "FEATURE_NEXBOARD_ENABLED" "true"}}true{{/ifEnv}}"></div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-close" onclick="window.history.back();">
                         {{closeLabel}}
                     </button>
+
+                    {{> "lib/components/csrfInput"}}
 
                     <button type="submit" class="btn btn-primary btn-submit">
                         {{submitLabel}}

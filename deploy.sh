@@ -2,12 +2,23 @@
 
 #export TESTDEPLOY=$( cat testdeploy )
 
+
+set -e
+trap 'catch $? $LINENO' EXIT
+catch() {
+  echo "kabummm!!!"
+  if [ "$1" != "0" ]; then
+    echo "War wohl nicht so gut. Fehler $1, guckst du $2"
+  fi
+}
+
 if [ "$TRAVIS_BRANCH" = "master" ]
 then
-  export DOCKERTAG=latest
+  #export DOCKERTAG=latest
+  export DOCKERTAG=master_v$( jq -r '.version' package.json )_$( date +"%y%m%d%H%M" )
 else
   # replace special characters in branch name for docker tag
-  export DOCKERTAG=$( echo $TRAVIS_BRANCH | tr -s "[:punct:]" "-" | tr -s "[:upper:]" "[:lower:]" )
+  export DOCKERTAG=$( echo $TRAVIS_BRANCH | tr -s "[:punct:]" "-" | tr -s "[:upper:]" "[:lower:]" )_v$( jq -r '.version' package.json )_$( date +"%y%m%d%H%M" )
 fi
 
 
@@ -38,6 +49,11 @@ function buildandpush {
   docker build -t schulcloud/schulcloud-client-brb:$DOCKERTAG -t schulcloud/schulcloud-client-brb:$GIT_SHA -f Dockerfile.brb .
   docker push schulcloud/schulcloud-client-brb:$DOCKERTAG
   docker push schulcloud/schulcloud-client-brb:$GIT_SHA
+
+    # build container thr theme
+  docker build -t schulcloud/schulcloud-client-thr:$DOCKERTAG -t schulcloud/schulcloud-client-thr:$GIT_SHA -f Dockerfile.thr .
+  docker push schulcloud/schulcloud-client-thr:$DOCKERTAG
+  docker push schulcloud/schulcloud-client-thr:$GIT_SHA
   fi
 }
 
@@ -66,7 +82,7 @@ function deploytoprods {
   # brabu
   ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa linux@open.schul-cloud.org /usr/bin/docker service update --force --image schulcloud/schulcloud-client-brb:latest brabu_client
   # thueringen
-  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa linux@schulcloud-thueringen.de /usr/bin/docker service update --force --image schulcloud/schulcloud-client:latest thueringen_client
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa linux@schulcloud-thueringen.de /usr/bin/docker service update --force --image schulcloud/schulcloud-client-thr:latest thueringen_client
   # demo
   ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa linux@demo.schul-cloud.org /usr/bin/docker service update --force --image schulcloud/schulcloud-client:latest demo_client
 }
@@ -80,7 +96,7 @@ function deploytostaging {
 function inform {
   if [[ "$TRAVIS_EVENT_TYPE" != "cron" ]]
   then
-  curl -X POST -H 'Content-Type: application/json' --data '{"text":":rocket: Die Produktivsysteme können aktualisiert werden: Schul-Cloud Client!"}' $WEBHOOK_URL_CHAT
+  curl -X POST -H 'Content-Type: application/json' --data '{"text":":rocket: Die Produktivsysteme können aktualisiert werden: Schul-Cloud Client! Dockertag: '$DOCKERTAG'"}' $WEBHOOK_URL_CHAT
   fi
 }
 
@@ -88,7 +104,7 @@ function inform {
 function inform_staging {
   if [[ "$TRAVIS_EVENT_TYPE" != "cron" ]]
   then
-    curl -X POST -H 'Content-Type: application/json' --data '{"text":":boom: Das Staging-System wurde aktualisiert: Schul-Cloud Client! https://staging.schul-cloud.org/version"}' $WEBHOOK_URL_CHAT
+    curl -X POST -H 'Content-Type: application/json' --data '{"text":":boom: Das Staging-System wurde aktualisiert: Schul-Cloud Client! https://staging.schul-cloud.org/version (Dockertag: '$DOCKERTAG')"}' $WEBHOOK_URL_CHAT
   fi
 }
 

@@ -1,21 +1,4 @@
 $(document).ready(() => {
-	$('.section-teamInvitations a').click(function handler(e) {
-		e.stopPropagation();
-		e.preventDefault();
-
-		const id = $(this).parents('.sc-card-wrapper').data('id');
-
-		$.ajax({
-			url: `/teams/invitation/accept/${id}`,
-			method: 'GET',
-		}).done(() => {
-			$.showNotification('Einladung erfolgreich angenommen', 'success', true);
-			location.reload();
-		}).fail(() => {
-			$.showNotification('Problem beim Akzeptieren der Einladung', 'danger', true);
-		});
-	});
-
 	$('.btn-member').on('click', function (e) {
         e.stopPropagation();
         e.preventDefault();
@@ -32,8 +15,8 @@ $(document).ready(() => {
                 teamMembers = '<ol>';
                 res.course.userIds.forEach(member => {
                     const user = member.userId; // userId was populated
-                    if (user.displayName) {
-                        teamMembers = teamMembers + '<li>' + user.displayName + '</li>';
+                    if (user.fullName) {
+                        teamMembers = teamMembers + '<li>' + user.fullName + '</li>';
                     } else {
                         teamMembers = teamMembers + '<li>' + user.firstName + ' ' + user.lastName + '</li>';
                     }

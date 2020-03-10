@@ -50,15 +50,16 @@
                         </p>
                     </div>
 
+					{{#userHasPermission "REQUEST_CONSENTS"}}
                     <div class="row mb-2">
                         <div class="col-sm-12 no-padding">
                             <h2 class="h4">
                                 Einverständniserklärung einholen
                             </h2>
-                            {{#if schoolUsesLdap}}
+                            {{#if ../schoolUsesLdap}}
                                 <strong>Schüler loggen sich in Anwesenheit eines Erziehungberechtigten ein</strong>
 
-                                <p>Durch Anbindung an ein Landes- oder Schulsystem können sich die Schüler bereits in der {{theme.short_title}} einloggen. Fordere deine Schüler auf, den ersten Login im Beisein eines Erziehungsberechtigten vorzunehmen, damit dieser sein Einverständnis erklären kann und die Registrierung abschließen kann.</p>
+                                <p>Durch Anbindung an ein Landes- oder Schulsystem können sich die Schüler bereits in der {{../theme.short_title}} einloggen. Fordere deine Schüler auf, den ersten Login im Beisein eines Erziehungsberechtigten vorzunehmen, damit dieser sein Einverständnis erklären kann und die Registrierung abschließen kann.</p>
                             {{else}}
                                 <strong>Lade Eltern und Schüler per Link ein, die Einverständniserklärung abzugeben</strong>
                                 <p>
@@ -79,23 +80,29 @@
                             {{/if}}
                         </div>
                     </div>
+					{{/userHasPermission}}
 
                     <div class="row">
                         {{#if schoolUsesLdap}}
                             {{> "lib/ldap-info"}}
                         {{else}}
                             <div class="col-sm-12 no-padding">
-                                <button type="submit" data-testid="btn_add_student" class="btn btn-primary btn-add-modal">
-                                    Schüler hinzufügen
-                                </button>
-                                <button class="btn btn-secondary btn-invitation-link student" data-testid="generate_a_link">
-                                    Einladungslink generieren
-                                </button>
-                                {{#inArray "Administrator" roleNames}}
-                                    <button class="btn btn-secondary btn-import student">
-                                        Schüler importieren
+                                {{#userHasPermission "STUDENT_CREATE"}}
+                                    <button type="submit" data-testid="btn_add_student" class="btn btn-primary btn-add-modal">
+                                        Schüler hinzufügen
                                     </button>
-                                {{/inArray}}
+                                    <button class="btn btn-secondary btn-invitation-link student" data-testid="generate_a_link">
+                                        Einladungslink generieren
+                                    </button>
+
+                                    {{#inArray "Administrator" ../roleNames}}
+                                        <button class="btn btn-secondary btn-import student">
+                                            Schüler importieren
+                                        </button>
+                                    {{/inArray}}
+                                {{else}}
+                                    {{> "lib/no-create-info"}}
+                                {{/userHasPermission}}
                             </div>
                         {{/if}}
                     </div>
@@ -113,7 +120,7 @@
                     {{/content}}
                 {{/embed}}
 
-                {{#embed "lib/components/modal-form" action="/administration/students/import/" method="post" class="import-modal" enctype="multipart/form-data"}}
+                {{#embed "lib/components/modal-form" action=(concat "/administration/students/import?_csrf=" @root.csrfToken) method="post" class="import-modal" enctype="multipart/form-data"}}
                     {{#content "fields"}}
                         {{> "administration/forms/form-import" roles="student"}}
                     {{/content}}

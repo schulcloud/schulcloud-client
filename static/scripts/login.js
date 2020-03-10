@@ -1,4 +1,6 @@
-/* global introJs */
+import './pwd.js';
+import './cleanup'; // see loggedin.js for loggedin users
+
 $(document).ready(function() {
 
 	// reset localStorage when new version is Published
@@ -33,7 +35,28 @@ $(document).ready(function() {
     var $systems = $('.system');
     var $modals = $('.modal');
     var $pwRecoveryModal = $('.pwrecovery-modal');
-    var $modalForm = $('.modal-form');
+    var $submitButton = $('#submit-login');
+
+    var incTimer = function(){
+        setTimeout (function(){
+            if(countdownNum != 1){
+                countdownNum--;
+                $submitButton.val('Bitte ' + countdownNum + ' Sekunden warten');
+                incTimer();
+            } else {
+                $submitButton.val('Anmelden');
+            }
+        },1000);
+    };
+
+    if($submitButton.data('timeout')){
+        setTimeout (function(){
+            $submitButton.prop('disabled', false);
+        },$submitButton.data('timeout')*1000);
+
+        var countdownNum = $submitButton.data('timeout');
+        incTimer();
+    }
 
     var loadSystems = function(schoolId) {
         $systems.empty();
@@ -47,7 +70,7 @@ $(document).ready(function() {
                 $systems.append('<option ' + (selected ? 'selected': '') + ' value="' + system._id + '">' + system.type + systemAlias + '</option>');
             });
             $systems.trigger('chosen:updated');
-            systems.length == 1 ? $systems.parent().hide() : $systems.parent().show();
+            systems.length < 2 ? $systems.parent().hide() : $systems.parent().show();
         });
     };
 
@@ -91,7 +114,7 @@ $(document).ready(function() {
         populateModalForm($pwRecoveryModal, {
             title: 'Passwort Zurücksetzen',
             closeLabel: 'Abbrechen',
-            submitLabel: 'Abschicken'
+            submitLabel: 'Passswort zurücksetzen'
         });
         $pwRecoveryModal.appendTo('body').modal('show');
     });
@@ -110,40 +133,3 @@ $(document).ready(function() {
     }
 
 });
-
-window.startIntro = function startIntro() {
-    introJs()
-    .setOptions({
-        nextLabel: "Weiter",
-        prevLabel: "Zurück",
-        doneLabel: "Nächste Seite",
-        skipLabel: "Überspringen",
-        hidePrev: true, //hide previous button in the first step
-        hideNext: true  //hide next button in the last step
-    })
-    .start()
-    .oncomplete(function() {
-        localStorage.setItem('Tutorial', true);
-        document.querySelector("#demologin").click();
-    });
-};
-
-if ('serviceWorker' in navigator){
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for(let registration of registrations) {
-            if(registration.active && registration.active.scriptURL.endsWith('/sw.js')){
-                registration.unregister();
-                caches.keys().then(function(cacheNames) {
-                    return Promise.all(
-                      cacheNames.filter(function(cacheName) {
-                        return cacheName.startsWith('workbox') | cacheName.startsWith('images')
-                        | cacheName.startsWith('pages') | cacheName.startsWith('vendors');
-                      }).map(function(cacheName) {
-                        return caches.delete(cacheName);
-                      })
-                    );
-                });
-            }
-        }
-    });
-}
