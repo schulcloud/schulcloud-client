@@ -85,8 +85,8 @@
 </section>
 {{/ifeq}}
 
-{{> 'dashboard/components/card_section' section-id="tasks" title=($t "dashboard.headline.openTasks") content=homeworks link-text="Zur Aufgabe" href="/homework"}}
-{{> 'dashboard/components/card_section' section-id="mytasks" title=($t "dashboard.headline.privateTasks") content=myhomeworks link-text="Zur Aufgabe" href="/homework/private/"}}
+{{> 'dashboard/components/card_section' data-testid="section-public-tasks" section-id="tasks" title=($t "dashboard.headline.openTasks") content=homeworks link-text="Zur Aufgabe" href="/homework"}}
+{{> 'dashboard/components/card_section' data-testid="section-private-tasks" section-id="mytasks" title=($t "dashboard.headline.privateTasks") content=myhomeworks link-text="Zur Aufgabe" href="/homework/private/"}}
 
 {{>  'dashboard/components/card_section' section-id="news" title=($t "dashboard.headline.news") content=news link-text="Weiterlesen" href="/news/"}}
 
