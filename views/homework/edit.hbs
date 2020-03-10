@@ -75,7 +75,7 @@
 {{#extend "homework/homework"}}
 {{#content "page"}}
 <div class="row">
-	<div class="col-xl-12">
+	<div class="col-xl-12" data-testid="hometasks-container">
 		<form class="modal-form" id="homework-form" method="post" action="{{action}}">
 			{{#if method}}
 			<input type="hidden" name="_method" data-force-value="true" value="{{method}}" />
@@ -100,7 +100,7 @@
 					<div class="form-group">
 						<label>Kurs</label>
 						{{#unless isSubstitution}}
-						<select class="" name="courseId" id="coursePicker" data-placeholder="Kurs auswählen">
+						<select class="" name="courseId" id="coursePicker" data-testid="choose-course" data-placeholder="Kurs auswählen">
 							<option value="" {{#unless assignment.courseId}}selected{{/unless}}>Keine Zuordnung</option>
 							{{#each courses}}
 							<option value="{{this._id}}"
