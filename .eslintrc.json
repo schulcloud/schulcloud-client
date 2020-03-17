@@ -100,7 +100,6 @@
 		"jquery": true
 	},
 	"globals": {
-		"$t": "readonly",
 		"csrftoken": "readonly",
 		"populateModal": "readonly",
 		"populateModalForm": "readonly"
