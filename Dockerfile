@@ -18,7 +18,7 @@ COPY . .
 ENV SC_THEME=default
 ENV TZ=Europe/Berlin
 RUN gulp clear-cache
-RUN gulp
+RUN gulp && chown -R 1000:1000 /home/node/app
 
 VOLUME /home/node/app/build
 CMD npm start

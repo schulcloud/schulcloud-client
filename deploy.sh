@@ -72,7 +72,7 @@ function deploytotest {
   chmod 600 travis_rsa
 #  scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa docker-compose-client.yml linux@test.schul-cloud.org:~
 #  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa linux@test.schul-cloud.org /usr/bin/docker stack deploy -c /home/linux/docker-compose-client.yml test-schul-cloud
-  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa linux@test.schul-cloud.org /usr/bin/docker service update --force --image schulcloud/schulcloud-client:develop test-schul-cloud_client
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i travis_rsa linux@test.schul-cloud.org /usr/bin/docker service update --force --image schulcloud/schulcloud-client:$DOCKERTAG test-schul-cloud_client
 }
 
 function deploytoprods {
@@ -119,7 +119,7 @@ if [[ "$TRAVIS_BRANCH" = "master" && "$TRAVIS_PULL_REQUEST" = "false" ]]
 then
   buildandpush
   inform
-elif [ "$TRAVIS_BRANCH" = "develop" ]
+elif [ "$TRAVIS_BRANCH" = "develop" || $TRAVIS_BRANCH = fufufu* ]
 then
   buildandpush
   deploytotest

@@ -4,7 +4,7 @@ branches:
   only:
     - develop
     - master
-    - /^(?i:release|hotfix).*$/
+    - /^(?i:release|hotfix|fufufu).*$/
 services:
   - docker
 env:
