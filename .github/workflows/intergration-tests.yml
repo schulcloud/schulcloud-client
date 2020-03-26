@@ -8,3 +8,6 @@ jobs:
     steps:
       - name: execute tests
         run: curl "https://raw.githubusercontent.com/schul-cloud/integration-tests/develop/scripts/ci/fetch.github.sh" | bash
+        env:
+          IT_CLIENT_HOST: nuxtclient
+          IT_CLIENT_PORT: 4000
