@@ -6,6 +6,10 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     steps:
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.1.0 
+        with:
+          mongodb-version: 4.0
       - name: execute tests
         run: curl "https://raw.githubusercontent.com/schul-cloud/integration-tests/develop/scripts/ci/fetch.github.sh" | bash
         env:
