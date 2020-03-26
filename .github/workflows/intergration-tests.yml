@@ -6,10 +6,11 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
+      - name: install mongotools
+        run: |
+          sudo wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
           echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list
-          apt-get update && apt-get install -y mongodb-org-tools
+          sudo apt-get update && sudo apt-get install -y mongodb-org-tools
       - name: execute tests
         run: curl "https://raw.githubusercontent.com/schul-cloud/integration-tests/develop/scripts/ci/fetch.github.sh" | bash
         env:
