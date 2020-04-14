@@ -65,6 +65,7 @@ const deleteEventsForTeam = async (req, res, teamId) => {
 		const events = await api(req).get('/calendar/', {
 			qs: {
 				'scope-id': teamId,
+				all: true
 			},
 		});
 
