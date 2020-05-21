@@ -126,12 +126,18 @@ ul.chosen-results {
 li.highlighted {
 	background-color: grey !important;
 }
+.modal-dialog {
+	margin-top: 20vh;
+}
 .modal-header,
 .modal-footer {
 	border: 0;
 }
 .modal-footer {
 	padding-right: 45px;
+}
+.modal-body {
+	padding-bottom: 120px;
 }
 .btn.btn-secondary.btn-close {
 	border: 0;
