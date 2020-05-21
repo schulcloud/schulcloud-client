@@ -1,94 +1,114 @@
-@import '../lib/colors';
+@import "../lib/colors";
 
 .store.container {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 .card-block {
-    width: 100%;
+	width: 100%;
 }
-h1, h3 {
-    margin-top: 30px;
-    color: $primaryColor;
+h1,
+h3 {
+	margin-top: 30px;
+	color: $primaryColor;
 }
-.carousel-item, .card {
-    align-items: center;
-    width: 100%;
+.carousel-item,
+.card {
+	align-items: center;
+	width: 100%;
 }
-.carousel-item img, .card img {
-    width: 100%;
+.carousel-item img,
+.card img {
+	width: 100%;
 }
 /* Fix responsive Issue with Cards */
 .card {
-    display: flex;
-    flex: 1 0 0%;
-    flex-direction: column;
+	display: flex;
+	flex: 1 0 0%;
+	flex-direction: column;
 }
 .card-block {
-    flex: 1 1 auto;
-    padding-bottom: 36px;
+	flex: 1 1 auto;
+	padding-bottom: 36px;
 }
 .row.equal-height {
-    display: flex;
-    flex-wrap: wrap;
+	display: flex;
+	flex-wrap: wrap;
 }
-.row.equal-height > [class*='col-'] {
-    display: flex;
-    flex-direction: row;
+.row.equal-height > [class*="col-"] {
+	display: flex;
+	flex-direction: row;
 }
 
 .card-img {
-    cursor: pointer;
+	cursor: pointer;
 }
 .card-img-overlay {
-    color: $primaryColor;
-    padding: 10px;
-    bottom: auto;
-    z-index: 10;
-    font-weight: bold;
+	color: $primaryColor;
+	padding: 10px;
+	bottom: auto;
+	z-index: 10;
+	font-weight: bold;
 }
 .card-img-overlay:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: lightgrey;
-    opacity: 0.7;
-    z-index: -1;
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: lightgrey;
+	opacity: 0.7;
+	z-index: -1;
 }
 .card-title {
-    margin-bottom: 10px;
-    word-wrap: break-word;
+	margin-bottom: 10px;
+	word-wrap: break-word;
 }
 .card-tags {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 10px;
 }
 .tag {
-    max-width: 100%;
+	max-width: 100%;
 }
 .card-text {
-    word-wrap: break-word;
+	word-wrap: break-word;
 }
 .tooltip-inner {
-  color: white ;
-  background-color: $primaryColor;
+	color: white;
+	background-color: $primaryColor;
 }
-.tooltip-arrow{
-  background-color: $primaryColor;
+.tooltip-arrow {
+	background-color: $primaryColor;
 }
-.tooltip-demo{
-  cursor: pointer;
+.tooltip-demo {
+	cursor: pointer;
 }
-.card-footer{
-  position: relative;
+.card-footer {
+	position: relative;
 }
-.report-link{
-  position: absolute;
-  top: -34px;
-  right: 18px;
-  color: lightgrey;
+.report-link {
+	position: absolute;
+	top: -34px;
+	right: 18px;
+	color: lightgrey;
+}
+.chosen-container-active.chosen-with-drop .chosen-single {
+	border: 0;
+}
+.chosen-container-single .chosen-single {
+	border: 0;
+	border-radius: 0;
+	border-bottom: 1px solid black;
+}
+.chosen-container .chosen-results li.disabled-result {
+	display: none !important;
+}
+.h4.modal-title {
+	text-align: center;
+}
+.close {
+	display: none;
 }
