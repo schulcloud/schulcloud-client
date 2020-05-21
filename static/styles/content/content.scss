@@ -101,7 +101,7 @@ h3 {
 .chosen-container-single .chosen-single {
 	border: 0;
 	border-radius: 0;
-	border-bottom: 1px solid black;
+	border-bottom: 1.5px solid black;
 }
 .chosen-container .chosen-results li.disabled-result {
 	display: none !important;
@@ -111,4 +111,28 @@ h3 {
 }
 .close {
 	display: none;
+}
+.chosen-container .chosen-drop {
+	border: 1.5px solid grey;
+	border-radius: 0;
+}
+div.chosen-search {
+	display: none;
+}
+ul.chosen-results {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+li.highlighted {
+	background-color: grey !important;
+}
+.modal-header,
+.modal-footer {
+	border: 0;
+}
+.modal-footer {
+	padding-right: 45px;
+}
+.btn.btn-secondary.btn-close {
+	border: 0;
 }
