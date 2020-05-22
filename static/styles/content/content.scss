@@ -122,12 +122,19 @@ div.chosen-search {
 ul.chosen-results {
 	margin: 0 !important;
 	padding: 0 !important;
+	color: black !important;
 }
 li.highlighted {
-	background-color: grey !important;
+	color: black !important;
+	background-color: lightgrey !important;
+}
+.modal-content {
+	border: 0;
+	border-radius: 0;
 }
 .modal-dialog {
 	margin-top: 20vh;
+	max-width: 550px;
 }
 .modal-header,
 .modal-footer {
@@ -141,4 +148,9 @@ li.highlighted {
 }
 .btn.btn-secondary.btn-close {
 	border: 0;
+}
+.btn-primary,
+.btn-primary:hover {
+	background-color: grey;
+	border-color: transparent;
 }
