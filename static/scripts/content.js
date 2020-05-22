@@ -43,6 +43,7 @@ $(document).ready(function () {
 
 	var populateCourseSelection = function (modal, courses) {
 		var $selection = modal.find(".course-selection");
+		$selection.empty();
 		courses.forEach(function (course) {
 			var option = document.createElement("option");
 			option.text = course.name;
@@ -55,7 +56,7 @@ $(document).ready(function () {
 	var populateLessonSelection = function (modal, lessons) {
 		var $selection = modal.find(".lesson-selection");
 		$selection.find("option").remove().end();
-
+		$selection.empty();
 		lessons.forEach(function (lesson) {
 			var option = document.createElement("option");
 			option.text = lesson.name;
