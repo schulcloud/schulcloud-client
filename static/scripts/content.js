@@ -44,6 +44,7 @@ $(document).ready(function () {
 	var populateCourseSelection = function (modal, courses) {
 		var $selection = modal.find(".course-selection");
 		$selection.empty();
+		modal.find(".lessons").css("display", "none");
 		courses.forEach(function (course) {
 			var option = document.createElement("option");
 			option.text = course.name;
