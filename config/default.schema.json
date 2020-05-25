@@ -7,6 +7,16 @@
 			"default": "example",
 			"description": "The API Key of the Client for authentication towards the server. required for sending mails."
 		},
+		"CORS": {
+			"type": "boolean",
+			"default": true,
+			"description": "If enabled, default content security policy (CSP) header will be set."
+		},
+		"SECURITY_HEADERS": {
+			"type": "boolean",
+			"default": true,
+			"description": "If enabled, additional content security policy (CSP) header will be set."
+		},
 		"REQUEST_TIMEOUT_MS": {
 			"type": "integer",
 			"default": 5000,

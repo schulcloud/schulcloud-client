@@ -1,0 +1,53 @@
+AUFFÄLLIG:
+
+  securityHeader und CORS wurden in middleware gebaut.
+  warum ist csp keine?
+
+  config hat das falsche datentype format: string statt boolean
+
+  global.js sollten die configs wohl nicht gelöscht werden wenn sie später verwendet werden...
+
+  ... dry
+
+  replaced CONST with Configuration.get???
+  -> useless
+
+  static/scripts/template/registration.js
+  -> in use?
+
+  static/styles/calendar/card.css
+  -> in use?
+  -> should be in scss format
+
+  static/styles/help/lern-nuggets.css
+  static/styles/files/forms/form-virus-danger.css
+  static/styles/files/forms/form-file-permissions.css
+  -> in use?
+  -> should be in scss format
+  -> filename 'form-' part is redundant
+
+  static/styles/lib/forms/form-auto-logout-alert.css
+  static/styles/lib/forms/form-create-videoconference.css
+  -> noch ein forms ordner?
+    -> sind die anderen so spezifisch?
+  -> in use?
+  -> should be in scss format
+  -> filename 'form-' part is redundant
+
+  views/account/settings.hbs
+  -> button geht noch? dk: hat functionsnamen geändert? o.O
+                                <button type="button" class="btn btn-default btn-device"
+                                        onclick="pushManager.requestPermission()">
+                                    <i class="fa fa-bell" aria-hidden="true"></i>
+                                    Benachrichtigungen
+                                    aktivieren
+                                </button>
+
+  views/administration/dashboard.hbs
+  -> button geht noch? a ums div herum
+     onclick="location.href='/administration/students'"
+     <a href="/administration/students">
+
+  
+
+

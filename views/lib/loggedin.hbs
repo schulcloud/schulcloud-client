@@ -18,7 +18,7 @@
     {{/content}}
 
     {{#content "scripts" mode="append"}}
-        <script src="/scripts/loggedin.js" type="text/javascript" defer></script>
+        <script src="/scripts/loggedin.js" type="text/javascript" nonce="{{nonceValue}}" defer></script>
         <script src="/scripts/autologout.js" type="text/javascript" data-backendurl="{{@root.BACKEND_URL}}" defer></script>
         <script type="text/javascript" src="/vendor-optimized/mathjax/MathJax.js?config=TeX-AMS_HTML" defer></script>
         <script type="text/javascript" src="/vendor/feathersjs/feathers.js" defer></script>
@@ -31,7 +31,7 @@
                     window.matrixAssetDomain = '{{getConfig "MATRIX_MESSENGER_ASSET_DOMAIN"}}';
                     window.userLanguage = '{{ @root.userLanguage }}';
                 </script>
-                <script src="/scripts/chatLoggedin.js" type="text/javascript" defer></script>
+                <script src="/scripts/chatLoggedin.js" type="text/javascript" nonce="{{nonceValue}}" defer></script>
             {{/inArray}}
         {{/ifConfig}}
     {{/content}}

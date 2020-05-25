@@ -18,6 +18,7 @@ const { tokenInjector, duplicateTokenHandler, csrfErrorHandler } = require('./he
 
 const { version } = require('./package.json');
 const { sha } = require('./helpers/version');
+const { nonceValueSet } = require('./helpers/version');
 const logger = require('./helpers/logger');
 
 const {
@@ -70,6 +71,13 @@ if (KEEP_ALIVE) {
 const securityHeaders = require('./middleware/security_headers');
 
 app.use(securityHeaders);
+
+// disable x-powered-by header
+app.disable('x-powered-by');
+
+if (Configuration.get('CORS')) {
+	app.use(nonceValueSet);
+}
 
 // set cors headers
 app.use(require('./middleware/cors'));
