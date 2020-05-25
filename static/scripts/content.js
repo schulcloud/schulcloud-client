@@ -50,6 +50,8 @@ $(document).ready(function () {
 			option.value = course._id;
 			$selection.append(option);
 		});
+		console.log(modal.find(".courses"));
+		modal.find(".courses")[0].classList.add("chosed");
 		$selection.chosen().trigger("chosen:updated");
 	};
 
