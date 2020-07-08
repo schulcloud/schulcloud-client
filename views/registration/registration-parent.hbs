@@ -21,7 +21,7 @@
       {{#if invalid}}<input type="hidden" name="invalid" value="{{invalid}}" />{{/if}}
 
       <section data-panel="section-1">
-        <h2 class="h4">{{$t "registration._registration.parent.heading.yourChildsData" }}</h2>
+        <h2 class="h4" data-testid="name-section-1">{{$t "registration._registration.parent.heading.yourChildsData" }}</h2>
       <p>{{$t "registration._registration.global.text.bellowNYearsOldConsantOfLegalGuardian" (dict "shortTitle" theme.short_title "age" CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS)}}</p>
         <p>{{$t "registration._registration.parent.text.weNeedFollowingDataOfChild" (dict "shortTitle" theme.short_title)}}</p>
         <div class="row">
@@ -57,7 +57,7 @@
 
       {{#if needConsent}}
       <section data-panel="section-2">
-        <h2 class="h4">{{$t "registration._registration.parent.heading.yourData" }}</h2>
+        <h2 class="h4" data-testid="name-section-2">{{$t "registration._registration.parent.heading.yourData" }}</h2>
         <p>{{$t "registration._registration.parent.text.legalGuardingHasToAgreeToTermsOfUse" (dict "years" CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS "shortTitle" theme.short_title)}}</p>
         <p>{{$t "registration._registration.parent.text.forThisWeNeedFollowing" }}</p>
         <div class="row">
@@ -84,7 +84,7 @@
 
 
       <section data-panel="section-3">
-        <h2 class="h4">{{$t "registration._registration.global.heading.declarationOfConsent" }}</h2>
+        <h2 class="h4" data-testid="name-section-3">{{$t "registration._registration.global.heading.declarationOfConsent" }}</h2>
         <p>{{$t "registration._registration.parent.text.pleaseConfirmTheFollowing" (dict "shortTitle" theme.short_title)}}</p>
           {{#embed "registration/forms/einwilligungserklaerung" prefix="parent_"}}{{/embed}}
       </section>

@@ -22,7 +22,7 @@
       {{#if invalid}}<input type="hidden" name="invalid" value="{{invalid}}" />{{/if}}
 
       <section data-panel="section-1" class="noback">
-        <h2 class="h4">{{$t "registration._registration.heading.welcomeToTheRegistration" (dict "title" theme.title) }}</h2>
+        <h2 class="h4" data-testid="name-section-1">{{$t "registration._registration.heading.welcomeToTheRegistration" (dict "title" theme.title) }}</h2>
         <p>{{$t "registration._registration.text.thankYouForTakingThisStepWithUs" (dict "shortTitle" theme.title)}}</p>
         <p>{{$t "registration._registration.text.pleaseRegisterFirstAndAgreeToTerms" (dict "shortTitle" theme.title)}}</p>
 
@@ -33,7 +33,7 @@
 
 
       <section data-panel="section-2">
-        <h2 class="h4">{{$t "registration._registration.employee.heading.yourData" }}</h2>
+        <h2 class="h4" data-testid="name-section-2">{{$t "registration._registration.employee.heading.yourData" }}</h2>
         <p>{{$t "registration._registration.global.text.weStoreUserDataSafely" (dict "shortTitle" theme.short_title)}}</p>
 
         <p>{{$t "registration._registration.global.text.weNeedFollowingDataForRegistration" (dict "shortTitle" theme.short_title)}}</p>
@@ -90,7 +90,7 @@
 
       {{#if needConsent}}
       <section data-panel="section-3">
-        <h2 class="h4">{{$t "registration._registration.global.heading.declarationOfConsent" }}</h2>
+        <h2 class="h4" data-testid="name-section-3">{{$t "registration._registration.global.heading.declarationOfConsent" }}</h2>
         <p>{{$t "registration._registration.employee.text.pleaseconfirmTheFollowingDeclarations" (dict "shortTitle" theme.title)}}</p>
         <p>{{{$t "registration._registration.global.text.iDeclareTheFollowing"}}}</p>
           {{#embed "registration/forms/einwilligungserklaerung"}}{{/embed}}
