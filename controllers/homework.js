@@ -498,53 +498,99 @@ const overview = (titleKey) => (req, res, next) => {
 			});
 			Promise.resolve(coursesPromise).then((courses) => {
 				const courseList = courses.map((course) => [course._id, course.name]);
-				const filterSettings =						[{
-					type: 'sort',
-					title: res.$t('homework.headline.sorting'),
-					displayTemplate: res.$t('homework.label.sortBy'),
-					options: [
-						['createdAt', res.$t('homework.label.sortByCreationDate')],
-						['updatedAt', res.$t('homework.label.sortByLastUpdate')],
-						['availableDate', res.$t('homework.label.sortByAvailabilityDate')],
-						['dueDate', res.$t('homework.label.sortByDueDate')],
-					],
-					defaultSelection: 'dueDate',
-				},
-				{
-					type: 'select',
-					title: res.$t('homework.headline.courses'),
-					displayTemplate: res.$t('homework.label.filterCourses'),
-					property: 'courseId',
-					multiple: true,
-					expanded: true,
-					options: courseList,
-				},
-				{
-					type: 'date',
-					title: res.$t('homework.headline.dueDate'),
-					displayTemplate: res.$t('homework.label.filterDueDate'),
-					property: 'dueDate',
-					mode: 'fromto',
-					fromLabel: res.$t('homework.label.filterDueDateFrom'),
-					toLabel: res.$t('homework.label.filterDueDateTo'),
-				},
-				{
-					type: 'boolean',
-					title: res.$t('homework.headline.more'),
-					options: {
-						private: res.$t('homework.label.filterMorePrivateTask'),
-						publicSubmissions: res.$t('homework.label.filterMorePublicSubmissions'),
-						teamSubmissions: res.$t('homework.label.filterMoreTeamSubmissions'),
+				const filterSettings = [
+					// {
+					// 	type: 'sort',
+					// 	title: res.$t('homework.headline.sorting'),
+					// 	displayTemplate: res.$t('homework.label.sortBy'),
+					// 	options: [
+					// 		['createdAt', res.$t('homework.label.sortByCreationDate')],
+					// 		['updatedAt', res.$t('homework.label.sortByLastUpdate')],
+					// 		['availableDate', res.$t('homework.label.sortByAvailabilityDate')],
+					// 		['dueDate', res.$t('homework.label.sortByDueDate')],
+					// 	],
+					// 	defaultSelection: 'dueDate',
+					// },
+					// {
+					// 	type: 'select',
+					// 	title: res.$t('homework.headline.courses'),
+					// 	displayTemplate: res.$t('homework.label.filterCourses'),
+					// 	property: 'courseId',
+					// 	multiple: true,
+					// 	expanded: true,
+					// 	options: courseList,
+					// },
+					// {
+					// 	type: 'date',
+					// 	title: res.$t('homework.headline.dueDate'),
+					// 	displayTemplate: res.$t('homework.label.filterDueDate'),
+					// 	property: 'dueDate',
+					// 	mode: 'fromto',
+					// 	fromLabel: res.$t('homework.label.filterDueDateFrom'),
+					// 	toLabel: res.$t('homework.label.filterDueDateTo'),
+					// },
+					// {
+					// 	type: 'boolean',
+					// 	title: res.$t('homework.headline.more'),
+					// 	options: {
+					// 		private: res.$t('homework.label.filterMorePrivateTask'),
+					// 		publicSubmissions: res.$t('homework.label.filterMorePublicSubmissions'),
+					// 		teamSubmissions: res.$t('homework.label.filterMoreTeamSubmissions'),
+					// 	},
+					// 	defaultSelection: {
+					// 		private: ((query.private !== undefined) ? ((query.private === true)) : undefined),
+					// 	},
+					// 	applyNegated: {
+					// 		private: [true, false],
+					// 		publicSubmissions: [true, false],
+					// 		teamSubmissions: [true, false],
+					// 	},
+					// },
+					{
+						title: 'Items per page',
+						chipTemplate: 'Items per page: %1',
+						required: true,
+						filter: [
+							{
+								attribute: '$limit',
+								operator: '=',
+								input: 'radio',
+								options: [
+									{ value: 25, label: '25' },
+									{ value: 50, label: '50' },
+									{ value: 100, label: '100' },
+								],
+							},
+						],
 					},
-					defaultSelection: {
-						private: ((query.private !== undefined) ? ((query.private === true)) : undefined),
+					{
+						title: 'Sort',
+						chipTemplate: (attribute, order) => `Sort by ${attribute} ${order ? '↗' : '↘'}`,
+						layout: 'sort',
+						required: true,
+						filter: [
+							{
+								// Query data
+								attribute: '$sort-attribute',
+								// applyNegated: false,
+								// operator: "=",
+								label: 'Sortier-Attribut',
+								// UI options
+								input: 'triSwitch',
+							},
+							{
+								// Query data
+								attribute: '$sort-order',
+								// applyNegated: false,
+								// operator: "=",
+								label: 'Sortierreihenfolge',
+								// UI options
+								options: undefined,
+								input: 'toggle',
+							},
+						],
 					},
-					applyNegated: {
-						private: [true, false],
-						publicSubmissions: [true, false],
-						teamSubmissions: [true, false],
-					},
-				}];
+				];
 					// Pagination in client, because filters are in afterhook
 				const currentPage = parseInt(req.query.p) || 1;
 				const pagination = {

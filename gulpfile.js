@@ -253,6 +253,8 @@ const nodeModules = {
 	// video.js
 	'video.js/dist': ['video.min.js'],
 	'video.js/dist/lang': ['*.js'],
+
+	'vue-filter-ui/dist/lib': ['VueFilterUi.umd.min.js'],
 };
 gulp.task('node-modules', () => {
 	const promises = [];

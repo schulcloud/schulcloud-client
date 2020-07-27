@@ -92,6 +92,8 @@
 		"truncate-html": "^1.0.0",
 		"ua-parser-js": "^0.7.21",
 		"video.js": "^7.7.6",
+		"vue": "^2.6.11",
+		"vue-filter-ui": "^0.8.0",
 		"winston": "^3.2.0",
 		"yargs-parser": "^18.1.3"
 	},
