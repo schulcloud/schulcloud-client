@@ -2,7 +2,6 @@
 /*
  * One Controller per layout view
  */
-
 const express = require('express');
 const marked = require('marked');
 const handlebars = require('handlebars');
@@ -549,6 +548,7 @@ const overview = (titleKey) => (req, res, next) => {
 					{
 						title: 'Items per page',
 						chipTemplate: 'Items per page: %1',
+						layout: 'default',
 						required: true,
 						filter: [
 							{
@@ -564,7 +564,10 @@ const overview = (titleKey) => (req, res, next) => {
 						],
 					},
 					{
-						title: 'Sort',
+
+						// 	type: 'sort',
+					    title: res.$t('homework.headline.sorting'),
+					    // chipTemplate: res.$t('homework.label.sortBy'),
 						chipTemplate: (attribute, order) => `Sort by ${attribute} ${order ? '↗' : '↘'}`,
 						layout: 'sort',
 						required: true,
@@ -572,11 +575,14 @@ const overview = (titleKey) => (req, res, next) => {
 							{
 								// Query data
 								attribute: '$sort-attribute',
-								// applyNegated: false,
-								// operator: "=",
-								label: 'Sortier-Attribut',
-								// UI options
-								input: 'triSwitch',
+								operator: '=',
+								input: 'select',
+								options: [
+									{ value: 'createdAt', label: res.$t('homework.label.sortByCreationDate') },
+									{ value: 'updatedAt', label: res.$t('homework.label.sortByLastUpdate') },
+									{ value: 'availableDate', label: res.$t('homework.label.sortByAvailabilityDate') },
+									{ value: 'dueDate', label: res.$t('homework.label.sortByDueDate') },
+								],
 							},
 							{
 								// Query data
@@ -589,6 +595,20 @@ const overview = (titleKey) => (req, res, next) => {
 								input: 'toggle',
 							},
 						],
+					},
+					{
+						title: res.$t('homework.headline.courses'),
+						chipTemplate: res.$t('homework.label.filterCourses'),
+						layout: 'default',
+						filter: [
+							{
+								property: 'courseId',
+								multiple: true,
+								expanded: true,
+								options: courseList,
+							}
+
+						]
 					},
 				];
 					// Pagination in client, because filters are in afterhook

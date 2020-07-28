@@ -7,6 +7,12 @@ const inputTypes = {
 	radio: inputs.Radio,
 	triSwitch: inputs.TriSwitch,
 	toggle: inputs.Toggle,
+	select: inputs.Select,
+};
+
+const layoutTypes = {
+	default: layouts.Default,
+	sort: layouts.Sort,
 };
 
 Vue.component('feathers-filter', {
@@ -34,8 +40,10 @@ Vue.component('feathers-filter', {
 	data() {
 		this.filter = JSON.parse(this.filter);
 		this.filter.forEach((f) => {
-			f.layout = layouts.Default;
-			f.filter.input = inputTypes[f.filter.input];
+			f.layout = layoutTypes[f.layout];
+			f.filter.forEach((filter) => {
+				filter.input = inputTypes[filter.input];
+			});
 		});
 		return {
 			addLabel: this.addLabel,
