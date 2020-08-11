@@ -98,7 +98,7 @@
     {{#if @root.submittable}}
         {{> "lib/components/csrfInput"}}
         {{#userHasPermission "SUBMISSIONS_CREATE"}}
-            <button type="submit" class="ckeditor-submit btn btn-primary btn-submit" disabled="true">{{$t "homework.button.save" }}</button>
+            <button type="submit" class="ckeditor-submit btn btn-primary btn-submit" data-testid="submit" disabled="true">{{$t "homework.button.save" }}</button>
         {{/userHasPermission}}
 
         {{#if @root.submission}}
@@ -123,7 +123,7 @@
                 <button type="button" class="btn btn-secondary btn-close">
                     {{$t "global.button.cancel" }}
                 </button>
-                <button type="submit" class="btn btn-primary btn-submit">
+                <button type="submit" class="btn btn-primary btn-submit" data-testid="submit">
                    {{$t "global.headline.delete" }}
                 </button>
             </div>
