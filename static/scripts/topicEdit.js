@@ -308,12 +308,12 @@ class TopicBlockList extends React.Component {
 
                 <div className="form-group">
                     <div className="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicText)}>{`+ ${$t('topic.topicEdit.button.text')}`}</button>
-                        <button type="button" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicGeoGebra)}>{`+ ${$t('topic.topicEdit.button.geoGebraWorksheet')}`}</button>
-                        <button type="button" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicResources)}>{`+ ${$t('topic.topicEdit.button.material')}`}</button>
+                        <button type="button" data-testid="textTopicBtn" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicText)}>{`+ ${$t('topic.topicEdit.button.text')}`}</button>
+                        <button type="button" data-testid="geoGebraBtn" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicGeoGebra)}>{`+ ${$t('topic.topicEdit.button.geoGebraWorksheet')}`}</button>
+                        <button type="button" data-testid="lernstoreBtn" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicResources)}>{`+ ${$t('topic.topicEdit.button.material')}`}</button>
                         {neXboardEnabled ? <button type="button" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicNexboard)}>+ neXboard</button> : '' }
-                        <button type="button" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicEtherpad)}>+ Etherpad</button>
-                        <button type="button" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicInternal)}>{`+ ${$t('global.headline.task')}`}</button>
+                        <button type="button" data-testid="etherpadBtn" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicEtherpad)}>+ Etherpad</button>
+                        <button type="button" data-testid="taskBtn" className="btn btn-secondary" onClick={this.addBlock.bind(this, TopicInternal)}>{`+ ${$t('global.headline.task')}`}</button>
                     </div>
                 </div>
             </div>
@@ -741,7 +741,7 @@ class TopicInternal extends TopicBlock {
                             href="#"
                             data-toggle="tooltip"
                             data-placement="top"
-                            title={$t('topic.topicEdit.label.theLinkHasToBeginWith', {'baseUrl' : this.state.baseUrl})}><i className="fa fa-info-circle" /></a>
+                            title={$t('topic.topicEdit.label.theLinkHasToBeginWith', { baseUrl: this.state.baseUrl })}><i className="fa fa-info-circle" /></a>
                     </span>
                     <input
                         className="form-control"
