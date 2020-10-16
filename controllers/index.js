@@ -45,6 +45,7 @@ router.use('/forcePasswordChange', require('./forcePasswordChange'));
 router.use('/oauth2', require('./oauth2'));
 router.use('/welcome', require('./welcome'));
 router.use('/schools/', require('./schools'));
+router.use('/schools/:schoolID/messenger/', require('./messenger'));
 router.use('/users/', require('./users'));
 router.use('/rocketChat/', require('./rocketChat'));
 router.use('/addons', require('./addons'));

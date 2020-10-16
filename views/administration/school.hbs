@@ -215,8 +215,8 @@
 
                         {{! Only hide setting from UI and not completly from the DOM to ensure that the configured state is passed back to the server }}
                         <div class="form-group"
-								{{#ifConfig "FEATURE_MESSENGER_SCHOOL_SETTINGS_VISIBLE" true}}{{else}}
-									{{#ifConfig "FEATURE_MATRIX_MESSENGER_ENABLED" true}}{{else}}
+								{{#ifConfig "MESSENGER__SCHOOL_SETTINGS_VISIBLE" true}}{{else}}
+									{{#ifConfig "MATRIX_MESSENGER__ENABLED" true}}{{else}}
 										hidden
 									{{/ifConfig}}>
 								{{/ifConfig}}>
@@ -243,7 +243,7 @@
                         {{! This elements visibility gets toggled by javascript, to only show it if the messenger is enabled }}
                         <div id="messenger-sub-options">
                             {{! Only hide setting from UI and not completly from the DOM to ensure that the configured state is passed back to the server }}
-                            <div class="form-group {{#ifConfig "FEATURE_MESSENGER_SCHOOL_SETTINGS_VISIBLE" false}}hidden{{/ifConfig}} {{#ifConfig "FEATURE_MESSENGER_SCHOOL_ROOM_ENABLED" false}}hidden{{/ifConfig}}">
+                            <div class="form-group {{#ifConfig "MESSENGER__SCHOOL_SETTINGS_VISIBLE" false}}hidden{{/ifConfig}} {{#ifConfig "MESSENGER__SCHOOL_ROOM_ENABLED" false}}hidden{{/ifConfig}}">
                                 <label>
                                     <input
                                         type="checkbox"

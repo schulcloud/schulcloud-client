@@ -31,7 +31,7 @@
                 </div>
 
                 {{! Messenger is activated for instace !}}
-                {{#ifConfig "FEATURE_MATRIX_MESSENGER_ENABLED" true}}
+                {{#ifConfig "MATRIX_MESSENGER__ENABLED" true}}
                     {{! Messenger is activated for current school }}
                     {{#inArray "messenger" @root.schoolData.features}}
                         <div class="form-group">

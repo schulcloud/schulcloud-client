@@ -13,9 +13,9 @@ if (Configuration.has('CORS') !== true) {
 let matrixMessengerEmbed = '';
 let matrixMessengerHomeserver = '';
 let matrixMessengerDiscoverDomain = '';
-if (Configuration.get('FEATURE_MATRIX_MESSENGER_ENABLED')) {
-	matrixMessengerEmbed = Configuration.get('MATRIX_MESSENGER_EMBED_URI');
-	matrixMessengerHomeserver = Configuration.get('MATRIX_MESSENGER_HOMESERVER_URI');
+if (Configuration.get('MATRIX_MESSENGER__ENABLED')) {
+	matrixMessengerEmbed = Configuration.get('MATRIX_MESSENGER__EMBED_URI');
+	matrixMessengerHomeserver = Configuration.get('MATRIX_MESSENGER__HOMESERVER_URI');
 	matrixMessengerDiscoverDomain = matrixMessengerHomeserver.replace('matrix.', '');
 }
 

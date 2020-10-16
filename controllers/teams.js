@@ -539,7 +539,7 @@ router.get('/:teamId', async (req, res, next) => {
 			}
 		}
 		let notificationMessage;
-		if (Configuration.get('FEATURE_MATRIX_MESSENGER_ENABLED')) {
+		if (Configuration.get('MATRIX_MESSENGER__ENABLED')) {
 			/* eslint-disable max-len */
 			let matrixNotification;
 			// Is messenger feature flag set in the school which created this team?

@@ -5,7 +5,7 @@
 
     {{#content "scripts" mode="append"}}
         <script src="/scripts/loggedout.js" type="text/javascript" nonce="{{nonceValue}}" defer></script>
-        {{#ifConfig "FEATURE_MATRIX_MESSENGER_ENABLED" true}}
+        {{#ifConfig "MATRIX_MESSENGER__ENABLED" true}}
             <script src="/scripts/chatLoggedout.js" type="text/javascript" nonce="{{nonceValue}}" defer></script>
         {{/ifConfig}}
     {{/content}}

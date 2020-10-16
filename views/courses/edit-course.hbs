@@ -195,7 +195,7 @@
 					</select>
 				</div>
 
-				{{#ifConfig "FEATURE_MATRIX_MESSENGER_ENABLED" true}}
+				{{#ifConfig "MATRIX_MESSENGER__ENABLED" true}}
 					{{#inArray "messenger" @root.schoolData.features}}
 						<div class="form-group">
 							<label>
