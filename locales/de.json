@@ -2960,6 +2960,10 @@
 			"button": {
 				"createTopic": "Thema anlegen"
 			},
+			"leavePage": {
+				"warningMain": "Hinweis: Beim Klicken des Links verlassen Sie das Angebot der Schul-Cloud",
+				"warningFooter": "Die Nutzung dieser Angebote unterliegt gegebenenfalls anderen rechtlichen Bedingungen. Bitte schauen Sie daher in die Datenschutzerklärung des externen Anbieters!"
+			},
 			"headline": {
 				"createTopic": "Thema anlegen",
 				"privateTasks": "Private Aufgaben",
