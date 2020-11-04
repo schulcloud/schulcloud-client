@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
 
 ## Unreleased
+###Added
+
+- SC-6662 - Add data-testid in homework for integration test
 
 ### Added
 
@@ -15,6 +18,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 - SC-6293 - added option to school admin to disable lernstore for students
 - SC-7413 - Add winston handler for logging unhandled rejection and exceptions
 - SC-5942 - Add trim() before email for password recovery got send to server
+- OPS-1297 - Added Changelog github action
 
 ### Fixed
 
