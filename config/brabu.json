@@ -1,0 +1,7 @@
+{
+	"$schema": "./default.schema.json",
+	"SC": {
+		"TITLE": "Brandenburg Schul-Cloud"
+	},
+	"REQUEST_TIMEOUT": 8000
+}

@@ -1,0 +1,7 @@
+{
+	"$schema": "./default.schema.json",
+	"SC": {
+		"TITLE": "HPI Schul-Cloud"
+	},
+	"REQUEST_TIMEOUT": 8000
+}

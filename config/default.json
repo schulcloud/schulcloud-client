@@ -15,5 +15,8 @@
 		"FALLBACK_LANGUAGE": "de",
 		"DEBUG": false,
 		"AVAILABLE_LANGUAGES": "de,en"
+	},
+	"SC": {
+		"TITLE": "HPI Schul-Cloud"
 	}
 }
