@@ -2930,7 +2930,7 @@ router.use(
 			if (editable) {
 				tableActions = tableActions.concat([
 					{
-						link: item.type === 'ldap' ? `/administration/systems/ldap/edit/${item._id}`
+						link: item.type === 'ldap' ? `/administration/ldap/config?id=${item._id}`
 							: `/administration/systems/${item._id}`,
 						class: item.type === 'ldap' ? 'btn-edit-ldap' : 'btn-edit',
 						icon: 'edit',
