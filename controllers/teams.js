@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const express = require('express');
 const moment = require('moment');
-const { Configuration } = require('@schul-cloud/commons');
+const { Configuration } = require('@hpi-schul-cloud/commons');
 
 const authHelper = require('../helpers/authentication');
 const recurringEventsHelper = require('../helpers/recurringEvents');
@@ -12,11 +12,6 @@ const redirectHelper = require('../helpers/redirect');
 const api = require('../api');
 const logger = require('../helpers/logger');
 const timesHelper = require('../helpers/timesHelper');
-
-
-const {
-	CALENDAR_SERVICE_ENABLED,
-} = require('../config/global');
 
 const router = express.Router();
 moment.locale('de');
@@ -67,7 +62,7 @@ const getSelectOptions = (req, service, query) => api(req)
  * @param teamId {string} - the id of the course the events will be deleted
  */
 const deleteEventsForTeam = async (req, res, teamId) => {
-	if (CALENDAR_SERVICE_ENABLED) {
+	if (Configuration.get('CALENDAR_SERVICE_ENABLED') === true) {
 		const events = await api(req).get('/calendar/', {
 			qs: {
 				'scope-id': teamId,
@@ -338,13 +333,9 @@ router.get('/', async (req, res, next) => {
 	}
 });
 
-router.post('/', (req, res, next) => {
-	return api(req).post('/teams/', {
-		json: req.body, // TODO: sanitize
-	}).then((team) => {
-		return res.redirect(`/teams/${team._id}`);
-	}).catch(next);
-});
+router.post('/', (req, res, next) => api(req).post('/teams/', {
+	json: req.body, // TODO: sanitize
+}).then((team) => res.redirect(`/teams/${team._id}`)).catch(next));
 
 router.post('/copy/:teamId', (req, res, next) => {
 	// map course times to fit model
