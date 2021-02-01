@@ -54,7 +54,7 @@ const baseStyles = [
 ];
 
 function themeName() {
-	return process.env.SC_THEME || 'brb';
+	return process.env.SC_THEME || 'default';
 }
 
 const EXIT_ON_ERROR = process.env.GULP_EXIT_ON_ERROR

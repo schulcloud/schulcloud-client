@@ -7,7 +7,7 @@ const {
 	EDTR_SOURCE = undefined,
 	EDITOR_URL = undefined,
 	SC_DOMAIN = 'localhost',
-	SC_THEME = 'brb',
+	SC_THEME = 'default',
 	SC_TITLE = 'HPI Schul-Cloud',
 	SC_SHORT_TITLE = 'HPI Schul-Cloud',
 	CONSENT_WITHOUT_PARENTS_MIN_AGE_YEARS,
