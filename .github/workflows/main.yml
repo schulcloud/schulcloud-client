@@ -64,6 +64,7 @@ jobs:
         env | sort
         sudo apt-get install gettext
         cat k8s/deployment.yaml | envsubst
+        export SC_THEME=brb
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@master
       with:
