@@ -11,7 +11,7 @@ name: Build and Deploy to GKE
 
 on:
   push:
-    branches: 
+    branches:
       - '**'
   # pull_request:
   #   branches: [ development ]
@@ -32,7 +32,7 @@ jobs:
     - name: Environment variables
       run: |
         export SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-8)
-        
+
         # GITHUB_HEAD_REF for Pull-Requests. GITHUB_REF for pushes.
         [[ -z "$GITHUB_HEAD_REF" ]] && GITHUB_BRANCH_NAME=${GITHUB_REF#refs/heads/} || GITHUB_BRANCH_NAME=${GITHUB_HEAD_REF#refs/heads/}
         export NAMESPACE=$(echo ${GITHUB_BRANCH_NAME} | sed -e "s/\//-/g" | tr '[:upper:]' '[:lower:]')
@@ -41,6 +41,7 @@ jobs:
         export CERT_NAME=wildcard-${STAGING_DOMAIN/./-}
         export BUILD_IMAGE=$REGISTRY_HOSTNAME/${{ secrets.GCP_PROJECT_ID }}/$SERVICE_NAME:$SHORT_SHA
         export HOSTNAME=$NAMESPACE.$STAGING_DOMAIN
+        export SC_THEME=brb
 
         echo "SHORT_SHA=$SHORT_SHA"
         echo "SERVICE_NAME=$SERVICE_NAME"
@@ -48,14 +49,14 @@ jobs:
         echo "CERT_NAME=$CERT_NAME"
         echo "BUILD_IMAGE=$BUILD_IMAGE"
         echo "HOSTNAME=$HOSTNAME"
-        
+
         echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
         echo "SERVICE_NAME=$SERVICE_NAME" >> $GITHUB_ENV
         echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
         echo "CERT_NAME=$CERT_NAME" >> $GITHUB_ENV
         echo "BUILD_IMAGE=$BUILD_IMAGE" >> $GITHUB_ENV
         echo "HOSTNAME=$HOSTNAME" >> $GITHUB_ENV
-        
+
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -64,7 +65,6 @@ jobs:
         env | sort
         sudo apt-get install gettext
         cat k8s/deployment.yaml | envsubst
-        export SC_THEME=brb
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@master
       with:
@@ -80,10 +80,10 @@ jobs:
         # Set up docker to authenticate
         # via gcloud command-line tool.
         gcloud auth configure-docker
-      
+
     # Build the Docker image
     - name: Build
-      run: |        
+      run: |
         docker build -t $BUILD_IMAGE \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" .
@@ -91,7 +91,7 @@ jobs:
     - name: Publish
       run: |
         docker push $BUILD_IMAGE
-        
+
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |
@@ -99,9 +99,9 @@ jobs:
         export KUBECONFIG=kubeconfig
         kubectl get nodes
         cat k8s/namespace.yaml | envsubst
-        cat k8s/namespace.yaml | envsubst | kubectl apply -f - 
+        cat k8s/namespace.yaml | envsubst | kubectl apply -f -
         cat k8s/configmap.yaml | envsubst
-        cat k8s/configmap.yaml | envsubst | kubectl apply -n $NAMESPACE -f - 
+        cat k8s/configmap.yaml | envsubst | kubectl apply -n $NAMESPACE -f -
         cat k8s/deployment.yaml | envsubst
         cat k8s/deployment.yaml | envsubst | kubectl apply -n $NAMESPACE -f -
         cat k8s/service.yaml | envsubst
@@ -112,5 +112,5 @@ jobs:
         kubectl get secret $CERT_NAME -o json \
         | jq 'del(.metadata["namespace","creationTimestamp","resourceVersion","selfLink","uid"])' \
         | kubectl apply -n $NAMESPACE -f -
-        
+
         kubectl rollout status deployment/$SERVICE_NAME -n $NAMESPACE
