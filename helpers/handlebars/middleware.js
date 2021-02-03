@@ -247,6 +247,13 @@ module.exports = (req, res, next) => {
 				});
 				*/
 	}
+
+	res.locals.sidebarItems.push({
+		name: 'Wallet',
+		icon: 'upload',
+		link: '/wallet/',
+	});
+
 	// helpArea view
 	if (HELPAREA_URL) {
 		res.locals.sidebarItems.push({
