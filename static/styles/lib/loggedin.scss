@@ -267,7 +267,7 @@ aside.nav-sidebar {
 				i.fa {
 					font-size: 20px;
 					width: 20px;
-					margin-right: 20px;
+					margin-right: 12px;
 					display: inline-block;
 					text-align: center;
 					vertical-align: middle;
@@ -276,7 +276,7 @@ aside.nav-sidebar {
 				svg {
 					font-size: 20px;
 					width: 20px;
-					margin-right: 20px;
+					margin-right: 12px;
 					display: inline-block;
 					text-align: center;
 					vertical-align: middle;
@@ -284,7 +284,6 @@ aside.nav-sidebar {
 
 				span {
 					display: inline-block;
-					text-transform: uppercase;
 					text-decoration: none;
 
 					@include media-breakpoint-down(md) {

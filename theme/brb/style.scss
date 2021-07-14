@@ -1,5 +1,6 @@
-$primaryColor: #449494;
+$primaryColor: #0a9396;
 $secondaryColor: #E4032E;
+$tertiaryColor: #38677a;
 $accentColor: #0b2bdf;
 
 $logoGradient: linear-gradient(45deg, $primaryColor 30%, $primaryColor);
@@ -32,26 +33,7 @@ aside.nav-sidebar{
             }
         }
     }
-
-    ul {
-        li {
-            a:not(.sc-branding) {
-                &.active {
-                    background: $primaryColor;
-                    color: white;
-					border-bottom: 1px solid transparent;
-
-					&[href]:hover {
-						background: $primaryColor;
-						cursor: pointer;
-					}
-				}
-            }
-        }
-    }
 }
-
-
 body {
     header.top-margin {
         margin-top: -1rem;
